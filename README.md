@@ -1,4 +1,6 @@
 ## Untitled bullethell game
+![Project Icon](/images/project_icon.jpeg "Project Icon")
+
 ## Team
 > Oscar Morones, Riley Quiroz, Joseph S., Emilio Aldaco
 ## Description
