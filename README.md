@@ -1,5 +1,5 @@
 ## Untitled bullethell game
-<img src="/images/project_icon.jpeg" alt="Project Icon" width="300" />
+<img src="/images/project_icon.jpeg" alt="Project Icon" width="100" />
 
 
 ## Team Edosians
