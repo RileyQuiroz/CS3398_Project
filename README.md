@@ -32,9 +32,12 @@
 
 
 ## Technologies Used
-- Pygame - version 2.6.0
-- Python - version 3.9.6
+### Technologies
 
+- [Jira](https://www.atlassian.com/software/jira): For project management and tracking tasks.
+- [Bitbucket](https://bitbucket.org/): For version control and managing the project repository.
+- [Pygame](https://www.pygame.org/): A Python library for creating video games, used for handling graphics, input, and game mechanics.
+- [Python](https://www.python.org/): The programming language we are using to develop the game.
 
 ## Features
 List the ready features here:
