@@ -1,9 +1,10 @@
 ## Untitled bullethell game
-> Team: Oscar Morones, Riley Quiroz, Joseph S., Emilio Aldaco
-> We are creating a bullethell style game using python
-> We are making this game for people who enjoy bullethell games
-> Impact: make a great bullethell game for the masses
-> Live demo [_here_](https://www.example.com). <!-- If you have the project hosted somewhere, include the link here. -->
+## Team
+> Oscar Morones, Riley Quiroz, Joseph S., Emilio Aldaco
+## Description
+> We are creating a bullethell-style game using Python and Pygame. The game will feature fast-paced, challenging gameplay where the player must dodge a constant barrage of enemy bullets while aiming to defeat enemies and complete levels.
+> The game is designed for gamers who enjoy high-intensity, skill-based gameplay. Our target audience includes fans of the bullethell genre and players who are looking for a challenging and immersive experience.
+> We are developing this game to provide an exciting and engaging gaming experience that tests players' reflexes and strategic thinking. We hope to create a game that challenges the player while offering a sense of achievement as they progress through increasingly difficult levels.
 
 ## Table of Contents
 * [General Info](#general-information)
