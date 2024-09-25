@@ -3,7 +3,7 @@
 
 
 ## Team Edosians
-> Oscar Morones, Riley Quiroz, Joseph S., Emilio Aldaco
+> Oscar Morones, Riley Quiroz, Joseph Sheraden-Urrutia, Emilio Aldaco
 ## Description
 > We are creating a bullethell-style game using Python and Pygame. The game will feature fast-paced, challenging gameplay where the player must dodge a constant barrage of enemy bullets while aiming to defeat enemies and complete levels.
 > The game is designed for gamers who enjoy high-intensity, skill-based gameplay. Our target audience includes fans of the bullethell genre and players who are looking for a challenging and immersive experience.
