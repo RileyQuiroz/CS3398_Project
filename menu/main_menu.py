@@ -28,23 +28,22 @@ def main_menu():
         screen.fill(WHITE)
 
         # Draw menu options
+        # added rectangles around the options for boundry detection
         draw_text('Start Game', font, BLACK, screen, WIDTH // 2, HEIGHT // 2 - 100)
         draw_text('Records', font, BLACK, screen, WIDTH // 2, HEIGHT // 2 - 50)
         draw_text('Settings', font, BLACK, screen, WIDTH // 2, HEIGHT // 2)
         draw_text('Quit', font, BLACK, screen, WIDTH // 2, HEIGHT // 2 + 50)
-
-    # mouse events will happen here
-
-
-
-
-    
 
         # Handle events
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if start_game_rect.collidepoint(event.pos):
+                    # Start the game here
+                    print("Start Game clicked!")
+                    # You can call your game loop or switch to the game scene here.
 
         # Update the display
         pygame.display.update()
