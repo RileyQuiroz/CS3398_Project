@@ -27,23 +27,18 @@ def main_menu():
     while True:
         screen.fill(WHITE)
 
-        # Get mouse position and events
-        mx, my = pygame.mouse.get_pos()
-
         # Draw menu options
-        draw_text('Start Game', font, BLACK, screen, WIDTH // 2, HEIGHT // 2 - 50)
+        draw_text('Start Game', font, BLACK, screen, WIDTH // 2, HEIGHT // 2 - 100)
+        draw_text('Records', font, BLACK, screen, WIDTH // 2, HEIGHT // 2 - 50)
+        draw_text('Settings', font, BLACK, screen, WIDTH // 2, HEIGHT // 2)
         draw_text('Quit', font, BLACK, screen, WIDTH // 2, HEIGHT // 2 + 50)
-    
 
-        # Handle mouse clicks for menu interaction
-        click = pygame.mouse.get_pressed()
-        if WIDTH // 2 - 100 < mx < WIDTH // 2 + 100:
-            if HEIGHT // 2 - 75 < my < HEIGHT // 2 - 25 and click[0] == 1:
-                # Start game logic
-                print("Starting Game...")
-            if HEIGHT // 2 + 25 < my < HEIGHT // 2 + 75 and click[0] == 1:
-                pygame.quit()
-                sys.exit()
+    # mouse events will happen here
+
+
+
+
+    
 
         # Handle events
         for event in pygame.event.get():
