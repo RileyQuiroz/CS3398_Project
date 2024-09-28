@@ -33,7 +33,7 @@ class Score:
         self.combo_count = 0
         self.multiplier = 1
 
-    ## Multiplier will increase depending on combo count
+    ## Multiplier will increase depending on combo count, capped at 5
     def update_multiplier(self) -> None:
         if self.combo_count % 5 == 0:
             self.multiplier = min(self.multiplier + 1, 5)
