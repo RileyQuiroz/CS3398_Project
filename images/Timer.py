@@ -16,4 +16,5 @@ class Timer:
         self.stopped = True
 
     def update(self, delta_time):
-        self.elapsed_time = self.elapsed_time + delta_time
+        if not self.stopped:
+            self.elapsed_time = self.elapsed_time + delta_time
