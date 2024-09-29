@@ -22,29 +22,37 @@ def draw_text(text, font, color, surface, x, y):
     text_rect = text_obj.get_rect()
     text_rect.center = (x, y)
     surface.blit(text_obj, text_rect)
+    return text_rect  # Return the rectangle of the text for collision detection
 
 def main_menu():
     while True:
         screen.fill(WHITE)
 
-        # Draw menu options
-        draw_text('Start Game', font, BLACK, screen, WIDTH // 2, HEIGHT // 2 - 100)
-        draw_text('Records', font, BLACK, screen, WIDTH // 2, HEIGHT // 2 - 50)
-        draw_text('Settings', font, BLACK, screen, WIDTH // 2, HEIGHT // 2)
-        draw_text('Quit', font, BLACK, screen, WIDTH // 2, HEIGHT // 2 + 50)
-
-    # mouse events will happen here
-
-
-
-
-    
+        # Draw menu options and get their rects for collision detection
+        start_game_rect = draw_text('Start Game', font, BLACK, screen, WIDTH // 2, HEIGHT // 2 - 100)
+        records_rect = draw_text('Records', font, BLACK, screen, WIDTH // 2, HEIGHT // 2 - 50)
+        settings_rect = draw_text('Settings', font, BLACK, screen, WIDTH // 2, HEIGHT // 2)
+        quit_rect = draw_text('Quit', font, BLACK, screen, WIDTH // 2, HEIGHT // 2 + 50)
 
         # Handle events
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if start_game_rect.collidepoint(event.pos):
+                    # Start the game here
+                    print("Start Game clicked!")
+                    # You can call your game loop or switch to the game scene here.
+                elif records_rect.collidepoint(event.pos):
+                    print("Records clicked!")
+                    # Add logic for Records screen
+                elif settings_rect.collidepoint(event.pos):
+                    print("Settings clicked!")
+                    # Add logic for Settings screen
+                elif quit_rect.collidepoint(event.pos):
+                    pygame.quit()
+                    sys.exit()
 
         # Update the display
         pygame.display.update()
