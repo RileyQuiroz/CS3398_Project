@@ -24,5 +24,5 @@ for event in pygame.event.get():
         if event.key == pygame.K_s:
             save_game(save_state, 'save_data_one.json') # named in case we have multiple
         if event.key == pygame.K_l:
-            load_game()
+            load_game('save_data_one.json')
 
