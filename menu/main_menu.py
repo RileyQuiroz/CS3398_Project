@@ -26,13 +26,10 @@ font = pygame.font.Font("assets/fonts/Future Edge.ttf", 74)
 
 # Load hover sound
 hover_sound = pygame.mixer.Sound("assets/sound_efx/hover_sound.wav")  # Replace with your sound file
-<<<<<<< HEAD
 
 # Define in-game timer
 timer = Timer()
 timer.stopped = False
-=======
->>>>>>> origin/feature/CP-20-task-2-implement-main-menu-navigat
 
 # Define menu options
 def draw_text(text, font, color, surface, x, y):
@@ -57,13 +54,10 @@ def main_menu():
         screen.blit(background, (0, 0))  # Draw the background
         mouse_pos = pygame.mouse.get_pos()
 
-<<<<<<< HEAD
         # Update in-game timer
         if not timer.stopped:
             timer.update(1.0)
 
-=======
->>>>>>> origin/feature/CP-20-task-2-implement-main-menu-navigat
         # Handle the main menu
         if current_menu == 'main':
             # Check if mouse is hovering over the options and set color accordingly
@@ -78,7 +72,6 @@ def main_menu():
             settings_rect = draw_text('Settings', font, settings_color, screen, WIDTH // 2, HEIGHT // 2 + 50)
             quit_rect = draw_text('Quit', font, quit_color, screen, WIDTH // 2, HEIGHT // 2 + 150)
 
-<<<<<<< HEAD
             # Draw the timer on the screen
             #timer_rect = draw_text(str(timer.elapsed_time), font, NEON_CYAN, screen, 100, 100)
             # Load a smaller font for the timer
@@ -87,8 +80,6 @@ def main_menu():
             # Draw the timer with the smaller font
             timer_rect = draw_text(str(timer.elapsed_time), small_font, NEON_CYAN, screen, 100, 100)
 
-=======
->>>>>>> origin/feature/CP-20-task-2-implement-main-menu-navigat
             # Check if mouse is hovering over the options
             # If it is hovering and was not before, play the hover sound and change the hover state
             if start_game_rect.collidepoint(mouse_pos):
@@ -137,13 +128,10 @@ def main_menu():
                     elif quit_rect.collidepoint(event.pos):
                         pygame.quit()
                         sys.exit()
-<<<<<<< HEAD
 
                     # Handle timer pause/resume toggle
                     if timer_rect.collidepoint(event.pos):
                         timer.stopped = not timer.stopped
-=======
->>>>>>> origin/feature/CP-20-task-2-implement-main-menu-navigat
 
         # Update the display
         pygame.display.update()
