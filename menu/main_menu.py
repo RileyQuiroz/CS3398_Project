@@ -73,7 +73,12 @@ def main_menu():
             quit_rect = draw_text('Quit', font, quit_color, screen, WIDTH // 2, HEIGHT // 2 + 150)
 
             # Draw the timer on the screen
-            timer_rect = draw_text(str(timer.elapsed_time), font, NEON_CYAN, screen, 75, 30)
+            #timer_rect = draw_text(str(timer.elapsed_time), font, NEON_CYAN, screen, 100, 100)
+            # Load a smaller font for the timer
+            small_font = pygame.font.Font("assets/fonts/Future Edge.ttf", 32)  # Set the size to 32 for the timer
+
+            # Draw the timer with the smaller font
+            timer_rect = draw_text(str(timer.elapsed_time), small_font, NEON_CYAN, screen, 100, 100)
 
             # Check if mouse is hovering over the options
             # If it is hovering and was not before, play the hover sound and change the hover state
