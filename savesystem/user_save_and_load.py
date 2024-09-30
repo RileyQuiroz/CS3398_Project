@@ -3,7 +3,6 @@ import json
 
 from save_progress import *
 from load_progress import *
-from save_progress import save_game
 # will import all variables to be saved when they exist from the file they exist under
 
 save_state = {
