@@ -114,7 +114,3 @@ def main_menu():
 
         # Update the display
         pygame.display.update()
-
-# Call the main menu function
-if __name__ == "__main__":
-    main_menu()
