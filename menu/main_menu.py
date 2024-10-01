@@ -53,7 +53,8 @@ def main_menu():
         'start_game': False,
         'records': False,
         'settings': False,
-        'quit': False
+        'quit': False,
+        'back': False  # Hover state for the 'Back' option in other menus
     }
 
     while True:
@@ -77,20 +78,17 @@ def main_menu():
             records_rect = draw_text('Records', font, records_color, screen, WIDTH // 2, HEIGHT // 2 - 50)
             settings_rect = draw_text('Settings', font, settings_color, screen, WIDTH // 2, HEIGHT // 2 + 50)
             quit_rect = draw_text('Quit', font, quit_color, screen, WIDTH // 2, HEIGHT // 2 + 150)
+            back_color = NEON_PURPLE if hovered['back'] else WHITE
+
 
             # Draw the timer on the screen
-            #timer_rect = draw_text(str(timer.elapsed_time), font, NEON_CYAN, screen, 100, 100)
-            # Load a smaller font for the timer
             small_font = pygame.font.Font("assets/fonts/Future Edge.ttf", 32)  # Set the size to 32 for the timer
-
-            # Draw the timer with the smaller font
             timer_rect = draw_text(str(timer.elapsed_time), small_font, NEON_CYAN, screen, 100, 100)
 
-             # Display the score (this will update every frame)
+            # Display the score
             score_display.display_score(score_system.get_score())
 
-            # Check if mouse is hovering over the options
-            # If it is hovering and was not before, play the hover sound and change the hover state
+            # Hover and sound logic for the main menu
             if start_game_rect.collidepoint(mouse_pos):
                 if not hovered['start_game']:
                     hover_sound.play()
@@ -119,6 +117,35 @@ def main_menu():
             else:
                 hovered['quit'] = False
 
+        # Handle the records menu
+        elif current_menu == 'records':
+            # Display a simple "Records" title and "Back" option
+            draw_text('Records', font, WHITE, screen, WIDTH // 2, HEIGHT // 2 - 150)
+            back_color = NEON_PURPLE if hovered['back'] else WHITE
+            back_rect = draw_text('Back', font, back_color, screen, WIDTH // 2, HEIGHT // 2 + 150)
+
+            if back_rect.collidepoint(mouse_pos):
+                if not hovered['back']:
+                    hover_sound.play()
+                    hovered['back'] = True
+            else:
+                hovered['back'] = False
+
+        # Handle the settings menu
+        elif current_menu == 'settings':
+            # Display a simple "Settings" title and "Back" option
+            draw_text('Settings', font, WHITE, screen, WIDTH // 2, HEIGHT // 2 - 150)
+            back_color = NEON_PURPLE if hovered['back'] else WHITE
+            back_rect = draw_text('Back', font, back_color, screen, WIDTH // 2, HEIGHT // 2 + 150)
+            
+
+            if back_rect.collidepoint(mouse_pos):
+                if not hovered['back']:
+                    hover_sound.play()
+                    hovered['back'] = True
+            else:
+                hovered['back'] = False
+
         # Handle events
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -129,12 +156,12 @@ def main_menu():
                     # Check which option is clicked and switch to the respective menu
                     if start_game_rect.collidepoint(event.pos):
                         print("Start Game clicked!")
-                        score_system.increase(10)  # Increase score by 10 points for testing, ** THIS IS FOR TESTING PURPOSES **
+                        score_system.increase(10)  # For testing purposes
                         # Add start game logic here
                     elif records_rect.collidepoint(event.pos):
-                        current_menu = 'records'  # Go to the Records menu
+                        current_menu = 'records'  # Switch to Records menu
                     elif settings_rect.collidepoint(event.pos):
-                        current_menu = 'settings'  # Go to the Settings menu
+                        current_menu = 'settings'  # Switch to Settings menu
                     elif quit_rect.collidepoint(event.pos):
                         pygame.quit()
                         sys.exit()
@@ -142,6 +169,11 @@ def main_menu():
                     # Handle timer pause/resume toggle
                     if timer_rect.collidepoint(event.pos):
                         timer.stopped = not timer.stopped
+
+                elif current_menu in ['records', 'settings']:
+                    # Handle "Back" button in Records or Settings
+                    if back_rect.collidepoint(event.pos):
+                        current_menu = 'main'  # Switch back to Main menu
 
         # Update the display
         pygame.display.update()
