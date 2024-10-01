@@ -12,11 +12,11 @@ class Timer:
         self.stopped = True
 
     def toggle(self):
-        if timer.stopped:
-            timer.start()
+        if self.stopped:
+            self.start()
         else:
-            timer.stop()
-            
+            self.stop()
+
     def reset(self):
         self.elapsed_time = 0.0
         self.stopped = True
