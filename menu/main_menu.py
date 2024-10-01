@@ -14,7 +14,7 @@ screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("BULLETHELL")
 
 # Load background
-background = pygame.image.load("assets/backgrounds/space_background.png")  # Load your space background image
+background = pygame.image.load("assets/backgrounds/space_background4.png")  # Load your space background image
 background = pygame.transform.scale(background, (WIDTH, HEIGHT))
 
 # Define colors
