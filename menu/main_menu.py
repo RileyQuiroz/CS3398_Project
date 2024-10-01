@@ -23,8 +23,20 @@ NEON_PURPLE = (155, 0, 255)
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 
+
+############# FONT AND TEXT ALIGNTMENT #########################
 # Load a futuristic font (if you have one)
 font = pygame.font.Font("assets/fonts/Future Edge.ttf", 74)
+# Smaller font for choices in other menus (records and settings)
+smaller_font = pygame.font.Font("assets/fonts/Future Edge.ttf", 34)
+def draw_text_left_aligned(text, font, color, surface, x, y):
+    text_obj = font.render(text, True, color)
+    text_rect = text_obj.get_rect(topleft=(x, y))  # Align to the left (top-left corner)
+    surface.blit(text_obj, text_rect)
+    return text_rect
+
+
+###################################################################
 
 # Load hover sound
 hover_sound = pygame.mixer.Sound("assets/sound_efx/hover_sound.wav")  # Replace with your sound file
@@ -80,6 +92,7 @@ def main_menu():
             quit_rect = draw_text('Quit', font, quit_color, screen, WIDTH // 2, HEIGHT // 2 + 150)
             back_color = NEON_PURPLE if hovered['back'] else WHITE
 
+            ##################THESE WILL BE MOVED INTO GAME LOOP, TIME AND DISPLAY SCORE ARE HERE FOR TESTING PURPOSES###################### 
 
             # Draw the timer on the screen
             small_font = pygame.font.Font("assets/fonts/Future Edge.ttf", 32)  # Set the size to 32 for the timer
@@ -87,6 +100,8 @@ def main_menu():
 
             # Display the score
             score_display.display_score(score_system.get_score())
+
+            ##############################################################################################################################
 
             # Hover and sound logic for the main menu
             if start_game_rect.collidepoint(mouse_pos):
@@ -134,7 +149,8 @@ def main_menu():
         # Handle the settings menu
         elif current_menu == 'settings':
             # Display a simple "Settings" title and "Back" option
-            draw_text('Settings', font, WHITE, screen, WIDTH // 2, HEIGHT // 2 - 150)
+            draw_text('Settings', font, WHITE, screen, WIDTH // 2, HEIGHT // 2 - 250)
+            draw_text_left_aligned('Difficulty', small_font, WHITE, screen, 50, HEIGHT // 2 - 50)
             back_color = NEON_PURPLE if hovered['back'] else WHITE
             back_rect = draw_text('Back', font, back_color, screen, WIDTH // 2, HEIGHT // 2 + 150)
             
@@ -166,9 +182,11 @@ def main_menu():
                         pygame.quit()
                         sys.exit()
 
+                    ######################THIS EVENT IS TO TEST THE TIMER WILL NEED TO BE REMOVED###############################
                     # Handle timer pause/resume toggle
                     if timer_rect.collidepoint(event.pos):
                         timer.stopped = not timer.stopped
+                    #####################################################################################################
 
                 elif current_menu in ['records', 'settings']:
                     # Handle "Back" button in Records or Settings
