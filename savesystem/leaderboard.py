@@ -4,9 +4,8 @@ import os
 class Leaderboard:
     def __init__(self, filename):
         self.high_scores = []
-    
-        file_path = os.path.join('savedata', 'leaderboard.json')
-        with open(file_path, 'r') as leaderboard_file:
+        self.file_path = os.path.join('savedata', filename)
+        with open(self.file_path, 'r') as leaderboard_file:
             self.high_scores = json.load(leaderboard_file)
 
     def compare_score(self, score):
@@ -18,3 +17,7 @@ class Leaderboard:
         # Update leaderboard to insert new high score at position i,
         # pushing every lower score down the list
         self.high_scores[i:] = score, *self.high_scores[i:-1]
+
+    def save(self):
+        with open(self.file_path, 'w') as save_file:
+            json.dump(self.high_scores, save_file)
