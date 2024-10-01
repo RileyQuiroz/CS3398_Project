@@ -1,6 +1,8 @@
 import pygame
 import sys
 from timer import Timer
+from score_counter import Score
+from score_display import ScoreDisplay
 
 # Initialize pygame and mixer for sound
 pygame.init()
@@ -30,6 +32,10 @@ hover_sound = pygame.mixer.Sound("assets/sound_efx/hover_sound.wav")  # Replace 
 # Define in-game timer
 timer = Timer()
 timer.stopped = False
+
+# Initialize Score and ScoreDisplay
+score_system = Score()
+score_display = ScoreDisplay(screen, font_size=36, color=NEON_CYAN, position=(50, 50))
 
 # Define menu options
 def draw_text(text, font, color, surface, x, y):
@@ -80,6 +86,9 @@ def main_menu():
             # Draw the timer with the smaller font
             timer_rect = draw_text(str(timer.elapsed_time), small_font, NEON_CYAN, screen, 100, 100)
 
+             # Display the score (this will update every frame)
+            score_display.display_score(score_system.get_score())
+
             # Check if mouse is hovering over the options
             # If it is hovering and was not before, play the hover sound and change the hover state
             if start_game_rect.collidepoint(mouse_pos):
@@ -120,6 +129,7 @@ def main_menu():
                     # Check which option is clicked and switch to the respective menu
                     if start_game_rect.collidepoint(event.pos):
                         print("Start Game clicked!")
+                        score_system.increase(10)  # Increase score by 10 points for testing, ** THIS IS FOR TESTING PURPOSES **
                         # Add start game logic here
                     elif records_rect.collidepoint(event.pos):
                         current_menu = 'records'  # Go to the Records menu
