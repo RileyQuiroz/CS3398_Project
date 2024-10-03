@@ -3,6 +3,7 @@ import sys
 from timer import Timer
 from score_counter import Score
 from score_display import ScoreDisplay
+from savesystem.leaderboard import Leaderboard
 
 # Initialize pygame and mixer for sound
 pygame.init()
@@ -23,8 +24,8 @@ NEON_PURPLE = (155, 0, 255)
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 
-
-
+# Define leaderboard for fastest finishing times
+leaderboard = Leaderboard("time_scoreboard.json")
 
 ############# FONT AND TEXT ALIGNTMENT #########################
 # Load a futuristic font (if you have one)
@@ -125,9 +126,20 @@ def main_menu():
         # Handle the records menu
         elif current_menu == 'records':
             # Display a simple "Records" title and "Back" option
-            draw_text('Records', font, WHITE, screen, WIDTH // 2, HEIGHT // 2 - 150)
+            draw_text('Records', font, WHITE, screen, WIDTH // 2, HEIGHT // 2 - 250)
+
+            # Display fastest finishing times
+            for i in range(len(leaderboard.high_scores)):
+                rank = str(i + 1) + '.'
+                initials = str(leaderboard.high_scores[i][0])
+                score = str(leaderboard.high_scores[i][1])
+                entry = rank + "\t" + initials + "\t" + score
+                
+                # Draw the leaderboard entry
+                draw_text(entry, font, WHITE, screen, WIDTH // 2, HEIGHT // 3 + (80 * i))
+
             back_color = NEON_PURPLE if hovered['back'] else WHITE
-            back_rect = draw_text('Back', font, back_color, screen, WIDTH // 2, HEIGHT // 2 + 150)
+            back_rect = draw_text('Back', font, back_color, screen, WIDTH // 2, HEIGHT // 2 + 250)
 
             if back_rect.collidepoint(mouse_pos):
                 if not hovered['back']:

@@ -4,7 +4,7 @@ import os
 class Leaderboard:
     def __init__(self, filename):
         self.high_scores = []
-        self.file_path = os.path.join('savedata', filename)
+        self.file_path = os.path.join('savesystem/savedata/', filename)
         with open(self.file_path, 'r') as leaderboard_file:
             self.high_scores = json.load(leaderboard_file)
 
