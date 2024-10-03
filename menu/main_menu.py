@@ -136,7 +136,7 @@ def main_menu():
                 entry = rank + "\t" + initials + "\t" + score
                 
                 # Draw the leaderboard entry
-                draw_text(entry, font, WHITE, screen, WIDTH // 2, HEIGHT // 3 + (80 * i))
+                draw_text(entry, font, WHITE, screen, WIDTH // 2, HEIGHT // 3.5 + (80 * i))
 
             back_color = NEON_PURPLE if hovered['back'] else WHITE
             back_rect = draw_text('Back', font, back_color, screen, WIDTH // 2, HEIGHT // 2 + 250)
