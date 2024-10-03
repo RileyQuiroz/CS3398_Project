@@ -10,7 +10,7 @@ WIDTH, HEIGHT = 800, 600
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("BULLETHELL")
 WHITE = (255, 255, 255)
-font = pygame.font.Font("assets/fonts/Future Edge.ttf", 74)
+font = pygame.font.Font("assets/fonts/Future Edge.ttf", 30)
 clock = pygame.time.Clock()
 
 save_state = {
@@ -57,7 +57,7 @@ while running:
     # Keeps message on screen for 1.5 seconds
     current_time = pygame.time.get_ticks()
     if text_show and current_time - start_time < 1500:
-        draw_text(message, font, WHITE, screen, WIDTH // 2, HEIGHT // 2 - 100)
+        draw_text(message, font, WHITE, screen, WIDTH // 2 - 200, HEIGHT // 2 + 275)
     else:
         text_show = False  
 
