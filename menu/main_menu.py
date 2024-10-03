@@ -187,7 +187,7 @@ def main_menu():
                     if timer_rect.collidepoint(event.pos):
                     #####################################################################################################
                         timer.stopped = not timer.stopped
-                        timer.toggle()
+                        
 
                 elif current_menu in ['records', 'settings']:
                     # Handle "Back" button in Records or Settings
