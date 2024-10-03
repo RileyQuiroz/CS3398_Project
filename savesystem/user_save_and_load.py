@@ -9,6 +9,8 @@ pygame.init()
 WIDTH, HEIGHT = 800, 600
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("BULLETHELL")
+WHITE = (255, 255, 255)
+font = pygame.font.Font("assets/fonts/Future Edge.ttf", 74)
 clock = pygame.time.Clock()
 
 save_state = {
@@ -20,6 +22,13 @@ save_state = {
     "ship_color": 0,
     "score": 0
 }
+
+def draw_text(text, font, color, surface, x, y):
+    text_obj = font.render(text, True, color)
+    text_rect = text_obj.get_rect()
+    text_rect.center = (x, y)
+    surface.blit(text_obj, text_rect)
+    return text_rect
 
 # Users will be given the oportunity to save after every level completes or when they quit
 # File gets called by main game, then runs either save or load

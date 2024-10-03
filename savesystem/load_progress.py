@@ -2,19 +2,7 @@ import pygame
 import json
 import os
 
-#from menu.main_menu import * # Used for draw_text formatting
 pygame.init()
-
-WIDTH, HEIGHT = 800, 600
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-WHITE = (255, 255, 255)
-font = pygame.font.Font("assets/fonts/Future Edge.ttf", 74)
-def draw_text(text, font, color, surface, x, y):
-    text_obj = font.render(text, True, color)
-    text_rect = text_obj.get_rect()
-    text_rect.center = (x, y)
-    surface.blit(text_obj, text_rect)
-    return text_rect
 
 def load_game(filename):
     # Attempt to load the desired save file
