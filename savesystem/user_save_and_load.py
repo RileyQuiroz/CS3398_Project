@@ -20,7 +20,8 @@ save_state = {
     "current_level": 0,
     "current_weapon": 0,
     "ship_color": 0,
-    "score": 0
+    "score": 0,
+    "finish_time": 0
 }
 
 def draw_text(text, font, color, surface, x, y):

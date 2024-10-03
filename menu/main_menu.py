@@ -31,7 +31,7 @@ hover_sound = pygame.mixer.Sound("assets/sound_efx/hover_sound.wav")  # Replace 
 
 # Define in-game timer
 timer = Timer()
-timer.stopped = False
+timer.start()
 
 # Initialize Score and ScoreDisplay
 score_system = Score()
@@ -141,7 +141,7 @@ def main_menu():
 
                     # Handle timer pause/resume toggle
                     if timer_rect.collidepoint(event.pos):
-                        timer.stopped = not timer.stopped
+                        timer.toggle()
 
         # Update the display
         pygame.display.update()
