@@ -24,6 +24,8 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 
 
+
+
 ############# FONT AND TEXT ALIGNTMENT #########################
 # Load a futuristic font (if you have one)
 font = pygame.font.Font("assets/fonts/Future Edge.ttf", 74)
@@ -90,18 +92,6 @@ def main_menu():
             records_rect = draw_text('Records', font, records_color, screen, WIDTH // 2, HEIGHT // 2 - 50)
             settings_rect = draw_text('Settings', font, settings_color, screen, WIDTH // 2, HEIGHT // 2 + 50)
             quit_rect = draw_text('Quit', font, quit_color, screen, WIDTH // 2, HEIGHT // 2 + 150)
-            back_color = NEON_PURPLE if hovered['back'] else WHITE
-
-            ##################THESE WILL BE MOVED INTO GAME LOOP, TIME AND DISPLAY SCORE ARE HERE FOR TESTING PURPOSES###################### 
-
-            # Draw the timer on the screen
-            small_font = pygame.font.Font("assets/fonts/Future Edge.ttf", 32)  # Set the size to 32 for the timer
-            timer_rect = draw_text(str(timer.elapsed_time), small_font, NEON_CYAN, screen, 100, 100)
-
-            # Display the score
-            score_display.display_score(score_system.get_score())
-
-            ##############################################################################################################################
 
             # Hover and sound logic for the main menu
             if start_game_rect.collidepoint(mouse_pos):
@@ -150,10 +140,9 @@ def main_menu():
         elif current_menu == 'settings':
             # Display a simple "Settings" title and "Back" option
             draw_text('Settings', font, WHITE, screen, WIDTH // 2, HEIGHT // 2 - 250)
-            draw_text_left_aligned('Difficulty', small_font, WHITE, screen, 50, HEIGHT // 2 - 50)
+            draw_text_left_aligned('Difficulty', smaller_font, WHITE, screen, 50, HEIGHT // 2 - 50)
             back_color = NEON_PURPLE if hovered['back'] else WHITE
             back_rect = draw_text('Back', font, back_color, screen, WIDTH // 2, HEIGHT // 2 + 150)
-            
 
             if back_rect.collidepoint(mouse_pos):
                 if not hovered['back']:
@@ -167,13 +156,16 @@ def main_menu():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
+
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if current_menu == 'main':
                     # Check which option is clicked and switch to the respective menu
                     if start_game_rect.collidepoint(event.pos):
                         print("Start Game clicked!")
                         score_system.increase(10)  # For testing purposes
-                        # Add start game logic here
+                        timer.reset()  # Reset timer when starting a new game
+                        timer.start()  # Start the timer
+                        game_loop()  # Switch to the game loop
                     elif records_rect.collidepoint(event.pos):
                         current_menu = 'records'  # Switch to Records menu
                     elif settings_rect.collidepoint(event.pos):
@@ -182,13 +174,6 @@ def main_menu():
                         pygame.quit()
                         sys.exit()
 
-                    ######################THIS EVENT IS TO TEST THE TIMER WILL NEED TO BE REMOVED###############################
-                    # Handle timer pause/resume toggle
-                    if timer_rect.collidepoint(event.pos):
-                    #####################################################################################################
-                        timer.stopped = not timer.stopped
-                        
-
                 elif current_menu in ['records', 'settings']:
                     # Handle "Back" button in Records or Settings
                     if back_rect.collidepoint(event.pos):
@@ -196,3 +181,34 @@ def main_menu():
 
         # Update the display
         pygame.display.update()
+
+
+def game_loop():
+    running = True
+
+    # Fill screen with black background
+    black_bg = (0, 0, 0)
+
+    while running:
+        screen.fill(black_bg)
+
+        # Update timer and score during the game
+        if not timer.stopped:
+            timer.update(1.0)  # Adjust time factor for game
+
+        # Display timer and score
+        small_font = pygame.font.Font("assets/fonts/Future Edge.ttf", 32)
+        draw_text(str(timer.elapsed_time), small_font, NEON_CYAN, screen, 100, 100)
+        score_display.display_score(score_system.get_score())
+
+        # Handle events
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:  # Press ESC to return to menu
+                    running = False
+
+        pygame.display.update()
+
