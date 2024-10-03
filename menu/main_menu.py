@@ -43,7 +43,7 @@ hover_sound = pygame.mixer.Sound("assets/sound_efx/hover_sound.wav")  # Replace 
 
 # Define in-game timer
 timer = Timer()
-timer.stopped = False
+timer.start()
 
 # Initialize Score and ScoreDisplay
 score_system = Score()
@@ -185,8 +185,9 @@ def main_menu():
                     ######################THIS EVENT IS TO TEST THE TIMER WILL NEED TO BE REMOVED###############################
                     # Handle timer pause/resume toggle
                     if timer_rect.collidepoint(event.pos):
-                        timer.stopped = not timer.stopped
                     #####################################################################################################
+                        timer.stopped = not timer.stopped
+                        timer.toggle()
 
                 elif current_menu in ['records', 'settings']:
                     # Handle "Back" button in Records or Settings
