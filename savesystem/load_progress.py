@@ -22,9 +22,7 @@ def load_game(filename):
     if os.path.getsize(file_path) > 0:
         with open(file_path, 'r') as load_file:
             game_state = json.load(load_file)
-        draw_text('Save loaded', font, WHITE, screen, WIDTH // 2, HEIGHT // 2 - 100)
         print("Load success")
-        return game_state
-    draw_text('No save data found', font, WHITE, screen, WIDTH // 2, HEIGHT // 2 - 100)
+        return game_state, pygame.time.get_ticks()
     print("No savedata")
-    return 
+    return None, pygame.time.get_ticks()

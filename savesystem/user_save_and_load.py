@@ -36,14 +36,19 @@ while running:
             if event.key == pygame.K_s:
                 start_time = save_game(save_state, 'save_data_one.json') # named in case we have multiple
                 text_show = True
+                message = 'Game Saved'
             if event.key == pygame.K_l:
-                loaded_game = load_game('save_data_one.json')
+                loaded_game, start_time = load_game('save_data_one.json')
+                text_show = True
                 if loaded_game: #only completes the load if it was successful
                     save_state = loaded_game
+                    message = 'Save loaded'
+                else:
+                    message = 'No save data found'
     # Keeps message on screen for 1.5 seconds
     current_time = pygame.time.get_ticks()
     if text_show and current_time - start_time < 1500:
-        draw_text('Game Saved', font, WHITE, screen, WIDTH // 2, HEIGHT // 2 - 100)
+        draw_text(message, font, WHITE, screen, WIDTH // 2, HEIGHT // 2 - 100)
     else:
         text_show = False  
 
