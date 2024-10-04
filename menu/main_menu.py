@@ -182,7 +182,7 @@ def main_menu():
         # Update the display
         pygame.display.update()
 
-
+clock = pygame.time.Clock()
 def game_loop():
     running = True
 
@@ -210,5 +210,6 @@ def game_loop():
                 if event.key == pygame.K_ESCAPE:  # Press ESC to return to menu
                     running = False
 
-        pygame.display.update()
+        pygame.display.flip()
+        clock.tick(60)
 
