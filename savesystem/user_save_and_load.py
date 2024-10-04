@@ -1,19 +1,11 @@
 import pygame
 import json
 import os
-#import sys
 
+# had trouble getting these to work, so moved their functions to this file
 #from save_progress import save_game
 #from load_progress import load_game
-'''
-pygame.init()
-WIDTH, HEIGHT = 800, 600
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("BULLETHELL")
-WHITE = (255, 255, 255)
-font = pygame.font.Font("assets/fonts/Future Edge.ttf", 30)
-clock = pygame.time.Clock()
-'''
+
 save_state = {
     # Temporary variable names, will change and add more according to other files
     # Saved values will also be changed to reflect in-game values once those parts of code are finished
@@ -61,13 +53,11 @@ def saveHandling(newScore, newTime):
     updateScore(newScore)
     updateTime(newTime)
     start_time = save_game(save_state, 'save_data_one.json')
-    #start_time = pygame.time.get_ticks()
     return 'Game Saved', start_time
 
 # Will load the data from the JSON file and put it in the save_state, then it returns the message
 # to be printed to the screen as well as the begining of its countdown before text disappears and 
-# the values of save_state, currently just score and time
-# takes arguments in event of load failure
+# the values of save_state, currently just score and time. takes arguments in event of load failure
 def loadHandling(currScore, currTime):
     loaded_game, start_time = load_game('save_data_one.json')
     if loaded_game: #only completes the load if it was successful
@@ -77,4 +67,3 @@ def loadHandling(currScore, currTime):
     else:
         message = 'No save data found'
         return message, start_time, currScore, currTime
-    #start_time = pygame.time.get_ticks()
