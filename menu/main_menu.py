@@ -189,12 +189,19 @@ def game_loop():
     # Fill screen with black background
     black_bg = (0, 0, 0)
 
+     # Initialize variable for score testing/logic
+    last_score_increase_time = 0  # Time of last score increase
+    combo_time_limit = 300.0  # Time window for maintaining score combo
+
     while running:
         screen.fill(black_bg)
 
         # Update timer and score during the game
         if not timer.stopped:
             timer.update(1.0)  # Adjust time factor for game
+
+        # Get current time (for scoring purposes)
+        current_time = timer.elapsed_time
 
         # Display timer and score
         small_font = pygame.font.Font("assets/fonts/Future Edge.ttf", 32)
@@ -209,6 +216,16 @@ def game_loop():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:  # Press ESC to return to menu
                     running = False
+                if event.key == pygame.K_SPACE:  # Press SPACE to increase score (Testing)
+                    time_since_last_increase = current_time - last_score_increase_time
+                    # If within combo time limit (3 seconds), increase combo count (AKA faster pressing space = more points)
+                    if time_since_last_increase <= combo_time_limit:
+                        score_system.increase_combo(1)
+                    else:
+                        score_system.reset_combo()  # Reset combo if too late
+
+                    score_system.increase(10)  # Increase score by base points, multiplied by the current multiplier
+                    last_score_increase_time = current_time #  Update the time of the last score increase
 
         pygame.display.update()
 
