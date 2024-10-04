@@ -1,8 +1,8 @@
 import pygame
 import sys
 
-from save_progress import save_game
-from load_progress import load_game
+#from save_progress import save_game
+#from load_progress import load_game
 # will import all variables to be saved when they exist from the file they exist under
 
 pygame.init()
@@ -16,6 +16,7 @@ clock = pygame.time.Clock()
 save_state = {
     # Temporary variable names, will change and add more according to other files
     # Saved values will also be changed to reflect in-game values once those parts of code are finished
+    # only score and finish time actually change as of now
     "player_health": 3,
     "current_level": 0,
     "current_weapon": 0,
@@ -24,6 +25,38 @@ save_state = {
     "finish_time": 0
 }
 
+# Update save_state's score
+def updateScore(currScore):
+    save_state["score"] = currScore
+
+# Update save_state's total time
+def updateTime(currTime):
+    save_state["finish_time"] = currTime
+
+# Will call all update functions to update save_state, currently just score, returns the message
+# to be printed to the screen as well as the begining of its countdown before text disappears
+def saveHandling(newScore, newTime):
+    updateScore(newScore)
+    updateTime(newTime)
+    #start_time = save_game(save_state, 'save_data_one.json')
+    start_time = pygame.time.get_ticks()
+    return 'Game Saved', start_time
+
+def loadHandling():
+    #loaded_game, start_time = load_game('save_data_one.json')
+    #if loaded_game: #only completes the load if it was successful
+        #save_state = loaded_game
+        #message = 'Save loaded'
+    #else:
+        #message = 'No save data found'
+    start_time = pygame.time.get_ticks()
+    print(save_state["score"])
+    print(save_state["finish_time"])
+    return 'Save Loaded', start_time, save_state["score"], save_state["finish_time"]
+    
+    
+
+'''
 def draw_text(text, font, color, surface, x, y):
     text_obj = font.render(text, True, color)
     text_rect = text_obj.get_rect()
@@ -64,4 +97,4 @@ while running:
 
     pygame.display.flip()
     clock.tick(60)
-
+'''
