@@ -1,8 +1,8 @@
 import pygame
 import sys
 
-from save_progress import *
-from load_progress import *
+from save_progress import save_game
+from load_progress import load_game
 # will import all variables to be saved when they exist from the file they exist under
 
 pygame.init()
