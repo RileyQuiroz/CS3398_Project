@@ -37,7 +37,7 @@ def draw_text(text, font, color, surface, x, y):
 running = True
 text_show = False
 while running:
-    screen.fill((0, 0, 0)) # Clears screen
+    screen.fill((0, 0, 0)) # Clears screen :)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
