@@ -40,3 +40,6 @@ def test_loop():
 
         # Update the display
         pygame.display.update()            
+
+# Run the test loop
+test_loop()
