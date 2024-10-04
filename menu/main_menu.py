@@ -243,6 +243,9 @@ def game_loop():
                         score_system.increase_combo(1)
                     else:
                         score_system.reset_combo()  # Reset combo if too late
+                    
+                    score_system.increase(10)  # Increase score by base points, multiplied by the current multiplier
+                    last_score_increase_time = current_time
 
         # Keeps message on screen for 1.5 seconds
         current_time = pygame.time.get_ticks()
