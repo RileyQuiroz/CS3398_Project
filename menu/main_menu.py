@@ -4,6 +4,7 @@ from timer import Timer
 from score_counter import Score
 from score_display import ScoreDisplay
 from savesystem.leaderboard import Leaderboard
+from savesystem import user_save_and_load
 
 # Initialize pygame and mixer for sound
 pygame.init()
@@ -194,8 +195,9 @@ def main_menu():
         # Update the display
         pygame.display.update()
 
-
+clock = pygame.time.Clock()
 def game_loop():
+    save_text_show = False
     running = True
 
     # Fill screen with black background
@@ -228,6 +230,12 @@ def game_loop():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:  # Press ESC to return to menu
                     running = False
+                if event.key == pygame.K_s: # Press S to save game
+                    message, start_time = user_save_and_load.saveHandling(score_system.get_score(), timer.elapsed_time)
+                    save_text_show = True
+                if event.key == pygame.K_l: # Press L to load game
+                    message, start_time, score_system.score, timer.elapsed_time = user_save_and_load.loadHandling(score_system.get_score(), timer.elapsed_time)
+                    save_text_show = True
                 if event.key == pygame.K_SPACE:  # Press SPACE to increase score (Testing)
                     time_since_last_increase = current_time - last_score_increase_time
                     # If within combo time limit (3 seconds), increase combo count (AKA faster pressing space = more points)
@@ -235,9 +243,16 @@ def game_loop():
                         score_system.increase_combo(1)
                     else:
                         score_system.reset_combo()  # Reset combo if too late
-
+                    
                     score_system.increase(10)  # Increase score by base points, multiplied by the current multiplier
-                    last_score_increase_time = current_time #  Update the time of the last score increase
+                    last_score_increase_time = current_time
 
-        pygame.display.update()
+        # Keeps message on screen for 1.5 seconds
+        current_time = pygame.time.get_ticks()
+        if save_text_show and current_time - start_time < 1500:
+            draw_text(message, smaller_font, WHITE, screen, WIDTH // 2 - 0, HEIGHT // 2 + 250)
+        else:
+           save_text_show = False
+        pygame.display.flip()
+        clock.tick(60)
 

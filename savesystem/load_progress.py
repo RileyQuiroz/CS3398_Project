@@ -2,8 +2,6 @@ import pygame
 import json
 import os
 
-pygame.init()
-
 def load_game(filename):
     # Attempt to load the desired save file
     file_path = os.path.join('savesystem/savedata', filename)
