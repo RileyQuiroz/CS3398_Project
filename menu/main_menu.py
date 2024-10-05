@@ -1,6 +1,6 @@
 import pygame
 import sys
-from timer import Timer
+from time.timer import Timer
 from score_counter import Score
 from score_display import ScoreDisplay
 from savesystem.leaderboard import Leaderboard
