@@ -3,6 +3,8 @@ import sys
 from time.timer import Timer
 from score_counter import Score
 from score_display import ScoreDisplay
+from savesystem.leaderboard import Leaderboard
+from savesystem import user_save_and_load
 
 # Initialize pygame and mixer for sound
 pygame.init()
@@ -23,8 +25,8 @@ NEON_PURPLE = (155, 0, 255)
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 
-
-
+# Define leaderboard for fastest finishing times
+leaderboard = Leaderboard("time_scoreboard.json")
 
 ############# FONT AND TEXT ALIGNTMENT #########################
 # Load a futuristic font (if you have one)
@@ -125,9 +127,20 @@ def main_menu():
         # Handle the records menu
         elif current_menu == 'records':
             # Display a simple "Records" title and "Back" option
-            draw_text('Records', font, WHITE, screen, WIDTH // 2, HEIGHT // 2 - 150)
+            draw_text('Records', font, WHITE, screen, WIDTH // 2, HEIGHT // 2 - 250)
+
+            # Display fastest finishing times
+            for i in range(len(leaderboard.high_scores)):
+                rank = str(i + 1) + '.'
+                initials = str(leaderboard.high_scores[i][0])
+                score = str(leaderboard.high_scores[i][1])
+                entry = rank + "\t" + initials + "\t" + score
+                
+                # Draw the leaderboard entry
+                draw_text(entry, font, WHITE, screen, WIDTH // 2, HEIGHT // 3.5 + (80 * i))
+
             back_color = NEON_PURPLE if hovered['back'] else WHITE
-            back_rect = draw_text('Back', font, back_color, screen, WIDTH // 2, HEIGHT // 2 + 150)
+            back_rect = draw_text('Back', font, back_color, screen, WIDTH // 2, HEIGHT // 2 + 250)
 
             if back_rect.collidepoint(mouse_pos):
                 if not hovered['back']:
@@ -182,12 +195,17 @@ def main_menu():
         # Update the display
         pygame.display.update()
 
-
+clock = pygame.time.Clock()
 def game_loop():
+    save_text_show = False
     running = True
 
     # Fill screen with black background
     black_bg = (0, 0, 0)
+
+     # Initialize variable for score testing/logic
+    last_score_increase_time = 0  # Time of last score increase
+    combo_time_limit = 300.0  # Time window for maintaining score combo
 
     while running:
         screen.fill(black_bg)
@@ -195,6 +213,9 @@ def game_loop():
         # Update timer and score during the game
         if not timer.stopped:
             timer.update(1.0)  # Adjust time factor for game
+
+        # Get current time (for scoring purposes)
+        current_time = timer.elapsed_time
 
         # Display timer and score
         small_font = pygame.font.Font("assets/fonts/Future Edge.ttf", 32)
@@ -209,6 +230,29 @@ def game_loop():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:  # Press ESC to return to menu
                     running = False
+                if event.key == pygame.K_s: # Press S to save game
+                    message, start_time = user_save_and_load.saveHandling(score_system.get_score(), timer.elapsed_time)
+                    save_text_show = True
+                if event.key == pygame.K_l: # Press L to load game
+                    message, start_time, score_system.score, timer.elapsed_time = user_save_and_load.loadHandling(score_system.get_score(), timer.elapsed_time)
+                    save_text_show = True
+                if event.key == pygame.K_SPACE:  # Press SPACE to increase score (Testing)
+                    time_since_last_increase = current_time - last_score_increase_time
+                    # If within combo time limit (3 seconds), increase combo count (AKA faster pressing space = more points)
+                    if time_since_last_increase <= combo_time_limit:
+                        score_system.increase_combo(1)
+                    else:
+                        score_system.reset_combo()  # Reset combo if too late
+                    
+                    score_system.increase(10)  # Increase score by base points, multiplied by the current multiplier
+                    last_score_increase_time = current_time
 
-        pygame.display.update()
+        # Keeps message on screen for 1.5 seconds
+        current_time = pygame.time.get_ticks()
+        if save_text_show and current_time - start_time < 1500:
+            draw_text(message, smaller_font, WHITE, screen, WIDTH // 2 - 0, HEIGHT // 2 + 250)
+        else:
+           save_text_show = False
+        pygame.display.flip()
+        clock.tick(60)
 
