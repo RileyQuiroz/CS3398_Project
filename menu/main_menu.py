@@ -222,11 +222,11 @@ def game_loop():
         timer.update(delta_time)
 
         # Get current time (for scoring purposes)
-        current_time = str(round(timer.elapsed_time, 2))
+        current_time = round(timer.elapsed_time, 2)
 
         # Display timer and score
         small_font = pygame.font.Font("assets/fonts/Future Edge.ttf", 32)
-        draw_text(current_time, small_font, NEON_CYAN, screen, 100, 100)
+        draw_text(str(current_time), small_font, NEON_CYAN, screen, 100, 100)
         score_display.display_score(score_system.get_score())
 
         # Handle events
@@ -245,6 +245,8 @@ def game_loop():
                     message, start_time, score_system.score, timer.elapsed_time = user_save_and_load.loadHandling(score_system.get_score(), timer.elapsed_time)
                     save_text_show = True
                 if event.key == pygame.K_SPACE:  # Press SPACE to increase score (Testing)
+                    timer.toggle()
+
                     time_since_last_increase = current_time - last_score_increase_time
                     # If within combo time limit (3 seconds), increase combo count (AKA faster pressing space = more points)
                     if time_since_last_increase <= combo_time_limit:
