@@ -79,10 +79,6 @@ def main_menu():
         screen.blit(background, (0, 0))  # Draw the background
         mouse_pos = pygame.mouse.get_pos()
 
-        # Update in-game timer
-        if not timer.stopped:
-            timer.update(1.0)
-
         # Handle the main menu
         if current_menu == 'main':
             # Check if mouse is hovering over the options and set color accordingly
@@ -212,6 +208,10 @@ def game_loop():
     ticks = 0.0
     ticks_last_frame = 0.0
 
+    # Reset and start the timer
+    timer.reset()
+    timer.start()
+
     while running:
         screen.fill(black_bg)
 
@@ -237,6 +237,7 @@ def game_loop():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_ESCAPE:  # Press ESC to return to menu
                     running = False
+                    timer.stop()
                 if event.key == pygame.K_s: # Press S to save game
                     message, start_time = user_save_and_load.saveHandling(score_system.get_score(), timer.elapsed_time)
                     save_text_show = True
