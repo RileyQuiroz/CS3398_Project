@@ -45,7 +45,9 @@ def draw_text_left_aligned(text, font, color, surface, x, y):
 # Load hover sound
 hover_sound = pygame.mixer.Sound("assets/sound_efx/hover_sound.wav")  # Replace with your sound file
 
-# Define in-game timer
+# Define framerate, clock, and in-game timer
+FPS = 60
+clock = pygame.time.Clock()
 timer = Timer()
 timer.start()
 
@@ -195,7 +197,6 @@ def main_menu():
         # Update the display
         pygame.display.update()
 
-clock = pygame.time.Clock()
 def game_loop():
     save_text_show = False
     running = True
@@ -207,19 +208,25 @@ def game_loop():
     last_score_increase_time = 0  # Time of last score increase
     combo_time_limit = 300.0  # Time window for maintaining score combo
 
+    # Initialize ticks
+    ticks = 0.0
+    ticks_last_frame = 0.0
+
     while running:
         screen.fill(black_bg)
 
         # Update timer and score during the game
-        if not timer.stopped:
-            timer.update(1.0)  # Adjust time factor for game
+        ticks = clock.get_time()
+        delta_time = (ticks - ticks_last_frame) / 1000.0
+        ticks_since_last_frame = ticks
+        timer.update(delta_time)
 
         # Get current time (for scoring purposes)
-        current_time = timer.elapsed_time
+        current_time = str(round(timer.elapsed_time, 2))
 
         # Display timer and score
         small_font = pygame.font.Font("assets/fonts/Future Edge.ttf", 32)
-        draw_text(str(timer.elapsed_time), small_font, NEON_CYAN, screen, 100, 100)
+        draw_text(current_time, small_font, NEON_CYAN, screen, 100, 100)
         score_display.display_score(score_system.get_score())
 
         # Handle events
