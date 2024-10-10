@@ -116,32 +116,26 @@ Project is: IN PROGRESS
 Riley: Created a save system for the game capable of saving and loading the time and score 
 
 * CP-24-design-the-save-system
-
   - Jira: https://cs3398-edosians-f24.atlassian.net/browse/CP-24 
   - Bitbucket: https://bitbucket.org/cs3398-edosians-f24/edosians_/commits/branch/CP-24-design-the-save-system
  
 * feature/CP-31-implement-save-game-mechanism
-
   - Jira: https://cs3398-edosians-f24.atlassian.net/browse/CP-31 
   - Bitbucket: https://bitbucket.org/cs3398-edosians-f24/%7B8f57bb94-4a5c-4e61-84ee-0f7ddb6c2c7a%7D/branch/feature/CP-31-implement-save-game-mechanism 
 
 * feature/CP-32-implement-load-game-functionality
-
   - Jira: https://cs3398-edosians-f24.atlassian.net/browse/CP-32  
   - Bitbucket: https://bitbucket.org/cs3398-edosians-f24/%7B8f57bb94-4a5c-4e61-84ee-0f7ddb6c2c7a%7D/branch/feature/CP-32-implement-load-game-functionality  
 
 * feature/CP-33-design-ui-for-save-load-system
-
   - Jira: https://cs3398-edosians-f24.atlassian.net/browse/CP-33  
   - Bitbucket: https://bitbucket.org/cs3398-edosians-f24/%7B8f57bb94-4a5c-4e61-84ee-0f7ddb6c2c7a%7D/branch/feature/CP-33-design-ui-for-save-load-system  
 
 * feature/CP-35-unit-testing-the-save-load-system
-
   - Jira: https://cs3398-edosians-f24.atlassian.net/browse/CP-35  
   - Bitbucket: https://bitbucket.org/cs3398-edosians-f24/%7B8f57bb94-4a5c-4e61-84ee-0f7ddb6c2c7a%7D/branch/feature/CP-35-unit-testing-the-save-load-system  
 
 * feature/CP-59-integrate-save-load-with-game-loop
-
   - Jira: https://cs3398-edosians-f24.atlassian.net/browse/CP-59  
   - Bitbucket: https://bitbucket.org/cs3398-edosians-f24/%7B8f57bb94-4a5c-4e61-84ee-0f7ddb6c2c7a%7D/branch/feature/CP-59-integrate-save-load-with-game-loop  
 
@@ -150,22 +144,18 @@ Riley: Created a save system for the game capable of saving and loading the time
 Emilio: Created the main menu feature navigation to each sub menu (start game, records, settings) and the ability to quit the game on selecting “QUIT”. Each option has a “on hover” effect along with sound efx.  
 
 * CP-19 Design the layout and visual style of the main menu
-
   - Jira: https://cs3398-edosians-f24.atlassian.net/browse/CP-19?atlOrigin=eyJpIjoiNDBiNzlkZGQ4YjhiNDA4ZTlmYjQ3YWJiNWFkOWFjYjUiLCJwIjoiaiJ9 
   - Bitbucket: https://bitbucket.org/cs3398-edosians-f24/edosians_/commits/branch/feature%2FCP-19-task-1-design-the-layout-and-visua 
 
 * CP-20 Implement Main menu navigation
-
   - Jira: https://cs3398-edosians-f24.atlassian.net/browse/CP-20?atlOrigin=eyJpIjoiNmE2YjM0MDg1YjM1NDRlZTkwYjYzMDI4ZGQyYTg4YzEiLCJwIjoiaiJ9 
   - Bitbucket: https://bitbucket.org/cs3398-edosians-f24/edosians_/commits/branch/feature%2FCP-20-task-2-implement-main-menu-navigat 
 
 * CP-21 Implement start game, settings and exit functionality
-
   - Jira: https://cs3398-edosians-f24.atlassian.net/browse/CP-21?atlOrigin=eyJpIjoiNTA2MTA5NGViY2ZjNGI4N2EyZDg4OWQ5YjRlNzM5MDgiLCJwIjoiaiJ9 
   - Bitbucket: https://bitbucket.org/cs3398-edosians-f24/edosians_/branch/feature/CP-21-task-3-implement-start-game-settin 
 
 * CP-22 Unit testing for menu navigation and selection
-
   - Jira: https://cs3398-edosians-f24.atlassian.net/browse/CP-22?atlOrigin=eyJpIjoiYjc1ODllMTAwZjgyNGQyOTg5NzMyNDE1ODgzZjg0OTEiLCJwIjoiaiJ9 
   - Bitbucket: https://bitbucket.org/cs3398-edosians-f24/edosians_/branch/feature/CP-22-task-4-unit-testing-for-menu-navig 
 
@@ -174,27 +164,22 @@ Emilio: Created the main menu feature navigation to each sub menu (start game, r
 Joseph: Worked on the in-game timer and the leaderboard for storing fastest finishing times among all players. 
 
 * CP-40 Implement Basic In-Game Timer
-
   - Jira: https://cs3398-edosians-f24.atlassian.net/browse/CP-40 
   - Bitbucket: https://bitbucket.org/cs3398-edosians-f24/%7B8f57bb94-4a5c-4e61-84ee-0f7ddb6c2c7a%7D/branch/CP-40-implement-basic-in-game-timer 
 
 * CP-41 Store and Retrieve Game Times
-
   - Jira: https://cs3398-edosians-f24.atlassian.net/browse/CP-41 
   - Bitbucket: https://bitbucket.org/cs3398-edosians-f24/%7B8f57bb94-4a5c-4e61-84ee-0f7ddb6c2c7a%7D/branch/CP-41-store-and-retrieve-game-times 
 
 * CP-42 Create a Performance History Screen
-
   - Jira: https://cs3398-edosians-f24.atlassian.net/browse/CP-42 
   - Bitbucket: https://bitbucket.org/cs3398-edosians-f24/%7B8f57bb94-4a5c-4e61-84ee-0f7ddb6c2c7a%7D/branch/CP-42-create-a-performance-history-screen 
 
 * CP-43 Pause and Resume Timer
-
   - Jira: https://cs3398-edosians-f24.atlassian.net/browse/CP-43 
   - Bitbucket: https://bitbucket.org/cs3398-edosians-f24/%7B8f57bb94-4a5c-4e61-84ee-0f7ddb6c2c7a%7D/branch/CP-43-pause-and-resume-timer 
 
 * CP-44 Write Unit Tests for Timer Functionality
-
   - Jira: https://cs3398-edosians-f24.atlassian.net/browse/CP-44 
   - Bitbucket: https://bitbucket.org/cs3398-edosians-f24/%7B8f57bb94-4a5c-4e61-84ee-0f7ddb6c2c7a%7D/branch/CP-44-write-unit-tests-for-timer-functionality 
 
@@ -203,27 +188,22 @@ Joseph: Worked on the in-game timer and the leaderboard for storing fastest fini
 Oscar: Created a scoring and score display system. Score can increase, decrease, gain combo and is displayed and updated in real time. 
 
 * CP-45 Task 1: Design the Score Counter System
-
   - Jira: https://cs3398-edosians-f24.atlassian.net/browse/CP-45 
   - Bitbucket: https://bitbucket.org/cs3398-edosians-f24/edosians_/src/ea9053e5c3ca14494978e6e9e1f47fee068c6f9a/?at=feature%2FCP-45-design-the-score-counter-system 
 
 * CP-46 Task 2: Implement Score Calculation Logic
-
   - Jira: https://cs3398-edosians-f24.atlassian.net/browse/CP-46 
   - Bitbucket: https://bitbucket.org/cs3398-edosians-f24/edosians_/src/f92dbd68686dd13166e05d0211f134344b72653a/?at=feature%2FCP-46-task-2-implement-score-calculation 
 
 * CP-48 Task 3: Display the Score on Screen
-
   - Jira: https://cs3398-edosians-f24.atlassian.net/browse/CP-48 
   - Bitbucket: https://bitbucket.org/cs3398-edosians-f24/edosians_/src/7c4dc3272653d9d821344cce29d2f867b99a2ca4/?at=feature%2FCP-48-task-3-display-the-score-on-screen 
 
 * CP-49 Task 4: Update the Score in real-time
-
   - Jira: https://cs3398-edosians-f24.atlassian.net/browse/CP-49 
   - Bitbucket: https://bitbucket.org/cs3398-edosians-f24/edosians_/src/15d773a226c95606f5aa9e6a157b49c6bd43a350/?at=feature%2FCP-49-task-4-update-the-score-in-real-ti 
 
 * CP-50 Task 5: Unit Testing and Bug Fixes
-
   - Jira: https://cs3398-edosians-f24.atlassian.net/browse/CP-50 
   - Bitbucket: https://bitbucket.org/cs3398-edosians-f24/edosians_/src/fb3fa64bcb57817c32f8bcf1b33a83b5d857bb07/?at=feature%2FCP-50-task-5-unit-testing-and-bug-fixes 
 
