@@ -208,6 +208,9 @@ Oscar: Created a scoring and score display system. Score can increase, decrease,
   - Bitbucket: https://bitbucket.org/cs3398-edosians-f24/edosians_/src/fb3fa64bcb57817c32f8bcf1b33a83b5d857bb07/?at=feature%2FCP-50-task-5-unit-testing-and-bug-fixes 
 
  
+## Burnup Report
+
+![image](/images/sprint-1-burnup-report.png)
 
 ## Next Steps 
 
