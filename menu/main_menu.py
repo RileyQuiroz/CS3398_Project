@@ -5,6 +5,7 @@ from tools.score_counter import Score
 from tools.score_display import ScoreDisplay
 from savesystem.leaderboard import Leaderboard
 from savesystem import user_save_and_load
+from obstacles.Obstacle import Obstacle
 
 # Initialize pygame and mixer for sound
 pygame.init()
@@ -27,6 +28,9 @@ BLACK = (0, 0, 0)
 
 # Define leaderboard for fastest finishing times
 leaderboard = Leaderboard("time_scoreboard.json")
+
+# Define an in-game obstacle
+obstacle = Obstacle(50, (200, 200), WHITE)
 
 ############# FONT AND TEXT ALIGNTMENT #########################
 # Load a futuristic font (if you have one)
@@ -228,6 +232,7 @@ def game_loop():
         small_font = pygame.font.Font("assets/fonts/Future Edge.ttf", 32)
         draw_text(str(current_time), small_font, NEON_CYAN, screen, 100, 100)
         score_display.display_score(score_system.get_score())
+        obstacle.draw(screen)
 
         # Handle events
         for event in pygame.event.get():
