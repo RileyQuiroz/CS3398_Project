@@ -10,8 +10,8 @@ def display_collision_status(obst):
         print("No collision detected!")
 
 # Initialize the in-game obstacle and player position
-test_obstacle = Obstacle(5, (2, 1), 0)
-player = Obstacle(7, (2, 2), 0)
+test_obstacle = Obstacle(5, (2, 1), (255, 255, 255))
+player = Obstacle(7, (2, 2), (200, 200, 255))
 
 # Output the obstacle's current coordinates
 display_position(test_obstacle)
@@ -28,4 +28,3 @@ test_obstacle.update(player, 0.01)
 # Output the obstacle's new coordinates and collision status
 display_position(test_obstacle)
 display_collision_status(test_obstacle)
-

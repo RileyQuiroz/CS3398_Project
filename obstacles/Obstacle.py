@@ -1,13 +1,14 @@
 from math import sqrt
+import pygame
 
 # The Obstacle class represents an in-game object that can
 # impede the player in some way.
 class Obstacle:
-    def __init__(self, radius, position, sprite):
+    def __init__(self, radius, position, color):
         self.radius = radius
         self.position = position
         self.velocity = (0, 0)
-        self.sprite = 0
+        self.color = color
         self.is_colliding = False
 
     def load_sprite(self, sprite):
@@ -21,6 +22,9 @@ class Obstacle:
         dist_y = self.position[1] - player.position[1]
         dist_root = sqrt((dist_x * dist_x) + (dist_y * dist_y))
         self.is_colliding = dist_root <= (self.radius + player.radius)
+
+    def draw(self, surface):
+        pygame.draw.circle(surface, self.color, self.position, self.radius)
 
     def update(self, player, dt):
         self.check_for_player_collision(player)
