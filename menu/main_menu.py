@@ -7,6 +7,8 @@ from savesystem.leaderboard import Leaderboard
 from savesystem import user_save_and_load
 from obstacles.Obstacle import Obstacle
 from characters.enemies.enemy_structure import Enemy
+from tools.win_lose_conditions import GameState
+from tools.win_lose_conditions import WinLoseSystem
 
 # Initialize pygame and mixer for sound
 pygame.init()
@@ -59,6 +61,11 @@ timer.start()
 # Initialize Score and ScoreDisplay
 score_system = Score()
 score_display = ScoreDisplay(screen, font_size=36, color=NEON_CYAN, position=(50, 50))
+
+# Simple game state system for testing purposes TODO: Maybe fix later
+game_state = GameState()
+
+win_lose_system = WinLoseSystem(score_system) ## TODO: Pass player here when implemented
 
 # Define menu options
 def draw_text(text, font, color, surface, x, y):
@@ -273,6 +280,8 @@ def game_loop():
                     
                     score_system.increase(10)  # Increase score by base points, multiplied by the current multiplier
                     last_score_increase_time = current_time
+                if event.key == pygame.K_k:
+                    win_lose_system.update()
 
         # Keeps message on screen for 1.5 seconds
         current_time = pygame.time.get_ticks()
