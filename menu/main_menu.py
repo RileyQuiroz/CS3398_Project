@@ -6,6 +6,7 @@ from tools.score_display import ScoreDisplay
 from savesystem.leaderboard import Leaderboard
 from savesystem import user_save_and_load
 from obstacles.Obstacle import Obstacle
+from enemies.enemy_structure import Enemy
 
 # Initialize pygame and mixer for sound
 pygame.init()
@@ -198,6 +199,11 @@ def main_menu():
         pygame.display.update()
 
 def game_loop():
+    # Create enemy for testing
+    enemy_group = pygame.sprite.Group()
+    test_enemy = Enemy(health=10, pattern=0, x=100, y=100)
+    enemy_group.add(test_enemy)
+    
     save_text_show = False
     running = True
 
@@ -233,6 +239,12 @@ def game_loop():
         draw_text(str(current_time), small_font, NEON_CYAN, screen, 100, 100)
         score_display.display_score(score_system.get_score())
         obstacle.draw(screen)
+        
+        # Update enemy position
+        for enemy in enemy_group:
+            enemy.update(WIDTH)
+        # Draw all enemies that exist
+        enemy_group.draw(screen)
 
         # Handle events
         for event in pygame.event.get():
