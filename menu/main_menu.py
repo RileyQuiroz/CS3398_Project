@@ -6,7 +6,7 @@ from tools.score_display import ScoreDisplay
 from savesystem.leaderboard import Leaderboard
 from savesystem import user_save_and_load
 from obstacles.Obstacle import Obstacle
-from enemies.enemy_structure import Enemy
+from characters.enemies.enemy_structure import Enemy
 
 # Initialize pygame and mixer for sound
 pygame.init()
