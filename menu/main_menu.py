@@ -267,6 +267,10 @@ def game_loop():
                     save_text_show = True
                 if event.key == pygame.K_SPACE:  # Press SPACE to increase score (Testing)
                     timer.toggle()
+                    
+                    #damage all enemys TESTING
+                    for enemy in enemy_group:
+                        enemy.decrease_health(1)
 
                     time_since_last_increase = current_time - last_score_increase_time
                     # If within combo time limit (3 seconds), increase combo count (AKA faster pressing space = more points)

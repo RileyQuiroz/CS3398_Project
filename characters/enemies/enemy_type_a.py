@@ -15,7 +15,7 @@ class EnemyTypeA(Enemy):
         self.fire_delay = 800  # Time between shots (in milliseconds)
         self.last_shot_time = pygame.time.get_ticks()  # Time since the last shot
         
-    def fire_shot(self, proj_group):
+    def fire_shot(self, proj_group): # Fires a single bullet
         current_time = pygame.time.get_ticks()
         # Check if enough time has passed since the last shot
         if current_time - self.last_shot_time >= self.fire_delay:
