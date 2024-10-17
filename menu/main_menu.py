@@ -7,8 +7,11 @@ from savesystem.leaderboard import Leaderboard
 from savesystem import user_save_and_load
 from obstacles.Obstacle import Obstacle
 from characters.enemies.enemy_type_a import EnemyTypeA
+<<<<<<< HEAD
 from tools.win_lose_system import GameState
 from tools.win_lose_system import WinLoseSystem
+=======
+>>>>>>> origin/feature/SCRUM-73-create-enemy-type-a
 
 # Initialize pygame and mixer for sound
 pygame.init()
