@@ -25,10 +25,8 @@ class Enemy(pygame.sprite.Sprite):
         # if bullet pattern 0, ship type a pattern
         # else if bullet pattern 1, ship type b pattern
     
-    def update(self, screen_width): # Updates position, will be changed when working on first enemy type
-        if self.rect.right >= screen_width or self.rect.left <= 0:
-            self.velocity *= -1
-        self.rect.x += self.velocity  
+    def update(self, screen_width): # Updates position
+        pass
         
     def draw(self, surface): # Displays enemy to screen
         pass
