@@ -209,6 +209,7 @@ def game_loop():
     # Create enemy for testing
     enemy_group = pygame.sprite.Group()
     proj_group = pygame.sprite.Group()
+    dest_enemies = [] # for after effects of enemy destruction
     enemy_group.add(EnemyTypeA(100, 100, 50, 350)) # spawns immediately for testing purposes
     
     save_text_show = False
@@ -280,7 +281,8 @@ def game_loop():
                         enemy.decrease_health(1)
                         # Handles case of destroyed enemy
                         if not enemy.living:
-                            enemy.destroy_enemy(screen)
+                            dest_enemies.append((enemy.rect.center, pygame.time.get_ticks(), enemy.size))
+                            enemy.kill()
 
                     time_since_last_increase = current_time - last_score_increase_time
                     # If within combo time limit (3 seconds), increase combo count (AKA faster pressing space = more points)
@@ -293,7 +295,14 @@ def game_loop():
                     last_score_increase_time = current_time
                 if event.key == pygame.K_k:
                     win_lose_system.update()
-
+        
+        # Handles the explosion affect after enemy is destroyed
+        for enemy_center, time_destroyed, size in dest_enemies[:]:
+            if pygame.time.get_ticks() - time_destroyed <= 250: 
+                pygame.draw.circle(screen, (200, 180, 0), enemy_center, size) 
+            else:
+                dest_enemies.remove((enemy_center, time_destroyed, size))
+                
         # Keeps message on screen for 1.5 seconds
         current_time = pygame.time.get_ticks()
         if save_text_show and current_time - start_time < 1500:
