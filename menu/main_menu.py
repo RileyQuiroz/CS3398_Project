@@ -278,6 +278,9 @@ def game_loop():
                     #damage all enemys TESTING
                     for enemy in enemy_group:
                         enemy.decrease_health(1)
+                        # Handles case of destroyed enemy
+                        if not enemy.living:
+                            enemy.destroy_enemy(screen)
 
                     time_since_last_increase = current_time - last_score_increase_time
                     # If within combo time limit (3 seconds), increase combo count (AKA faster pressing space = more points)
