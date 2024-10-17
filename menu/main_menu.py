@@ -201,8 +201,8 @@ def main_menu():
 def game_loop():
     # Create enemy for testing
     enemy_group = pygame.sprite.Group()
-    #test_enemy = Enemy(health=10, pattern=0, x=100, y=100)
-    enemy_group.add(EnemyTypeA(100, 100))
+    proj_group = pygame.sprite.Group()
+    enemy_group.add(EnemyTypeA(100, 100)) # spawns immediately for testing purposes
     
     save_text_show = False
     running = True
@@ -243,8 +243,12 @@ def game_loop():
         # Update enemy position
         for enemy in enemy_group:
             enemy.update(WIDTH)
+            enemy.fire_shot(proj_group)
         # Draw all enemies that exist
         enemy_group.draw(screen)
+        # Draw all enemy projectiles
+        proj_group.update()
+        proj_group.draw(screen)
 
         # Handle events
         for event in pygame.event.get():
