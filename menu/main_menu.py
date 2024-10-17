@@ -7,8 +7,8 @@ from savesystem.leaderboard import Leaderboard
 from savesystem import user_save_and_load
 from obstacles.Obstacle import Obstacle
 from characters.enemies.enemy_structure import Enemy
-from tools.win_lose_conditions import GameState
-from tools.win_lose_conditions import WinLoseSystem
+from tools.win_lose_system import GameState
+from tools.win_lose_system import WinLoseSystem
 
 # Initialize pygame and mixer for sound
 pygame.init()
