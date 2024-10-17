@@ -202,7 +202,7 @@ def game_loop():
     # Create enemy for testing
     enemy_group = pygame.sprite.Group()
     proj_group = pygame.sprite.Group()
-    enemy_group.add(EnemyTypeA(100, 100)) # spawns immediately for testing purposes
+    enemy_group.add(EnemyTypeA(100, 100, 50, 350)) # spawns immediately for testing purposes
     
     save_text_show = False
     running = True
@@ -242,7 +242,7 @@ def game_loop():
         
         # Update enemy position
         for enemy in enemy_group:
-            enemy.update(WIDTH)
+            enemy.update()
             enemy.fire_shot(proj_group)
         # Draw all enemies that exist
         enemy_group.draw(screen)
