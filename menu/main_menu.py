@@ -6,7 +6,7 @@ from tools.score_display import ScoreDisplay
 from savesystem.leaderboard import Leaderboard
 from savesystem import user_save_and_load
 from obstacles.Obstacle import Obstacle
-from characters.enemies.enemy_structure import Enemy
+from characters.enemies.enemy_type_a import EnemyTypeA
 
 # Initialize pygame and mixer for sound
 pygame.init()
@@ -201,8 +201,8 @@ def main_menu():
 def game_loop():
     # Create enemy for testing
     enemy_group = pygame.sprite.Group()
-    test_enemy = Enemy(health=10, pattern=0, x=100, y=100)
-    enemy_group.add(test_enemy)
+    #test_enemy = Enemy(health=10, pattern=0, x=100, y=100)
+    enemy_group.add(EnemyTypeA(100, 100))
     
     save_text_show = False
     running = True
