@@ -19,10 +19,7 @@ class Enemy(pygame.sprite.Sprite):
         self.health -= damage
         if(self.health < 1):
             self.living = False
-    
-    def destroy_enemy(self, screen):
-        self.kill()
-        self.image = pygame.draw.circle(screen, (200, 180, 0), self.rect.center, self.size)     
+            self.time_destroyed = pygame.time.get_ticks()   
         
     def fire_shot(self):
         pass
