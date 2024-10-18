@@ -52,11 +52,11 @@ def draw_text_left_aligned(text, font, color, surface, x, y):
 # Load hover sound
 hover_sound = pygame.mixer.Sound("assets/sound_efx/hover_sound.wav")  # Replace with your sound file
 
-# Ship destruction sound
+# Enemy sounds
 ship_destroyed_sound = pygame.mixer.Sound("assets/sound_efx/enemy_down.wav")
-
-# Enemy shot sound
 enemy_shot_sound = pygame.mixer.Sound("assets/sound_efx/enemy_shot.wav")
+enemy_hurt_sound = pygame.mixer.Sound("assets/sound_efx/enemy_hurt.wav")
+enemy_hurt_sound.set_volume(.35)
 
 # Define framerate, clock, and in-game timer
 FPS = 60
@@ -287,6 +287,7 @@ def game_loop():
                     #damage all enemys TESTING
                     for enemy in enemy_group:
                         enemy.decrease_health(1)
+                        enemy_hurt_sound.play()
                         # Handles case of destroyed enemy
                         if not enemy.living:
                             dest_enemies.append((enemy.rect.center, pygame.time.get_ticks(), enemy.size))
