@@ -52,6 +52,12 @@ def draw_text_left_aligned(text, font, color, surface, x, y):
 # Load hover sound
 hover_sound = pygame.mixer.Sound("assets/sound_efx/hover_sound.wav")  # Replace with your sound file
 
+# Ship destruction sound
+ship_destroyed_sound = pygame.mixer.Sound("assets/sound_efx/enemy_down.wav")
+
+# Enemy shot sound
+enemy_shot_sound = pygame.mixer.Sound("assets/sound_efx/enemy_shot.wav")
+
 # Define framerate, clock, and in-game timer
 FPS = 60
 clock = pygame.time.Clock()
@@ -241,6 +247,16 @@ def game_loop():
 
         # Get current time (for scoring purposes)
         current_time = round(timer.elapsed_time, 2)
+        
+        # Update enemy position
+        for enemy in enemy_group:
+            enemy.update(timer.stopped)
+            enemy.fire_shot(proj_group, enemy_shot_sound, timer.stopped)
+        # Draw all enemies that exist
+        enemy_group.draw(screen)
+        # Draw all enemy projectiles
+        proj_group.update()
+        proj_group.draw(screen)
 
         # Display timer and score
         small_font = pygame.font.Font("assets/fonts/Future Edge.ttf", 32)
@@ -248,15 +264,7 @@ def game_loop():
         score_display.display_score(score_system.get_score())
         obstacle.draw(screen)
         
-        # Update enemy position
-        for enemy in enemy_group:
-            enemy.update()
-            enemy.fire_shot(proj_group)
-        # Draw all enemies that exist
-        enemy_group.draw(screen)
-        # Draw all enemy projectiles
-        proj_group.update()
-        proj_group.draw(screen)
+        
 
         # Handle events
         for event in pygame.event.get():
@@ -273,7 +281,7 @@ def game_loop():
                 if event.key == pygame.K_l: # Press L to load game
                     message, start_time, score_system.score, timer.elapsed_time = user_save_and_load.loadHandling(score_system.get_score(), timer.elapsed_time)
                     save_text_show = True
-                if event.key == pygame.K_SPACE:  # Press SPACE to increase score (Testing)
+                if event.key == pygame.K_SPACE:  # Press SPACE to increase score (Testing) and damage enemies(Testing)
                     timer.toggle()
                     
                     #damage all enemys TESTING
@@ -283,6 +291,7 @@ def game_loop():
                         if not enemy.living:
                             dest_enemies.append((enemy.rect.center, pygame.time.get_ticks(), enemy.size))
                             enemy.kill()
+                            ship_destroyed_sound.play()
 
                     time_since_last_increase = current_time - last_score_increase_time
                     # If within combo time limit (3 seconds), increase combo count (AKA faster pressing space = more points)
@@ -303,7 +312,7 @@ def game_loop():
             else:
                 dest_enemies.remove((enemy_center, time_destroyed, size))
                 
-        # Keeps message on screen for 1.5 seconds
+        # Keeps save/load message on screen for 1.5 seconds
         current_time = pygame.time.get_ticks()
         if save_text_show and current_time - start_time < 1500:
             draw_text(message, smaller_font, WHITE, screen, WIDTH // 2 - 0, HEIGHT // 2 + 250)

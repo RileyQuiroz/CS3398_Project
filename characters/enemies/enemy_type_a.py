@@ -15,16 +15,17 @@ class EnemyTypeA(Enemy):
         self.fire_delay = 800  # Time between shots (in milliseconds)
         self.last_shot_time = pygame.time.get_ticks()  # Time since the last shot
         
-    def fire_shot(self, proj_group): # Fires a single bullet
+    def fire_shot(self, proj_group, proj_sound, paused): # Fires a single bullet
         current_time = pygame.time.get_ticks()
         # Check if enough time has passed since the last shot
-        if current_time - self.last_shot_time >= self.fire_delay and self.living == True:
+        if current_time - self.last_shot_time >= self.fire_delay and self.living == True and paused == False:
             projectile = EnemyProjectile(self.rect.centerx, self.rect.centery)
             proj_group.add(projectile)
             self.last_shot_time = current_time
+            proj_sound.play()
     
-    def update(self): # Updates position, will move left and right between specific values
-        if self.living == True:
+    def update(self, paused): # Updates position, will move left and right between specific values
+        if self.living == True and paused == False:
             if (self.rect.centerx >= self.right_bound or self.rect.centerx <= self.left_bound):
                 self.velocity *= -1
             self.rect.x += self.velocity
