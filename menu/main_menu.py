@@ -247,6 +247,16 @@ def game_loop():
 
         # Get current time (for scoring purposes)
         current_time = round(timer.elapsed_time, 2)
+        
+        # Update enemy position
+        for enemy in enemy_group:
+            enemy.update(timer.stopped)
+            enemy.fire_shot(proj_group, enemy_shot_sound, timer.stopped)
+        # Draw all enemies that exist
+        enemy_group.draw(screen)
+        # Draw all enemy projectiles
+        proj_group.update()
+        proj_group.draw(screen)
 
         # Display timer and score
         small_font = pygame.font.Font("assets/fonts/Future Edge.ttf", 32)
@@ -254,15 +264,7 @@ def game_loop():
         score_display.display_score(score_system.get_score())
         obstacle.draw(screen)
         
-        # Update enemy position
-        for enemy in enemy_group:
-            enemy.update()
-            enemy.fire_shot(proj_group, enemy_shot_sound)
-        # Draw all enemies that exist
-        enemy_group.draw(screen)
-        # Draw all enemy projectiles
-        proj_group.update()
-        proj_group.draw(screen)
+        
 
         # Handle events
         for event in pygame.event.get():
