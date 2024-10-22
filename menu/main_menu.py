@@ -76,6 +76,7 @@ score_display = ScoreDisplay(screen, font_size=36, color=NEON_CYAN, position=(50
 
 # Simple game state system for testing purposes TODO: Maybe fix later
 game_state = GameState()
+game_state = GameState.ONGOING
 
 win_lose_system = WinLoseSystem(score_system) ## TODO: Pass player here when implemented
 
@@ -217,6 +218,7 @@ def main_menu():
         # Update the display
         pygame.display.update()
 
+# Once game states is finalized, split game_loop functions into different sections depending on game state
 def game_loop():
     # Create enemy for testing
     enemy_group = pygame.sprite.Group()
@@ -276,6 +278,9 @@ def game_loop():
         
         
 
+        ###while game_state == GameState.WIN:
+        ###    print("win!!!!!!!")
+
         # Handle events
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -314,8 +319,10 @@ def game_loop():
                     score_system.increase(10)  # Increase score by base points, multiplied by the current multiplier
                     last_score_increase_time = current_time
                 if event.key == pygame.K_k:
-                    win_lose_system.update()
-        
+                    print(game_state)
+                    win_lose_system.update(game_state)
+                    ##game_state = GameState.WIN
+
         # Handles the explosion affect after enemy is destroyed
         for enemy_center, time_destroyed, size in dest_enemies[:]:
             if pygame.time.get_ticks() - time_destroyed <= 250: 
