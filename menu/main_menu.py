@@ -32,8 +32,11 @@ BLACK = (0, 0, 0)
 # Define leaderboard for fastest finishing times
 leaderboard = Leaderboard("time_scoreboard.json")
 
-# Define an in-game obstacle
-obstacle = Obstacle(50, (200, 200), WHITE)
+# Define in-game obstacles
+obstacle_group = [
+    Obstacle(50, (200, 200), (10, 10), WHITE),
+    Obstacle(50, (200, 400), (30, -15), NEON_PURPLE)
+]
 
 ############# FONT AND TEXT ALIGNTMENT #########################
 # Load a futuristic font (if you have one)
@@ -245,7 +248,11 @@ def game_loop():
         small_font = pygame.font.Font("assets/fonts/Future Edge.ttf", 32)
         draw_text(str(current_time), small_font, NEON_CYAN, screen, 100, 100)
         score_display.display_score(score_system.get_score())
-        obstacle.draw(screen)
+
+        # Update in-game obstacles
+        for obstacle in obstacle_group:
+            obstacle.update(None, delta_time)
+            obstacle.draw(screen)
         
         # Update enemy position
         for enemy in enemy_group:
