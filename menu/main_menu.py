@@ -218,6 +218,7 @@ def game_loop():
     dest_enemies = [] # for after effects of enemy destruction
     enemy_group.add(EnemyTypeA(100, 100, 50, 350)) # spawns immediately for testing purposes
     last_spawn = pygame.time.get_ticks()
+    max_enemies = 5 # Can be changed with difficulty
     
     save_text_show = False
     running = True
@@ -250,7 +251,7 @@ def game_loop():
         current_time = round(timer.elapsed_time, 2)
         
         # Basic enemy spawning
-        if(timer.stopped == False):
+        if(timer.stopped == False and len(enemy_group) < max_enemies):
             spawn_counter = pygame.time.get_ticks()
             if(spawn_counter - last_spawn >= 3000):
                 enemy_group.add(EnemyTypeA(100, 200, 50, 350))
