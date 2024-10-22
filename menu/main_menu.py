@@ -9,7 +9,7 @@ from characters.enemies.enemy_type_a import EnemyTypeA
 from obstacles.Mover import Mover
 from obstacles.Rotator import Rotator
 from obstacles.ZigZag import ZigZag
-from tools.win_lose_system import GameState
+from tools.game_states import GameState
 from tools.win_lose_system import WinLoseSystem
 
 # Initialize pygame and mixer for sound
