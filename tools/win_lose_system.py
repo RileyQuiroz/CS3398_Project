@@ -1,10 +1,11 @@
-from game_states import GameState
+from tools.game_states import GameState
 
 class WinLoseSystem:
     def __init__(self, score_system):
        ## self.player = player
         self.score_system = score_system
         self.state = GameState.ONGOING
+        ##self.win_score = win_score ## Score required to win, sent from level in future (?)
 
     def check_win_condition(self): # Check if the player has won, TODO: Change logic later maybe
         if self.score_system.score >= 1000:  # Example score-based win condition
