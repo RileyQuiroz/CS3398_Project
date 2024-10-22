@@ -217,6 +217,7 @@ def game_loop():
     proj_group = pygame.sprite.Group()
     dest_enemies = [] # for after effects of enemy destruction
     enemy_group.add(EnemyTypeA(100, 100, 50, 350)) # spawns immediately for testing purposes
+    last_spawn = pygame.time.get_ticks()
     
     save_text_show = False
     running = True
@@ -248,10 +249,18 @@ def game_loop():
         # Get current time (for scoring purposes)
         current_time = round(timer.elapsed_time, 2)
         
+        # Basic enemy spawning
+        if(timer.stopped == False):
+            spawn_counter = pygame.time.get_ticks()
+            if(spawn_counter - last_spawn >= 3000):
+                enemy_group.add(EnemyTypeA(100, 200, 50, 350))
+                last_spawn = spawn_counter
+        
         # Update enemy position
         for enemy in enemy_group:
             enemy.update(timer.stopped)
             enemy.fire_shot(proj_group, enemy_shot_sound, timer.stopped)
+        
         # Draw all enemies that exist
         enemy_group.draw(screen)
         # Draw all enemy projectiles
