@@ -4,16 +4,24 @@ import pygame
 # The Obstacle class represents an in-game object that can
 # impede the player in some way.
 class Obstacle:
-    def __init__(self, radius, position, color):
+    def __init__(self, radius, position, velocity, color):
         self.radius = radius
         self.position = position
-        self.velocity = (0, 0)
+        self.velocity = velocity
         self.color = color
         self.is_colliding = False
 
     def load_sprite(self, sprite):
         pass
 
+    def adjust_velocity(self, x, y):
+        self.velocity = (self.velocity[0] + x, self.velocity[1] + y)
+
+    def move(self, dt):
+        new_x_pos = self.position[0] + (self.velocity[0] * dt)
+        new_y_pos = self.position[1] + (self.velocity[1] * dt)
+        self.position = (new_x_pos, new_y_pos)
+ 
     def check_for_player_collision(self, player):
         # Calculate the distance between the player's position and the
         # obstacle's position. If the distance is less than the sum of
@@ -27,10 +35,9 @@ class Obstacle:
         pygame.draw.circle(surface, self.color, self.position, self.radius)
 
     def update(self, player, dt):
-        self.check_for_player_collision(player)
+        if player:
+            self.check_for_player_collision(player)
 
         if not self.is_colliding:
             # If not colliding with the player, the obstacle is free to move
-            new_x_pos = self.position[0] + (self.velocity[0] * dt)
-            new_y_pos = self.position[1] + (self.velocity[1] * dt)
-            self.position = (new_x_pos, new_y_pos)
+            self.move(dt)
