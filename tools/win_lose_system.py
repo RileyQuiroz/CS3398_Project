@@ -30,8 +30,7 @@ class WinLoseSystem:
 
     def update(self, game_state):
         game_state = self.check_win_condition(game_state)
-        print("new game state")
-        print(game_state)
+        print("new game state: " + game_state)
         game_state = self.check_lose_condition(game_state)
         return game_state
 
