@@ -1,9 +1,9 @@
-from obstacles.Obstacle import Obstacle
 import math
+from obstacles.Obstacle import Obstacle
 
 class Rotator(Obstacle):
-    def __init__(self, radius, position, velocity, color):
-        super().__init__(radius, position, velocity, color)
+    def __init__(self, radius, position, color):
+        super().__init__(radius, position, color)
 
         self.center = self.position
         self.theta = 0
