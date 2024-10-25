@@ -2,7 +2,7 @@ import math
 import pygame
 
 # The Obstacle class represents an in-game object that can
-# impede the player in some way.
+# impede the player in some way
 class Obstacle:
     def __init__(self, radius, position, color):
         self.radius = radius

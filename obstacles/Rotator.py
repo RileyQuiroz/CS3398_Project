@@ -1,6 +1,9 @@
 import math
 from obstacles.Obstacle import Obstacle
 
+# The Rotator class represents an Obstacles that moves
+# in a circle around a central point in the game
+# environment
 class Rotator(Obstacle):
     def __init__(self, radius, position, color):
         super().__init__(radius, position, color)
