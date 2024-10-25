@@ -7,6 +7,7 @@ from savesystem.leaderboard import Leaderboard
 from savesystem import user_save_and_load
 from obstacles.Mover import Mover
 from obstacles.Rotator import Rotator
+from obstacles.ZigZag import ZigZag
 from characters.enemies.enemy_structure import Enemy
 from tools.win_lose_system import GameState
 from tools.win_lose_system import WinLoseSystem
@@ -35,8 +36,9 @@ leaderboard = Leaderboard("time_scoreboard.json")
 
 # Define in-game obstacles
 obstacle_group = [
-    Mover(50, (200, 200), (10, 10), WHITE),
-    Rotator(50, (200, 400), NEON_PURPLE)
+    Mover(30, (200, 200), (10, 10), WHITE),
+    Rotator(30, (200, 400), NEON_PURPLE),
+    ZigZag(30, (0, 300), (75, 0), NEON_CYAN)
 ]
 
 ############# FONT AND TEXT ALIGNTMENT #########################
