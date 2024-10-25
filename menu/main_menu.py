@@ -5,11 +5,10 @@ from tools.score_counter import Score
 from tools.score_display import ScoreDisplay
 from savesystem.leaderboard import Leaderboard
 from savesystem import user_save_and_load
+from characters.enemies.enemy_structure import EnemyTypeA
 from obstacles.Mover import Mover
 from obstacles.Rotator import Rotator
 from obstacles.ZigZag import ZigZag
-from characters.enemies.enemy_structure import EnemyTypeA
-from characters.enemies.enemy_structure import Enemy
 from tools.win_lose_system import GameState
 from tools.win_lose_system import WinLoseSystem
 
