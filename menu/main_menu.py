@@ -38,7 +38,7 @@ leaderboard = Leaderboard("time_scoreboard.json")
 obstacle_group = [
     Mover(30, (200, 200), (10, 10), WHITE),
     Rotator(30, (200, 400), NEON_PURPLE),
-    ZigZag(30, (0, 300), (75, 0), NEON_CYAN)
+    ZigZag(30, (0, 300), (50, 0), NEON_CYAN)
 ]
 
 ############# FONT AND TEXT ALIGNTMENT #########################
