@@ -5,8 +5,10 @@ from tools.score_counter import Score
 from tools.score_display import ScoreDisplay
 from savesystem.leaderboard import Leaderboard
 from savesystem import user_save_and_load
-from obstacles.Obstacle import Obstacle
 from characters.enemies.enemy_type_a import EnemyTypeA
+from obstacles.Mover import Mover
+from obstacles.Rotator import Rotator
+from obstacles.ZigZag import ZigZag
 from tools.win_lose_system import GameState
 from tools.win_lose_system import WinLoseSystem
 
@@ -32,8 +34,12 @@ BLACK = (0, 0, 0)
 # Define leaderboard for fastest finishing times
 leaderboard = Leaderboard("time_scoreboard.json")
 
-# Define an in-game obstacle
-obstacle = Obstacle(50, (200, 200), WHITE)
+# Define in-game obstacles
+obstacle_group = [
+    Mover(30, (200, 200), (10, 10), WHITE),
+    Rotator(30, (200, 400), NEON_PURPLE),
+    ZigZag(30, (0, 300), (50, 0), NEON_CYAN)
+]
 
 ############# FONT AND TEXT ALIGNTMENT #########################
 # Load a futuristic font (if you have one)
@@ -262,7 +268,11 @@ def game_loop():
         small_font = pygame.font.Font("assets/fonts/Future Edge.ttf", 32)
         draw_text(str(current_time), small_font, NEON_CYAN, screen, 100, 100)
         score_display.display_score(score_system.get_score())
-        obstacle.draw(screen)
+
+        # Update in-game obstacles
+        for obstacle in obstacle_group:
+            obstacle.update(None, delta_time)
+            obstacle.draw(screen)
         
         
 
