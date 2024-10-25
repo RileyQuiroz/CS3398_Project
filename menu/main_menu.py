@@ -8,6 +8,7 @@ from savesystem import user_save_and_load
 from obstacles.Mover import Mover
 from obstacles.Rotator import Rotator
 from obstacles.ZigZag import ZigZag
+from characters.enemies.enemy_structure import EnemyTypeA
 from characters.enemies.enemy_structure import Enemy
 from tools.win_lose_system import GameState
 from tools.win_lose_system import WinLoseSystem
