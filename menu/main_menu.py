@@ -35,10 +35,11 @@ BLACK = (0, 0, 0)
 leaderboard = Leaderboard("time_scoreboard.json")
 
 # Define in-game obstacles
+BOULDER_PATH = "assets/objects/spr_boulder_0.png"
 obstacle_group = [
-    Mover(30, (200, 200), (10, 10), WHITE),
-    Rotator(30, (200, 400), NEON_PURPLE),
-    ZigZag(30, (0, 300), (50, 0), NEON_CYAN)
+    Mover((200, 200), (10, 10), BOULDER_PATH),
+    Rotator((200, 400), BOULDER_PATH),
+    ZigZag((0, 300), (50, 0), BOULDER_PATH)
 ]
 
 ############# FONT AND TEXT ALIGNTMENT #########################

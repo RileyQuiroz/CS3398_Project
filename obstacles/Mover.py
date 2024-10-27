@@ -4,8 +4,8 @@ from obstacles.Obstacle import Obstacle
 # The Mover class represents an Obstacle that moves in
 # a straight line along the screen
 class Mover(Obstacle):
-    def __init__(self, radius, position, velocity, color):
-        super().__init__(radius, position, color)
+    def __init__(self, position, velocity, sprite_path):
+        super().__init__(position, sprite_path)
 
         self.velocity = velocity
 
