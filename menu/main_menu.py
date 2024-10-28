@@ -74,11 +74,8 @@ timer.start()
 score_system = Score()
 score_display = ScoreDisplay(screen, font_size=36, color=NEON_CYAN, position=(50, 50))
 
-# Simple game state system for testing purposes TODO: Maybe fix later
-game_state = GameState()
-game_state = GameState.ONGOING
-
-win_lose_system = WinLoseSystem(score_system) ## TODO: Pass player here when implemented
+# Win/Lose System to update game state
+win_lose_system = WinLoseSystem(score_system, player=None) ## TODO: Pass player here when implemented
 
 # Define menu options
 def draw_text(text, font, color, surface, x, y):
@@ -276,10 +273,13 @@ def game_loop():
             obstacle.update(None, delta_time)
             obstacle.draw(screen)
         
-        
+        ## Sets current_game_state, defaults to ONGOING, changes depending on logic
+        current_game_state = win_lose_system.update()
 
-        ###while game_state == GameState.WIN:
-        ###    print("win!!!!!!!")
+        if current_game_state == GameState.ONGOING:
+            print("ongoing...")
+        elif current_game_state == GameState.WIN:
+            print("win!")
 
         # Handle events
         for event in pygame.event.get():
@@ -319,9 +319,7 @@ def game_loop():
                     score_system.increase(10)  # Increase score by base points, multiplied by the current multiplier
                     last_score_increase_time = current_time
                 if event.key == pygame.K_k:
-                    print(game_state)
-                    win_lose_system.update(game_state)
-                    ##game_state = GameState.WIN
+                    pass
 
         # Handles the explosion affect after enemy is destroyed
         for enemy_center, time_destroyed, size in dest_enemies[:]:
