@@ -1,6 +1,6 @@
 import pygame
-from player_char import CharacterPawn  # Import the CharacterPawn class
-from enemies.enemy_structure import Enemy  # Import the Enemy class
+from characters.player_char import CharacterPawn  # Import the CharacterPawn class
+from characters.enemies.enemy_structure import Enemy  # Import the Enemy class
 from tools.collision_hanlder import check_projectile_enemy_collisions  # Import collision handler
 
 # Initialize Pygame
