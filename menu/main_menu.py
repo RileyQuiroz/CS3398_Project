@@ -9,7 +9,7 @@ from characters.enemies.enemy_type_a import EnemyTypeA
 from obstacles.Mover import Mover
 from obstacles.Rotator import Rotator
 from obstacles.ZigZag import ZigZag
-from tools.win_lose_system import GameState
+from tools.game_states import GameState
 from tools.win_lose_system import WinLoseSystem
 
 # Initialize pygame and mixer for sound
@@ -74,10 +74,8 @@ timer.start()
 score_system = Score()
 score_display = ScoreDisplay(screen, font_size=36, color=NEON_CYAN, position=(50, 50))
 
-# Simple game state system for testing purposes TODO: Maybe fix later
-game_state = GameState()
-
-win_lose_system = WinLoseSystem(score_system) ## TODO: Pass player here when implemented
+# Win/Lose System to update game state
+win_lose_system = WinLoseSystem(score_system, player=None) ## TODO: Pass player here when implemented
 
 # Define menu options
 def draw_text(text, font, color, surface, x, y):
@@ -217,6 +215,7 @@ def main_menu():
         # Update the display
         pygame.display.update()
 
+# Once game states is finalized, split game_loop functions into different sections depending on game state
 def game_loop():
     # Create enemy for testing
     enemy_group = pygame.sprite.Group()
@@ -274,7 +273,13 @@ def game_loop():
             obstacle.update(None, delta_time)
             obstacle.draw(screen)
         
-        
+        ## Sets current_game_state, defaults to ONGOING, changes depending on logic
+        current_game_state = win_lose_system.update()
+
+        if current_game_state == GameState.ONGOING:
+            print("ongoing...")
+        elif current_game_state == GameState.WIN:
+            print("win!")
 
         # Handle events
         for event in pygame.event.get():
@@ -314,8 +319,8 @@ def game_loop():
                     score_system.increase(10)  # Increase score by base points, multiplied by the current multiplier
                     last_score_increase_time = current_time
                 if event.key == pygame.K_k:
-                    win_lose_system.update()
-        
+                    pass
+
         # Handles the explosion affect after enemy is destroyed
         for enemy_center, time_destroyed, size in dest_enemies[:]:
             if pygame.time.get_ticks() - time_destroyed <= 250: 
