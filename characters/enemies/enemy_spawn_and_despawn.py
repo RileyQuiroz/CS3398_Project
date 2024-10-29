@@ -15,3 +15,6 @@ def spawnEnemy(enemy_list, current_time):
     if(right_bound > 770):
         right_bound = 770
     enemy_list.add(EnemyTypeA(new_ship_x, new_ship_y, left_bound, right_bound, current_time))
+    
+def despawnEnemy():
+    print("This will despawn an enemy")
