@@ -226,6 +226,7 @@ def game_loop():
     proj_group = pygame.sprite.Group()
     dest_enemies = [] # For after effects of enemy destruction
     last_spawn = 0 # Time since last enemy spawn
+    last_spawn_wave = 0 # Time since last wave spawn
     max_enemies = 5 # Can be changed with difficulty
     
     save_text_show = False
@@ -255,16 +256,20 @@ def game_loop():
         ticks_since_last_frame = ticks
         timer.update(delta_time)
 
-        # Get current time (for scoring purposes)
+        # Get current time (for scoring purposes and enemy spawning)
         current_time = round(timer.elapsed_time, 2)
         
         # Basic enemy spawning
         # CONSIDER SPAWN WAVES / ENEMY PLATOONS
-        if(timer.stopped == False and len(enemy_group) < max_enemies):
-            spawn_counter = current_time
-            if(spawn_counter - last_spawn >= 3):
-                spawnEnemy(enemy_group, current_time)
-                last_spawn = spawn_counter
+        if(timer.stopped == False and len(enemy_group) < max_enemies and current_time - last_spawn >= 3):
+            spawnEnemy(enemy_group, current_time)
+            last_spawn = current_time
+        # Spawn in a wave of enemies every minute (ignores max restriction)
+        if(timer.stopped == False and current_time - last_spawn_wave >= 60):
+            spawnEnemy(enemy_group, current_time)
+            spawnEnemy(enemy_group, current_time)
+            spawnEnemy(enemy_group, current_time)
+            last_spawn_wave = current_time    
         
         # Update enemy position
         for enemy in enemy_group:
