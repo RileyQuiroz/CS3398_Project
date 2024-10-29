@@ -12,6 +12,7 @@ from obstacles.Rotator import Rotator
 from obstacles.ZigZag import ZigZag
 from tools.game_states import GameState
 from tools.win_lose_system import WinLoseSystem
+from characters.enemies.enemy_spawn_and_despawn import spawnEnemy
 
 # Initialize pygame and mixer for sound
 pygame.init()
@@ -223,8 +224,8 @@ def game_loop():
     # Create enemy for testing
     enemy_group = pygame.sprite.Group()
     proj_group = pygame.sprite.Group()
-    dest_enemies = [] # for after effects of enemy destruction
-    last_spawn = 0
+    dest_enemies = [] # For after effects of enemy destruction
+    last_spawn = 0 # Time since last enemy spawn
     max_enemies = 5 # Can be changed with difficulty
     
     save_text_show = False
@@ -262,17 +263,7 @@ def game_loop():
         if(timer.stopped == False and len(enemy_group) < max_enemies):
             spawn_counter = current_time
             if(spawn_counter - last_spawn >= 3):
-                new_ship_x = random.randint(50, 750)
-                new_ship_y = random.randint(30, 200)
-                ship_path_distance = random.randint(100, 200)
-                left_bound = new_ship_x - ship_path_distance
-                right_bound = new_ship_x + ship_path_distance
-                # Make sure ship stays within screen borders
-                if(left_bound  < 30):
-                    left_bound = 30
-                if(right_bound > 770):
-                    right_bound = 770
-                enemy_group.add(EnemyTypeA(new_ship_x, new_ship_y, left_bound, right_bound, current_time))
+                spawnEnemy(enemy_group, current_time)
                 last_spawn = spawn_counter
         
         # Update enemy position
