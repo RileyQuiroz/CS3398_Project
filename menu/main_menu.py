@@ -61,9 +61,11 @@ hover_sound = pygame.mixer.Sound("assets/sound_efx/hover_sound.wav")  # Replace 
 
 # Enemy sounds
 ship_destroyed_sound = pygame.mixer.Sound("assets/sound_efx/enemy_down.wav")
+ship_destroyed_sound.set_volume(.35)
 enemy_shot_sound = pygame.mixer.Sound("assets/sound_efx/enemy_shot.wav")
+enemy_shot_sound.set_volume(.2)
 enemy_hurt_sound = pygame.mixer.Sound("assets/sound_efx/enemy_hurt.wav")
-enemy_hurt_sound.set_volume(.35)
+enemy_hurt_sound.set_volume(.15)
 
 # Define framerate, clock, and in-game timer
 FPS = 60
@@ -276,7 +278,7 @@ def game_loop():
         # Update enemy position
         for enemy in enemy_group:
             enemy.update(timer.stopped)
-            enemy.fire_shot(proj_group, enemy_shot_sound, timer.stopped, current_time)
+            enemy.fire_shot(proj_group, timer.stopped, current_time)
         
         # Draw all enemies that exist
         enemy_group.draw(screen)

@@ -15,14 +15,13 @@ class EnemyTypeA(Enemy):
         self.fire_delay = 0.9  # Time between shots
         self.last_shot_time = current_time  # Time since the last shot
         
-    def fire_shot(self, proj_group, proj_sound, paused, curr): # Fires a single bullet
+    def fire_shot(self, proj_group, paused, curr): # Fires a single bullet
         current_time = curr
         # Check if enough time has passed since the last shot
         if (current_time - self.last_shot_time >= self.fire_delay and self.living == True and paused == False):
             projectile = EnemyProjectile(self.rect.centerx, self.rect.centery)
             proj_group.add(projectile)
             self.last_shot_time = current_time
-            proj_sound.play()
     
     def update(self, paused): # Updates position, will move left and right between specific values, and moves down upon spawning
         if (self.pos_y < self.spawn_destination_y and paused == False):
