@@ -1,5 +1,6 @@
 import pygame
 import sys
+import random
 from tools.timer import Timer
 from tools.score_counter import Score
 from tools.score_display import ScoreDisplay
@@ -251,10 +252,14 @@ def game_loop():
         current_time = round(timer.elapsed_time, 2)
         
         # Basic enemy spawning
+        # CONSIDER SPAWN WAVES / ENEMY PLATOONS
         if(timer.stopped == False and len(enemy_group) < max_enemies):
             spawn_counter = pygame.time.get_ticks()
             if(spawn_counter - last_spawn >= 3000):
-                enemy_group.add(EnemyTypeA(100, 200, 50, 350))
+                new_ship_x = random.randint(200, 600)
+                new_ship_y = random.randint(100, 500)
+                ship_path_distance = random.randint(30, 200)
+                enemy_group.add(EnemyTypeA(new_ship_x, new_ship_y, new_ship_x - ship_path_distance, new_ship_x + ship_path_distance))
                 last_spawn = spawn_counter
         
         # Update enemy position
