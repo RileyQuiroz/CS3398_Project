@@ -31,3 +31,15 @@ def handle_player_object_collision(player, obj):
     print(f"Player collided with object at {obj.rect.x}, {obj.rect.y}")
     # Example: Stop player movement or trigger an event
     # player.stop_movement() or any other logic you want
+    
+def check_projectile_player_collisions(projectile, player):
+    '''
+    Check for collisions between enemy projectiles and the player using Pygame's built-in sprite collision.
+    Removes the projectile upon collision and decreases enemy health.
+    '''
+    print("imagine getting hit")
+    collisions = pygame.sprite.groupcollide(projectile, player, True, False)
+    
+    for hit_projectile, hit_enemies in collisions.items():
+        for enemy in hit_enemies:
+            enemy.decrease_health(damage=1)
