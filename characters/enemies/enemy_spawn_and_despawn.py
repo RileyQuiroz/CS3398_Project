@@ -16,5 +16,8 @@ def spawnEnemy(enemy_list, current_time):
         right_bound = 770
     enemy_list.add(EnemyTypeA(new_ship_x, new_ship_y, left_bound, right_bound, current_time))
     
-def despawnEnemy():
-    print("This will despawn an enemy")
+# this is meant more for enemy type b, but will use type a for now
+def despawnEnemy(enemy):
+    enemy.heading_home = True
+    if(enemy.pos_y <= -30):
+        enemy.kill()

@@ -12,7 +12,7 @@ from obstacles.Rotator import Rotator
 from obstacles.ZigZag import ZigZag
 from tools.game_states import GameState
 from tools.win_lose_system import WinLoseSystem
-from characters.enemies.enemy_spawn_and_despawn import spawnEnemy
+from characters.enemies.enemy_spawn_and_despawn import spawnEnemy, despawnEnemy
 
 # Initialize pygame and mixer for sound
 pygame.init()
@@ -221,9 +221,10 @@ def main_menu():
 
 # Once game states is finalized, split game_loop functions into different sections depending on game state
 def game_loop():
-    # Create enemy for testing
+    # Containers and variables for enemies
     enemy_group = pygame.sprite.Group()
     proj_group = pygame.sprite.Group()
+    to_despawn = pygame.sprite.Group() # For despawning non destroyed enemies
     dest_enemies = [] # For after effects of enemy destruction
     last_spawn = 0 # Time since last enemy spawn
     last_spawn_wave = 0 # Time since last wave spawn
@@ -316,6 +317,11 @@ def game_loop():
                 if event.key == pygame.K_l: # Press L to load game
                     message, start_time, score_system.score, timer.elapsed_time = user_save_and_load.loadHandling(score_system.get_score(), timer.elapsed_time)
                     save_text_show = True
+                if event.key == pygame.K_h: # Press H to send enemies home FOR TESTING ONLY, REMOVE FOR FINAL PRODUCT
+                    for enemy in enemy_group:
+                        enemy.heading_home = True
+                        #despawnEnemy(enemy, to_despawn)
+                        to_despawn.add(enemy)
                 if event.key == pygame.K_SPACE:  # Press SPACE to increase score (Testing) and damage enemies(Testing)
                     timer.toggle()
                     
@@ -347,6 +353,12 @@ def game_loop():
                 pygame.draw.circle(screen, (200, 180, 0), enemy_center, size) 
             else:
                 dest_enemies.remove((enemy_center, time_destroyed, size))
+                
+        # Handles despawning retreating enemies
+        for enemy in to_despawn:
+            if(enemy.pos_y <= -30):
+                print("should be dead")
+                enemy.kill()
                 
         # Keeps save/load message on screen for 1.5 seconds
         current_time = pygame.time.get_ticks()
