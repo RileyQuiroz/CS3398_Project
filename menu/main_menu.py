@@ -12,7 +12,7 @@ from obstacles.Rotator import Rotator
 from obstacles.ZigZag import ZigZag
 from tools.game_states import GameState
 from tools.win_lose_system import WinLoseSystem
-from characters.enemies.enemy_spawn_and_despawn import spawnEnemy, despawnEnemy, startRetreat
+from characters.enemies.enemy_spawn_and_despawn import spawnEnemy, despawnEnemy, startRetreat, destroyEnemy
 
 # Initialize pygame and mixer for sound
 pygame.init()
@@ -329,9 +329,7 @@ def game_loop():
                         enemy_hurt_sound.play()
                         # Handles case of destroyed enemy
                         if not enemy.living:
-                            dest_enemies.append((enemy.rect.center, pygame.time.get_ticks(), enemy.size))
-                            enemy.kill()
-                            ship_destroyed_sound.play()
+                            destroyEnemy(dest_enemies, enemy, ship_destroyed_sound)
 
                     time_since_last_increase = current_time - last_score_increase_time
                     # If within combo time limit (3 seconds), increase combo count (AKA faster pressing space = more points)
