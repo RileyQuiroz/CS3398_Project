@@ -12,7 +12,7 @@ from obstacles.Rotator import Rotator
 from obstacles.ZigZag import ZigZag
 from tools.game_states import GameState
 from tools.win_lose_system import WinLoseSystem
-from characters.enemies.enemy_spawn_and_despawn import spawnEnemy, despawnEnemy
+from characters.enemies.enemy_spawn_and_despawn import spawnEnemy, despawnEnemy, startRetreat
 
 # Initialize pygame and mixer for sound
 pygame.init()
@@ -319,9 +319,7 @@ def game_loop():
                     save_text_show = True
                 if event.key == pygame.K_h: # Press H to send enemies home FOR TESTING ONLY, REMOVE FOR FINAL PRODUCT
                     for enemy in enemy_group:
-                        enemy.heading_home = True
-                        #despawnEnemy(enemy, to_despawn)
-                        to_despawn.add(enemy)
+                        startRetreat(enemy, enemy_group)
                 if event.key == pygame.K_SPACE:  # Press SPACE to increase score (Testing) and damage enemies(Testing)
                     timer.toggle()
                     
@@ -355,10 +353,7 @@ def game_loop():
                 dest_enemies.remove((enemy_center, time_destroyed, size))
                 
         # Handles despawning retreating enemies
-        for enemy in to_despawn:
-            if(enemy.pos_y <= -30):
-                print("should be dead")
-                enemy.kill()
+        despawnEnemy(to_despawn)
                 
         # Keeps save/load message on screen for 1.5 seconds
         current_time = pygame.time.get_ticks()

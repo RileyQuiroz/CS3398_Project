@@ -15,9 +15,14 @@ def spawnEnemy(enemy_list, current_time):
     if(right_bound > 770):
         right_bound = 770
     enemy_list.add(EnemyTypeA(new_ship_x, new_ship_y, left_bound, right_bound, current_time))
-    
-# this is meant more for enemy type b, but will use type a for now
-def despawnEnemy(enemy):
+
+def startRetreat(enemy, list_of_retreating):
     enemy.heading_home = True
-    if(enemy.pos_y <= -30):
-        enemy.kill()
+    list_of_retreating.add(enemy)
+
+# this is meant more for enemy type b, but will use type a for now
+def despawnEnemy(retreating):
+    for enemy in retreating:
+        enemy.heading_home = True
+        if(enemy.pos_y <= -30):
+            enemy.kill()
