@@ -223,17 +223,24 @@ def main_menu():
         pygame.display.update()
 
 # Once game states is finalized, split game_loop functions into different sections depending on game state
+# Define the display_defeat_message function
+def display_defeat_message(screen, font):
+    screen.fill((0, 0, 0))  # Fill screen with black
+    defeat_text = font.render("Defeated", True, (255, 0, 0))  # Red text for defeated message
+    text_rect = defeat_text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
+    screen.blit(defeat_text, text_rect)
+    pygame.display.flip()  # Update the display
+
 def game_loop():
     small_font = pygame.font.Font("assets/fonts/Future Edge.ttf", 32)
     # Containers and variables for enemies and projectiles
     enemy_group = pygame.sprite.Group()
-    proj_group = pygame.sprite.Group()  # Player's projectiles
-    enemy_projectiles = pygame.sprite.Group()  # Enemy projectiles
-    to_despawn = pygame.sprite.Group()  # For despawning non-destroyed enemies
-    dest_enemies = []  # For after-effects of enemy destruction
-    max_enemies = 5  # Can be adjusted based on difficulty
+    proj_group = pygame.sprite.Group()
+    enemy_projectiles = pygame.sprite.Group()
+    to_despawn = pygame.sprite.Group()
+    dest_enemies = []
+    max_enemies = 5
 
-    # Timer and score systems
     save_text_show = False
     message = ""
     start_time = 0
@@ -242,94 +249,74 @@ def game_loop():
     timer = Timer()
     timer.start()
 
-    # Initialize player instance
     player = CharacterPawn(x=WIDTH // 2, y=HEIGHT - 100, projectiles_group=proj_group, screen_width=WIDTH, screen_height=HEIGHT)
     win_lose_system.player = player
 
     last_spawn = 0
     last_spawn_wave = 0
-
-    # Initialize ticks_last_frame for delta_time calculation
     ticks_last_frame = pygame.time.get_ticks()
 
     while running:
-        # Fill the screen with black background
         screen.fill(black_bg)
 
-        # Calculate delta_time
         ticks = pygame.time.get_ticks()
-        delta_time = (ticks - ticks_last_frame) / 1000.0  # Convert to seconds
+        delta_time = (ticks - ticks_last_frame) / 1000.0
         ticks_last_frame = ticks
 
-        # Update timer based on delta_time
         timer.update(delta_time)
 
-        # Handle collisions between projectiles and targets
-        check_projectile_enemy_collisions(proj_group, enemy_group, damage=1)  # Player bullets damaging enemies
-        check_player_projectile_collisions(player, enemy_projectiles, damage=10)  # Enemy bullets damaging player
+        check_projectile_enemy_collisions(proj_group, enemy_group, damage=1)
+        check_player_projectile_collisions(player, enemy_projectiles, damage=10)
 
-        # Update all projectiles
         proj_group.update(False)
         enemy_projectiles.update(False)
 
-        # Draw player and projectiles
         player.handle_input()
         player.draw(screen)
-        proj_group.draw(screen)  # Draw player projectiles
-        enemy_projectiles.draw(screen)  # Draw enemy projectiles
+        proj_group.draw(screen)
+        enemy_projectiles.draw(screen)
 
-        # Update obstacles with delta_time
         for obstacle in obstacle_group:
             obstacle.update(None, delta_time)
             obstacle.draw(screen)
 
-        # Spawn enemies at regular intervals
         if not timer.stopped and len(enemy_group) < max_enemies and timer.elapsed_time - last_spawn >= 3:
             spawnEnemy(enemy_group, timer.elapsed_time)
             last_spawn = timer.elapsed_time
 
-        # Spawn a wave of enemies every minute, ignoring the max restriction
         if not timer.stopped and timer.elapsed_time - last_spawn_wave >= 60:
-            for _ in range(3):  # Spawn 3 enemies as a wave
+            for _ in range(3):
                 spawnEnemy(enemy_group, timer.elapsed_time)
             last_spawn_wave = timer.elapsed_time
 
-        # Update each enemy, allow them to fire shots
         for enemy in enemy_group:
             enemy.update(paused=False)
             enemy.fire_shot(enemy_projectiles, paused=False, curr=timer.elapsed_time)
 
-            # Check for collision between player and enemy
             if player.is_alive and player.rect.colliderect(enemy.rect):
                 player.take_dmg(10)
                 if not player.is_alive:
                     print("Player defeated!")
 
-            # Check if enemy is destroyed
-            if not enemy.living:  # Assuming `enemy.living` becomes False when health is depleted
-                # Play explosion sound
+            if not enemy.living:
                 ship_destroyed_sound.play()
-
-                # Create explosion effect at the enemy's position
-                dest_enemies.append((enemy.rect.center, pygame.time.get_ticks(), 20))  # explosion size 20
-
-                ##increase score for kill
-                score_system.increase(10) ##increase by 10 points
-
-                # Remove enemy from group
+                dest_enemies.append((enemy.rect.center, pygame.time.get_ticks(), 20))
+                score_system.increase(10)
                 enemy.kill()
 
-        # Draw enemies
         enemy_group.draw(screen)
 
-        # Update and display the timer and score
         draw_text(f"{timer.elapsed_time:.2f}", small_font, NEON_CYAN, screen, 100, 100)
         score_display.display_score(score_system.get_score())
 
-        # Update the game state (e.g., win/lose conditions)
         current_game_state = win_lose_system.update()
 
-        # Handle events for quitting, shooting, saving, and loading
+        # Game over logic: check if player health is 0
+        if player.health <= 0:
+            display_defeat_message(screen, font)  # Display "Defeated" message
+            pygame.time.delay(2000)  # Pause for 2 seconds
+            return  # Exit game_loop to go back to the main menu
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -339,7 +326,7 @@ def game_loop():
                     running = False
                     timer.stop()
                 elif event.key == pygame.K_SPACE:
-                    player.shoot()  # Player shoots, adding bullets to proj_group
+                    player.shoot()
                 elif event.key == pygame.K_s:
                     message, start_time = user_save_and_load.saveHandling(score_system.get_score(), timer.elapsed_time)
                     save_text_show = True
@@ -347,7 +334,6 @@ def game_loop():
                     message, start_time, score_system.score, timer.elapsed_time = user_save_and_load.loadHandling(score_system.get_score(), timer.elapsed_time)
                     save_text_show = True
 
-        # Display save/load message if applicable
         if save_text_show:
             current_time = pygame.time.get_ticks()
             if current_time - start_time < 1500:
@@ -355,23 +341,12 @@ def game_loop():
             else:
                 save_text_show = False
 
-        # Handle explosion effects
         for enemy_center, time_destroyed, size in dest_enemies[:]:
             if pygame.time.get_ticks() - time_destroyed <= 250:
                 pygame.draw.circle(screen, (200, 180, 0), enemy_center, size)
             else:
                 dest_enemies.remove((enemy_center, time_destroyed, size))
 
-        # Despawn enemies if needed
         despawnEnemy(to_despawn)
-
-        # Update the display and frame rate
         pygame.display.flip()
         clock.tick(FPS)
-
-
-
-
-
-
-
