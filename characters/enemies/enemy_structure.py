@@ -23,6 +23,14 @@ class Enemy(pygame.sprite.Sprite):
         if(self.health < 1):
             self.living = False
             self.time_destroyed = pygame.time.get_ticks()   
+    
+    def change_color(self):
+        if(self.health == 2):
+            self.color = (255,100,0)
+            self.image.fill(self.color)
+        if(self.health == 1):
+            self.color = (255,140,0)
+            self.image.fill(self.color)
         
     def fire_shot(self):
         pass

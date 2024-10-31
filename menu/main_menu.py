@@ -290,6 +290,7 @@ def game_loop():
             last_spawn_wave = timer.elapsed_time
 
         for enemy in enemy_group:
+            enemy.change_color()
             enemy.update(paused=timer.stopped)
             enemy.fire_shot(enemy_projectiles, paused=timer.stopped, curr=timer.elapsed_time)
             
