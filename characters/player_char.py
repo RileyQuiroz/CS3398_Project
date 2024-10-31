@@ -71,3 +71,11 @@ class CharacterPawn:
             self.health = 0
             self.is_alive = False
 
+    def heal(self, amount):
+        if self.is_alive:
+            self.health += amount
+            if self.health > 100:
+                self.health = 100
+
+    
+
