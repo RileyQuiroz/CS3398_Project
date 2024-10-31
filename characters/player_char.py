@@ -5,7 +5,7 @@ import pygame
 from projectiles.projectiles import Projectile
 
 class CharacterPawn:
-    def __init__(self, x, y, projectiles_group, screen_width, screen_height):
+    def __init__(self, x, y, projectiles_group, screen_width, screen_height, health=100):
         # Initialize character position, movement attributes, and screen dimensions
         self.x = x
         self.y = y
@@ -15,6 +15,14 @@ class CharacterPawn:
         self.projectiles_group = projectiles_group  # Group for handling projectiles
         self.screen_width = screen_width
         self.screen_height = screen_height
+        # Player collision rect
+        self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
+        # Stats
+        self.health = health
+        self.is_alive = True
+        # Cooldown to prevent spamming bullets
+        self.last_shot_time = pygame.time.get_ticks()
+        self.shot_cooldown = 500  # in milliseconds
 
     def handle_input(self):
         # Handle basic movement input
@@ -29,21 +37,43 @@ class CharacterPawn:
             self.y += self.speed
 
         # Boundary conditions
-        if self.x < 0:
-            self.x = 0
-        elif self.x + self.width > self.screen_width:
-            self.x = self.screen_width - self.width
+        self.x = max(0, min(self.screen_width - self.width, self.x))
+        self.y = max(0, min(self.screen_height - self.height, self.y))
 
-        if self.y < 0:
-            self.y = 0
-        elif self.y + self.height > self.screen_height:
-            self.y = self.screen_height - self.height
+        # Update the rect position
+        self.rect.topleft = (self.x, self.y)
 
-    def shoot(self):
-        # Fire a projectile and add it to the projectiles group
-        bullet = Projectile(self.x + self.width // 2, self.y)  # Center the projectile
-        self.projectiles_group.add(bullet)
+    def shoot(self, stopped):
+        # Add a delay between shots
+        current_time = pygame.time.get_ticks()
+        if current_time - self.last_shot_time > self.shot_cooldown and stopped == False:
+            bullet = Projectile(self.x + self.width // 2, self.y)  # Center the projectile
+            self.projectiles_group.add(bullet)
+            self.last_shot_time = current_time
 
     def draw(self, screen):
-        # Draw character pawn on the screen
-        pygame.draw.rect(screen, (0, 255, 0), (self.x, self.y, self.width, self.height))
+        # Determine color based on health
+        color = (255, 0, 0) if self.health < 50 else (0, 255, 0)
+        pygame.draw.rect(screen, color, self.rect)
+        # Draw health bar
+        self.draw_health_bar(screen)
+
+    def draw_health_bar(self, screen):
+        bar_width = self.width
+        bar_height = 5
+        fill = (self.health / 100) * bar_width
+        health_bar = pygame.Rect(self.x, self.y - 10, bar_width, bar_height)
+        health_fill = pygame.Rect(self.x, self.y - 10, fill, bar_height)
+
+        pygame.draw.rect(screen, (255, 0, 0), health_bar)
+        pygame.draw.rect(screen, (0, 255, 0), health_fill)
+
+    def take_dmg(self, amount):
+        self.health -= amount
+        if self.health <= 0:
+            self.health = 0
+            self.is_alive = False
+
+    def heal(self, amount):
+        if self.is_alive:
+            self.health = min(100, self.health + amount)
