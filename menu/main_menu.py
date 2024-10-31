@@ -292,17 +292,16 @@ def game_loop():
         for enemy in enemy_group:
             enemy.update(paused=timer.stopped)
             enemy.fire_shot(enemy_projectiles, paused=timer.stopped, curr=timer.elapsed_time)
-
-            if player.is_alive and player.rect.colliderect(enemy.rect):
-                player.take_dmg(10)
-                if not player.is_alive:
-                    print("Player defeated!")
+            
+            check_player_enemy_physical_collision(player, enemy)
+            #if player.is_alive and player.rect.colliderect(enemy.rect):
+            #    player.take_dmg(10)
+            #    if not player.is_alive:
+            #        print("Player defeated!")
 
             if not enemy.living:
-                ship_destroyed_sound.play()
-                dest_enemies.append((enemy.rect.center, pygame.time.get_ticks(), 20))
+                destroyEnemy(dest_enemies, enemy, ship_destroyed_sound)
                 score_system.increase(10)
-                enemy.kill()
 
         enemy_group.draw(screen)
 
@@ -336,8 +335,8 @@ def game_loop():
                     message, start_time, score_system.score, timer.elapsed_time = user_save_and_load.loadHandling(score_system.get_score(), timer.elapsed_time)
                     save_text_show = True
                 if event.key == pygame.K_h: # Press H to send enemies home FOR TESTING ONLY, REMOVE FOR FINAL PRODUCT
-                 for enemy in enemy_group:
-                    startRetreat(enemy, to_despawn)
+                    for enemy in enemy_group:
+                        startRetreat(enemy, to_despawn)
 
         if save_text_show:
             current_time = pygame.time.get_ticks()

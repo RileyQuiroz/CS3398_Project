@@ -24,3 +24,9 @@ def check_player_object_collisions(player, objects):
 
 def handle_player_object_collision(player, obj):
     print(f"Player collided with object at {obj.rect.x}, {obj.rect.y}")
+
+def check_player_enemy_physical_collision(player, enemy):
+    if player.is_alive and player.rect.colliderect(enemy.rect):
+        player.take_dmg(10)
+        if not player.is_alive:
+            print("Player defeated!")
