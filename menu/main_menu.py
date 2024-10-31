@@ -271,7 +271,7 @@ def game_loop():
         proj_group.update(timer.stopped)
         enemy_projectiles.update(timer.stopped)
 
-        player.handle_input()
+        player.handle_input(timer.stopped)
         player.draw(screen)
         proj_group.draw(screen)
         enemy_projectiles.draw(screen)

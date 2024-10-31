@@ -25,17 +25,18 @@ class CharacterPawn:
         self.shot_cooldown = 500  # in milliseconds
         self.last_enemy_collision = 0
 
-    def handle_input(self):
+    def handle_input(self, stopped):
         # Handle basic movement input
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_LEFT]:
-            self.x -= self.speed
-        if keys[pygame.K_RIGHT]:
-            self.x += self.speed
-        if keys[pygame.K_UP]:
-            self.y -= self.speed
-        if keys[pygame.K_DOWN]:
-            self.y += self.speed
+        if(stopped == False):
+            if keys[pygame.K_LEFT]:
+                self.x -= self.speed
+            if keys[pygame.K_RIGHT]:
+                self.x += self.speed
+            if keys[pygame.K_UP]:
+                self.y -= self.speed
+            if keys[pygame.K_DOWN]:
+                self.y += self.speed
 
         # Boundary conditions
         self.x = max(0, min(self.screen_width - self.width, self.x))
