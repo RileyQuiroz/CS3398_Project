@@ -224,8 +224,9 @@ def main_menu():
 # Once game states is finalized, split game_loop functions into different sections depending on game state
 def game_loop():
     # Containers and variables for enemies
-    enemy_group = pygame.sprite.Group()
-    proj_group = pygame.sprite.Group()
+    enemy_group = pygame.sprite.Group() # Holds all enemies on screen
+    proj_group = pygame.sprite.Group() # For player projectiles
+    enemy_proj_group = pygame.sprite.Group() # For enemy projectiles
     to_despawn = pygame.sprite.Group() # For despawning non destroyed enemies
     dest_enemies = [] # For after effects of enemy destruction
     last_spawn = 0 # Time since last enemy spawn
@@ -268,6 +269,7 @@ def game_loop():
         ####update and draw CharacterPawn
         player.handle_input()  # Handle player input  
         player.draw(screen)  # Draw the player character on the screen
+        #proj_group.update(timer.stopped) # Draw player projectiles
 
 
         
@@ -298,13 +300,13 @@ def game_loop():
         # Update enemy position
         for enemy in enemy_group:
             enemy.update(timer.stopped)
-            enemy.fire_shot(proj_group, timer.stopped, current_time)
+            enemy.fire_shot(enemy_proj_group, timer.stopped, current_time)
         
         # Draw all enemies that exist
         enemy_group.draw(screen)
         # Draw all enemy projectiles
-        proj_group.update(timer.stopped)
-        proj_group.draw(screen)
+        enemy_proj_group.update(timer.stopped)
+        enemy_proj_group.draw(screen)
 
         # Display timer and score
         small_font = pygame.font.Font("assets/fonts/Future Edge.ttf", 32)
@@ -318,12 +320,6 @@ def game_loop():
         
         ## Sets current_game_state, defaults to ONGOING, changes depending on logic
         current_game_state = win_lose_system.update()
-
-        ## COMENTED OUT FOR TESTING RILEY'S CODE, UNCOMMENT IF NEEDED
-        #if current_game_state == GameState.ONGOING:
-        #    print("ongoing...")
-        #elif current_game_state == GameState.WIN:
-        #    print("win!")
 
         # Handle events
         for event in pygame.event.get():
@@ -351,12 +347,12 @@ def game_loop():
                     player.shoot() ## call player shoot function
                     
                     #damage all enemys TESTING
-                    for enemy in enemy_group:
-                        enemy.decrease_health(1)
-                        enemy_hurt_sound.play()
+                    #for enemy in enemy_group:
+                    #    enemy.decrease_health(1)
+                    #    enemy_hurt_sound.play()
                         # Handles case of destroyed enemy
-                        if not enemy.living:
-                            destroyEnemy(dest_enemies, enemy, ship_destroyed_sound)
+                    #    if not enemy.living:
+                    #        destroyEnemy(dest_enemies, enemy, ship_destroyed_sound)
 
                     time_since_last_increase = current_time - last_score_increase_time
                     # If within combo time limit (3 seconds), increase combo count (AKA faster pressing space = more points)
