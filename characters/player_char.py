@@ -23,6 +23,7 @@ class CharacterPawn:
         # Cooldown to prevent spamming bullets
         self.last_shot_time = pygame.time.get_ticks()
         self.shot_cooldown = 500  # in milliseconds
+        self.last_enemy_collision = 0
 
     def handle_input(self):
         # Handle basic movement input

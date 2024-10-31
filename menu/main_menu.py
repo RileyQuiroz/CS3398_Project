@@ -293,11 +293,7 @@ def game_loop():
             enemy.update(paused=timer.stopped)
             enemy.fire_shot(enemy_projectiles, paused=timer.stopped, curr=timer.elapsed_time)
             
-            check_player_enemy_physical_collision(player, enemy)
-            #if player.is_alive and player.rect.colliderect(enemy.rect):
-            #    player.take_dmg(10)
-            #    if not player.is_alive:
-            #        print("Player defeated!")
+            check_player_enemy_physical_collision(player, enemy, timer.elapsed_time)
 
             if not enemy.living:
                 destroyEnemy(dest_enemies, enemy, ship_destroyed_sound)
