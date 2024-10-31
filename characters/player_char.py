@@ -24,6 +24,7 @@ class CharacterPawn:
         self.last_shot_time = pygame.time.get_ticks()
         self.shot_cooldown = 500  # in milliseconds
         self.last_enemy_collision = 0
+        self.got_hit = False
 
     def handle_input(self, stopped):
         # Handle basic movement input
@@ -53,9 +54,11 @@ class CharacterPawn:
             self.projectiles_group.add(bullet)
             self.last_shot_time = current_time
 
-    def draw(self, screen):
+    def draw(self, screen, curr_time):
         # Determine color based on health
         color = (255, 0, 0) if self.health < 50 else (0, 255, 0)
+        if(self.got_hit):
+            color = (255,255,255)
         pygame.draw.rect(screen, color, self.rect)
         # Draw health bar
         self.draw_health_bar(screen)

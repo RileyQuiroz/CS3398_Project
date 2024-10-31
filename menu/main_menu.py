@@ -266,13 +266,13 @@ def game_loop():
         timer.update(delta_time)
 
         check_projectile_enemy_collisions(proj_group, enemy_group, damage=1)
-        check_player_projectile_collisions(player, enemy_projectiles, damage=10)
+        check_player_projectile_collisions(player, enemy_projectiles, 10, timer.elapsed_time)
 
         proj_group.update(timer.stopped)
         enemy_projectiles.update(timer.stopped)
 
         player.handle_input(timer.stopped)
-        player.draw(screen)
+        player.draw(screen, timer.elapsed_time)
         proj_group.draw(screen)
         enemy_projectiles.draw(screen)
 
