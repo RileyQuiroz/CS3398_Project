@@ -11,6 +11,7 @@ from obstacles.Rotator import Rotator
 from obstacles.ZigZag import ZigZag
 from tools.game_states import GameState
 from tools.win_lose_system import WinLoseSystem
+from characters.player_char import CharacterPawn
 
 # Initialize pygame and mixer for sound
 pygame.init()
@@ -241,6 +242,9 @@ def game_loop():
     timer.reset()
     timer.start()
 
+    ##instance for CharacterPawn
+    player = CharacterPawn(x=WIDTH // 2, y=HEIGHT -100, projectiles_group=proj_group, screen_width=WIDTH, screen_height=HEIGHT)
+
     while running:
         screen.fill(black_bg)
 
@@ -252,6 +256,12 @@ def game_loop():
 
         # Get current time (for scoring purposes)
         current_time = round(timer.elapsed_time, 2)
+
+        ####update and draw CharacterPawn
+        player.handle_input()  # Handle player input  
+        player.draw(screen)  # Draw the player character on the screen
+
+
         
         # Update enemy position
         for enemy in enemy_group:
@@ -298,6 +308,8 @@ def game_loop():
                     save_text_show = True
                 if event.key == pygame.K_SPACE:  # Press SPACE to increase score (Testing) and damage enemies(Testing)
                     timer.toggle()
+                if event.key == pygame.K_SPACE: ## press space to make the player shoot
+                    player.shoot() ## call player shoot function
                     
                     #damage all enemys TESTING
                     for enemy in enemy_group:
