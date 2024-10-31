@@ -6,7 +6,6 @@ from tools.score_counter import Score
 from tools.score_display import ScoreDisplay
 from savesystem.leaderboard import Leaderboard
 from savesystem import user_save_and_load
-from characters.enemies.enemy_type_a import EnemyTypeA
 from obstacles.Mover import Mover
 from obstacles.Rotator import Rotator
 from obstacles.ZigZag import ZigZag
@@ -269,10 +268,9 @@ def game_loop():
         ####update and draw CharacterPawn
         player.handle_input()  # Handle player input  
         player.draw(screen)  # Draw the player character on the screen
-        #proj_group.update(timer.stopped) # Draw player projectiles
+        proj_group.update(timer.stopped) # Draw player projectiles
+        proj_group.draw(screen)
 
-
-        
         # Basic enemy spawning
         # CONSIDER SPAWN WAVES / ENEMY PLATOONS
         if(timer.stopped == False and len(enemy_group) < max_enemies and current_time - last_spawn >= 3):
@@ -283,19 +281,7 @@ def game_loop():
             spawnEnemy(enemy_group, current_time)
             spawnEnemy(enemy_group, current_time)
             spawnEnemy(enemy_group, current_time)
-            last_spawn_wave = current_time    
-        
-        # Basic enemy spawning
-        # CONSIDER SPAWN WAVES / ENEMY PLATOONS
-        if(timer.stopped == False and len(enemy_group) < max_enemies and current_time - last_spawn >= 3):
-            spawnEnemy(enemy_group, current_time)
-            last_spawn = current_time
-        # Spawn in a wave of enemies every minute (ignores max restriction)
-        if(timer.stopped == False and current_time - last_spawn_wave >= 60):
-            spawnEnemy(enemy_group, current_time)
-            spawnEnemy(enemy_group, current_time)
-            spawnEnemy(enemy_group, current_time)
-            last_spawn_wave = current_time    
+            last_spawn_wave = current_time       
         
         # Update enemy position
         for enemy in enemy_group:
