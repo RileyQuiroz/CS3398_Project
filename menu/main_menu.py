@@ -343,7 +343,7 @@ def game_loop():
                 
                 if event.key == pygame.K_h: # Press H to send enemies home FOR TESTING ONLY, REMOVE FOR FINAL PRODUCT
                  for enemy in enemy_group:
-                    startRetreat(enemy, enemy_group)  # Indented code inside the if block
+                    startRetreat(enemy, to_despawn)
 
                 if event.key == pygame.K_p:  # Press SPACE to increase score (Testing) and damage enemies(Testing)        
                     timer.toggle()
