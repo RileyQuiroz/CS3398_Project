@@ -246,7 +246,7 @@ def game_loop():
     start_time = 0
     running = True
     black_bg = (0, 0, 0)
-    timer = Timer()
+    timer.reset()
     timer.start()
 
     player = CharacterPawn(x=WIDTH // 2, y=HEIGHT - 100, projectiles_group=proj_group, screen_width=WIDTH, screen_height=HEIGHT)
@@ -268,8 +268,8 @@ def game_loop():
         check_projectile_enemy_collisions(proj_group, enemy_group, damage=1)
         check_player_projectile_collisions(player, enemy_projectiles, damage=10)
 
-        proj_group.update(False)
-        enemy_projectiles.update(False)
+        proj_group.update(timer.stopped)
+        enemy_projectiles.update(timer.stopped)
 
         player.handle_input()
         player.draw(screen)
@@ -290,8 +290,8 @@ def game_loop():
             last_spawn_wave = timer.elapsed_time
 
         for enemy in enemy_group:
-            enemy.update(paused=False)
-            enemy.fire_shot(enemy_projectiles, paused=False, curr=timer.elapsed_time)
+            enemy.update(paused=timer.stopped)
+            enemy.fire_shot(enemy_projectiles, paused=timer.stopped, curr=timer.elapsed_time)
 
             if player.is_alive and player.rect.colliderect(enemy.rect):
                 player.take_dmg(10)
@@ -325,8 +325,10 @@ def game_loop():
                 if event.key == pygame.K_ESCAPE:
                     running = False
                     timer.stop()
+                elif event.key == pygame.K_p:
+                    timer.toggle()
                 elif event.key == pygame.K_SPACE:
-                    player.shoot()
+                    player.shoot(timer.stopped)
                 elif event.key == pygame.K_s:
                     message, start_time = user_save_and_load.saveHandling(score_system.get_score(), timer.elapsed_time)
                     save_text_show = True

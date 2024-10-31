@@ -18,7 +18,8 @@ class Projectile(pygame.sprite.Sprite):
         self.rect.y -= self.speed
 
     def update(self,stopped):
-        self.move()
+        if(stopped == False):
+            self.move()
 
     def draw(self, screen):
         screen.blit(self.image, self.rect)

@@ -43,10 +43,10 @@ class CharacterPawn:
         # Update the rect position
         self.rect.topleft = (self.x, self.y)
 
-    def shoot(self):
+    def shoot(self, stopped):
         # Add a delay between shots
         current_time = pygame.time.get_ticks()
-        if current_time - self.last_shot_time > self.shot_cooldown:
+        if current_time - self.last_shot_time > self.shot_cooldown and stopped == False:
             bullet = Projectile(self.x + self.width // 2, self.y)  # Center the projectile
             self.projectiles_group.add(bullet)
             self.last_shot_time = current_time
