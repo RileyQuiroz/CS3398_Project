@@ -4,6 +4,7 @@ import random
 from tools.timer import Timer
 from tools.score_counter import Score
 from tools.score_display import ScoreDisplay
+from tools.collision_hanlder import *
 from savesystem.leaderboard import Leaderboard
 from savesystem import user_save_and_load
 from obstacles.Mover import Mover
@@ -352,6 +353,9 @@ def game_loop():
                 if event.key == pygame.K_k:
                     pass
 
+        # Checks if player has been hit by an enemy projectile 
+        check_projectile_player_collisions(enemy_proj_group, player)
+        
         # Handles the explosion effect after enemy is destroyed
         for enemy_center, time_destroyed, size in dest_enemies[:]:
             if pygame.time.get_ticks() - time_destroyed <= 250: 
