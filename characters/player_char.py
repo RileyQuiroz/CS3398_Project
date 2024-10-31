@@ -5,14 +5,16 @@ import pygame
 from projectiles.projectiles import Projectile
 
 class CharacterPawn:
-    def __init__(self, x, y, projectiles_group):
-        # Initialize character position and movement attributes
+    def __init__(self, x, y, projectiles_group, screen_width, screen_height):
+        # Initialize character position, movement attributes, and screen dimensions
         self.x = x
         self.y = y
         self.speed = 5
         self.width = 40
         self.height = 60
         self.projectiles_group = projectiles_group  # Group for handling projectiles
+        self.screen_width = screen_width
+        self.screen_height = screen_height
 
     def handle_input(self):
         # Handle basic movement input
@@ -26,9 +28,16 @@ class CharacterPawn:
         if keys[pygame.K_DOWN]:
             self.y += self.speed
 
-        # Handle shooting
-        if keys[pygame.K_SPACE]:
-            self.shoot()
+        # Boundary conditions
+        if self.x < 0:
+            self.x = 0
+        elif self.x + self.width > self.screen_width:
+            self.x = self.screen_width - self.width
+
+        if self.y < 0:
+            self.y = 0
+        elif self.y + self.height > self.screen_height:
+            self.y = self.screen_height - self.height
 
     def shoot(self):
         # Fire a projectile and add it to the projectiles group

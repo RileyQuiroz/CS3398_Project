@@ -12,6 +12,8 @@ from obstacles.Rotator import Rotator
 from obstacles.ZigZag import ZigZag
 from tools.game_states import GameState
 from tools.win_lose_system import WinLoseSystem
+from characters.enemies.enemy_spawn_and_despawn import spawnEnemy
+from characters.player_char import CharacterPawn
 from characters.enemies.enemy_spawn_and_despawn import spawnEnemy, despawnEnemy, startRetreat, destroyEnemy
 
 # Initialize pygame and mixer for sound
@@ -248,6 +250,9 @@ def game_loop():
     timer.reset()
     timer.start()
 
+    ##instance for CharacterPawn
+    player = CharacterPawn(x=WIDTH // 2, y=HEIGHT -100, projectiles_group=proj_group, screen_width=WIDTH, screen_height=HEIGHT)
+
     while running:
         screen.fill(black_bg)
 
@@ -259,6 +264,24 @@ def game_loop():
 
         # Get current time (for scoring purposes and enemy spawning)
         current_time = round(timer.elapsed_time, 2)
+
+        ####update and draw CharacterPawn
+        player.handle_input()  # Handle player input  
+        player.draw(screen)  # Draw the player character on the screen
+
+
+        
+        # Basic enemy spawning
+        # CONSIDER SPAWN WAVES / ENEMY PLATOONS
+        if(timer.stopped == False and len(enemy_group) < max_enemies and current_time - last_spawn >= 3):
+            spawnEnemy(enemy_group, current_time)
+            last_spawn = current_time
+        # Spawn in a wave of enemies every minute (ignores max restriction)
+        if(timer.stopped == False and current_time - last_spawn_wave >= 60):
+            spawnEnemy(enemy_group, current_time)
+            spawnEnemy(enemy_group, current_time)
+            spawnEnemy(enemy_group, current_time)
+            last_spawn_wave = current_time    
         
         # Basic enemy spawning
         # CONSIDER SPAWN WAVES / ENEMY PLATOONS
@@ -317,11 +340,15 @@ def game_loop():
                 if event.key == pygame.K_l: # Press L to load game
                     message, start_time, score_system.score, timer.elapsed_time = user_save_and_load.loadHandling(score_system.get_score(), timer.elapsed_time)
                     save_text_show = True
+                
                 if event.key == pygame.K_h: # Press H to send enemies home FOR TESTING ONLY, REMOVE FOR FINAL PRODUCT
-                    for enemy in enemy_group:
-                        startRetreat(enemy, enemy_group)
-                if event.key == pygame.K_SPACE:  # Press SPACE to increase score (Testing) and damage enemies(Testing)
+                 for enemy in enemy_group:
+                    startRetreat(enemy, enemy_group)  # Indented code inside the if block
+
+                if event.key == pygame.K_p:  # Press SPACE to increase score (Testing) and damage enemies(Testing)        
                     timer.toggle()
+                if event.key == pygame.K_SPACE: ## press space to make the player shoot
+                    player.shoot() ## call player shoot function
                     
                     #damage all enemys TESTING
                     for enemy in enemy_group:
