@@ -1,5 +1,6 @@
 import pygame
 import sys
+import random
 from tools.timer import Timer
 from tools.score_counter import Score
 from tools.score_display import ScoreDisplay
@@ -11,6 +12,7 @@ from obstacles.Rotator import Rotator
 from obstacles.ZigZag import ZigZag
 from tools.game_states import GameState
 from tools.win_lose_system import WinLoseSystem
+from characters.enemies.enemy_spawn_and_despawn import spawnEnemy
 from characters.player_char import CharacterPawn
 
 # Initialize pygame and mixer for sound
@@ -61,9 +63,11 @@ hover_sound = pygame.mixer.Sound("assets/sound_efx/hover_sound.wav")  # Replace 
 
 # Enemy sounds
 ship_destroyed_sound = pygame.mixer.Sound("assets/sound_efx/enemy_down.wav")
+ship_destroyed_sound.set_volume(.35)
 enemy_shot_sound = pygame.mixer.Sound("assets/sound_efx/enemy_shot.wav")
+enemy_shot_sound.set_volume(.2)
 enemy_hurt_sound = pygame.mixer.Sound("assets/sound_efx/enemy_hurt.wav")
-enemy_hurt_sound.set_volume(.35)
+enemy_hurt_sound.set_volume(.15)
 
 # Define framerate, clock, and in-game timer
 FPS = 60
@@ -221,8 +225,10 @@ def game_loop():
     # Create enemy for testing
     enemy_group = pygame.sprite.Group()
     proj_group = pygame.sprite.Group()
-    dest_enemies = [] # for after effects of enemy destruction
-    enemy_group.add(EnemyTypeA(100, 100, 50, 350)) # spawns immediately for testing purposes
+    dest_enemies = [] # For after effects of enemy destruction
+    last_spawn = 0 # Time since last enemy spawn
+    last_spawn_wave = 0 # Time since last wave spawn
+    max_enemies = 5 # Can be changed with difficulty
     
     save_text_show = False
     running = True
@@ -254,7 +260,7 @@ def game_loop():
         ticks_since_last_frame = ticks
         timer.update(delta_time)
 
-        # Get current time (for scoring purposes)
+        # Get current time (for scoring purposes and enemy spawning)
         current_time = round(timer.elapsed_time, 2)
 
         ####update and draw CharacterPawn
@@ -263,14 +269,39 @@ def game_loop():
 
 
         
+        # Basic enemy spawning
+        # CONSIDER SPAWN WAVES / ENEMY PLATOONS
+        if(timer.stopped == False and len(enemy_group) < max_enemies and current_time - last_spawn >= 3):
+            spawnEnemy(enemy_group, current_time)
+            last_spawn = current_time
+        # Spawn in a wave of enemies every minute (ignores max restriction)
+        if(timer.stopped == False and current_time - last_spawn_wave >= 60):
+            spawnEnemy(enemy_group, current_time)
+            spawnEnemy(enemy_group, current_time)
+            spawnEnemy(enemy_group, current_time)
+            last_spawn_wave = current_time    
+        
+        # Basic enemy spawning
+        # CONSIDER SPAWN WAVES / ENEMY PLATOONS
+        if(timer.stopped == False and len(enemy_group) < max_enemies and current_time - last_spawn >= 3):
+            spawnEnemy(enemy_group, current_time)
+            last_spawn = current_time
+        # Spawn in a wave of enemies every minute (ignores max restriction)
+        if(timer.stopped == False and current_time - last_spawn_wave >= 60):
+            spawnEnemy(enemy_group, current_time)
+            spawnEnemy(enemy_group, current_time)
+            spawnEnemy(enemy_group, current_time)
+            last_spawn_wave = current_time    
+        
         # Update enemy position
         for enemy in enemy_group:
             enemy.update(timer.stopped)
-            enemy.fire_shot(proj_group, enemy_shot_sound, timer.stopped)
+            enemy.fire_shot(proj_group, timer.stopped, current_time)
+        
         # Draw all enemies that exist
         enemy_group.draw(screen)
         # Draw all enemy projectiles
-        proj_group.update()
+        proj_group.update(timer.stopped)
         proj_group.draw(screen)
 
         # Display timer and score
@@ -286,10 +317,11 @@ def game_loop():
         ## Sets current_game_state, defaults to ONGOING, changes depending on logic
         current_game_state = win_lose_system.update()
 
-        if current_game_state == GameState.ONGOING:
-            print("ongoing...")
-        elif current_game_state == GameState.WIN:
-            print("win!")
+        ## COMENTED OUT FOR TESTING RILEY'S CODE, UNCOMMENT IF NEEDED
+        #if current_game_state == GameState.ONGOING:
+        #    print("ongoing...")
+        #elif current_game_state == GameState.WIN:
+        #    print("win!")
 
         # Handle events
         for event in pygame.event.get():
@@ -333,7 +365,7 @@ def game_loop():
                 if event.key == pygame.K_k:
                     pass
 
-        # Handles the explosion affect after enemy is destroyed
+        # Handles the explosion effect after enemy is destroyed
         for enemy_center, time_destroyed, size in dest_enemies[:]:
             if pygame.time.get_ticks() - time_destroyed <= 250: 
                 pygame.draw.circle(screen, (200, 180, 0), enemy_center, size) 
