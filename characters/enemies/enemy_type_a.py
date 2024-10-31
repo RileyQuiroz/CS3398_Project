@@ -18,16 +18,22 @@ class EnemyTypeA(Enemy):
     def fire_shot(self, proj_group, paused, curr): # Fires a single bullet
         current_time = curr
         # Check if enough time has passed since the last shot
-        if (current_time - self.last_shot_time >= self.fire_delay and self.living == True and paused == False):
+        if (current_time - self.last_shot_time >= self.fire_delay and self.living == True and paused == False and self.heading_home == False):
             projectile = EnemyProjectile(self.rect.centerx, self.rect.centery)
             proj_group.add(projectile)
             self.last_shot_time = current_time
     
     def update(self, paused): # Updates position, will move left and right between specific values, and moves down upon spawning
-        if (self.pos_y < self.spawn_destination_y and paused == False):
+        if (self.pos_y < self.spawn_destination_y and self.heading_home == False and paused == False):
             self.rect.y += self.velocity 
             self.pos_y += self.velocity
+        # This elif will be moved to enemy b when it is complete
+        elif (self.heading_home == True and self.living == True and paused == False):
+            self.rect.y -= 2 
+            self.pos_y -= 2
         elif (self.living == True and paused == False):
             if (self.rect.centerx >= self.right_bound or self.rect.centerx <= self.left_bound):
                 self.velocity *= -1
             self.rect.x += self.velocity
+        
+        
