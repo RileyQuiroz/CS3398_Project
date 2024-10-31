@@ -1,5 +1,6 @@
 import pygame
 import sys
+import random
 from tools.timer import Timer
 from tools.score_counter import Score
 from tools.score_display import ScoreDisplay
@@ -9,8 +10,12 @@ from characters.enemies.enemy_type_a import EnemyTypeA
 from obstacles.Mover import Mover
 from obstacles.Rotator import Rotator
 from obstacles.ZigZag import ZigZag
-from tools.win_lose_system import GameState
+from tools.game_states import GameState
 from tools.win_lose_system import WinLoseSystem
+from characters.enemies.enemy_spawn_and_despawn import spawnEnemy
+from characters.player_char import CharacterPawn
+from characters.enemies.enemy_spawn_and_despawn import spawnEnemy, despawnEnemy, startRetreat, destroyEnemy
+from tools.collision_hanlder import check_projectile_enemy_collisions, check_player_projectile_collisions
 
 # Initialize pygame and mixer for sound
 pygame.init()
@@ -61,9 +66,11 @@ hover_sound = pygame.mixer.Sound("assets/sound_efx/hover_sound.wav")  # Replace 
 
 # Enemy sounds
 ship_destroyed_sound = pygame.mixer.Sound("assets/sound_efx/enemy_down.wav")
+ship_destroyed_sound.set_volume(.35)
 enemy_shot_sound = pygame.mixer.Sound("assets/sound_efx/enemy_shot.wav")
+enemy_shot_sound.set_volume(.2)
 enemy_hurt_sound = pygame.mixer.Sound("assets/sound_efx/enemy_hurt.wav")
-enemy_hurt_sound.set_volume(.35)
+enemy_hurt_sound.set_volume(.15)
 
 # Define framerate, clock, and in-game timer
 FPS = 60
@@ -75,10 +82,8 @@ timer.start()
 score_system = Score()
 score_display = ScoreDisplay(screen, font_size=36, color=NEON_CYAN, position=(50, 50))
 
-# Simple game state system for testing purposes TODO: Maybe fix later
-game_state = GameState()
-
-win_lose_system = WinLoseSystem(score_system) ## TODO: Pass player here when implemented
+# Win/Lose System to update game state
+win_lose_system = WinLoseSystem(score_system, player=None) ##player set after instantiation
 
 # Define menu options
 def draw_text(text, font, color, surface, x, y):
@@ -218,118 +223,136 @@ def main_menu():
         # Update the display
         pygame.display.update()
 
+# Once game states is finalized, split game_loop functions into different sections depending on game state
+# Define the display_defeat_message function
+def display_defeat_message(screen, font):
+    screen.fill((0, 0, 0))  # Fill screen with black
+    defeat_text = font.render("Defeated", True, (255, 0, 0))  # Red text for defeated message
+    text_rect = defeat_text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
+    screen.blit(defeat_text, text_rect)
+    pygame.display.flip()  # Update the display
+
 def game_loop():
-    # Create enemy for testing
+    small_font = pygame.font.Font("assets/fonts/Future Edge.ttf", 32)
+    # Containers and variables for enemies and projectiles
     enemy_group = pygame.sprite.Group()
     proj_group = pygame.sprite.Group()
-    dest_enemies = [] # for after effects of enemy destruction
-    enemy_group.add(EnemyTypeA(100, 100, 50, 350)) # spawns immediately for testing purposes
-    
+    enemy_projectiles = pygame.sprite.Group()
+    to_despawn = pygame.sprite.Group()
+    dest_enemies = []
+    max_enemies = 5
+
     save_text_show = False
+    message = ""
+    start_time = 0
     running = True
-
-    # Fill screen with black background
     black_bg = (0, 0, 0)
-
-     # Initialize variable for score testing/logic
-    last_score_increase_time = 0  # Time of last score increase
-    combo_time_limit = 300.0  # Time window for maintaining score combo
-
-    # Initialize ticks
-    ticks = 0.0
-    ticks_last_frame = 0.0
-
-    # Reset and start the timer
     timer.reset()
     timer.start()
+
+    player = CharacterPawn(x=WIDTH // 2, y=HEIGHT - 100, projectiles_group=proj_group, screen_width=WIDTH, screen_height=HEIGHT)
+    win_lose_system.player = player
+
+    last_spawn = 0
+    last_spawn_wave = 0
+    ticks_last_frame = pygame.time.get_ticks()
 
     while running:
         screen.fill(black_bg)
 
-        # Update timer and score during the game
-        ticks = clock.get_time()
+        ticks = pygame.time.get_ticks()
         delta_time = (ticks - ticks_last_frame) / 1000.0
-        ticks_since_last_frame = ticks
+        ticks_last_frame = ticks
+
         timer.update(delta_time)
 
-        # Get current time (for scoring purposes)
-        current_time = round(timer.elapsed_time, 2)
-        
-        # Update enemy position
-        for enemy in enemy_group:
-            enemy.update(timer.stopped)
-            enemy.fire_shot(proj_group, enemy_shot_sound, timer.stopped)
-        # Draw all enemies that exist
-        enemy_group.draw(screen)
-        # Draw all enemy projectiles
-        proj_group.update()
+        check_projectile_enemy_collisions(proj_group, enemy_group, damage=1)
+        check_player_projectile_collisions(player, enemy_projectiles, damage=10)
+
+        proj_group.update(timer.stopped)
+        enemy_projectiles.update(timer.stopped)
+
+        player.handle_input()
+        player.draw(screen)
         proj_group.draw(screen)
+        enemy_projectiles.draw(screen)
 
-        # Display timer and score
-        small_font = pygame.font.Font("assets/fonts/Future Edge.ttf", 32)
-        draw_text(str(current_time), small_font, NEON_CYAN, screen, 100, 100)
-        score_display.display_score(score_system.get_score())
-
-        # Update in-game obstacles
         for obstacle in obstacle_group:
             obstacle.update(None, delta_time)
             obstacle.draw(screen)
-        
-        
 
-        # Handle events
+        if not timer.stopped and len(enemy_group) < max_enemies and timer.elapsed_time - last_spawn >= 3:
+            spawnEnemy(enemy_group, timer.elapsed_time)
+            last_spawn = timer.elapsed_time
+
+        if not timer.stopped and timer.elapsed_time - last_spawn_wave >= 60:
+            for _ in range(3):
+                spawnEnemy(enemy_group, timer.elapsed_time)
+            last_spawn_wave = timer.elapsed_time
+
+        for enemy in enemy_group:
+            enemy.update(paused=timer.stopped)
+            enemy.fire_shot(enemy_projectiles, paused=timer.stopped, curr=timer.elapsed_time)
+
+            if player.is_alive and player.rect.colliderect(enemy.rect):
+                player.take_dmg(10)
+                if not player.is_alive:
+                    print("Player defeated!")
+
+            if not enemy.living:
+                ship_destroyed_sound.play()
+                dest_enemies.append((enemy.rect.center, pygame.time.get_ticks(), 20))
+                score_system.increase(10)
+                enemy.kill()
+
+        enemy_group.draw(screen)
+
+        draw_text(f"{timer.elapsed_time:.2f}", small_font, NEON_CYAN, screen, 100, 100)
+        score_display.display_score(score_system.get_score())
+
+        current_game_state = win_lose_system.update()
+
+        # Game over logic: check if player health is 0
+        if player.health <= 0:
+            display_defeat_message(screen, font)  # Display "Defeated" message
+            pygame.time.delay(2000)  # Pause for 2 seconds
+            return  # Exit game_loop to go back to the main menu
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:  # Press ESC to return to menu
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
                     running = False
                     timer.stop()
-                if event.key == pygame.K_s: # Press S to save game
+                elif event.key == pygame.K_p:
+                    timer.toggle()
+                elif event.key == pygame.K_SPACE:
+                    player.shoot(timer.stopped)
+                elif event.key == pygame.K_s:
                     message, start_time = user_save_and_load.saveHandling(score_system.get_score(), timer.elapsed_time)
                     save_text_show = True
-                if event.key == pygame.K_l: # Press L to load game
+                elif event.key == pygame.K_l:
                     message, start_time, score_system.score, timer.elapsed_time = user_save_and_load.loadHandling(score_system.get_score(), timer.elapsed_time)
                     save_text_show = True
-                if event.key == pygame.K_SPACE:  # Press SPACE to increase score (Testing) and damage enemies(Testing)
-                    timer.toggle()
-                    
-                    #damage all enemys TESTING
-                    for enemy in enemy_group:
-                        enemy.decrease_health(1)
-                        enemy_hurt_sound.play()
-                        # Handles case of destroyed enemy
-                        if not enemy.living:
-                            dest_enemies.append((enemy.rect.center, pygame.time.get_ticks(), enemy.size))
-                            enemy.kill()
-                            ship_destroyed_sound.play()
+                if event.key == pygame.K_h: # Press H to send enemies home FOR TESTING ONLY, REMOVE FOR FINAL PRODUCT
+                 for enemy in enemy_group:
+                    startRetreat(enemy, to_despawn)
 
-                    time_since_last_increase = current_time - last_score_increase_time
-                    # If within combo time limit (3 seconds), increase combo count (AKA faster pressing space = more points)
-                    if time_since_last_increase <= combo_time_limit:
-                        score_system.increase_combo(1)
-                    else:
-                        score_system.reset_combo()  # Reset combo if too late
-                    
-                    score_system.increase(10)  # Increase score by base points, multiplied by the current multiplier
-                    last_score_increase_time = current_time
-                if event.key == pygame.K_k:
-                    win_lose_system.update()
-        
-        # Handles the explosion affect after enemy is destroyed
+        if save_text_show:
+            current_time = pygame.time.get_ticks()
+            if current_time - start_time < 1500:
+                draw_text(message, smaller_font, WHITE, screen, WIDTH // 2, HEIGHT // 2 + 250)
+            else:
+                save_text_show = False
+
         for enemy_center, time_destroyed, size in dest_enemies[:]:
-            if pygame.time.get_ticks() - time_destroyed <= 250: 
-                pygame.draw.circle(screen, (200, 180, 0), enemy_center, size) 
+            if pygame.time.get_ticks() - time_destroyed <= 250:
+                pygame.draw.circle(screen, (200, 180, 0), enemy_center, size)
             else:
                 dest_enemies.remove((enemy_center, time_destroyed, size))
-                
-        # Keeps save/load message on screen for 1.5 seconds
-        current_time = pygame.time.get_ticks()
-        if save_text_show and current_time - start_time < 1500:
-            draw_text(message, smaller_font, WHITE, screen, WIDTH // 2 - 0, HEIGHT // 2 + 250)
-        else:
-           save_text_show = False
-        pygame.display.flip()
-        clock.tick(60)
 
+        despawnEnemy(to_despawn)
+        pygame.display.flip()
+        clock.tick(FPS)
