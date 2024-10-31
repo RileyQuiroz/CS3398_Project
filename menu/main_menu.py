@@ -313,6 +313,9 @@ def game_loop():
                 # Create explosion effect at the enemy's position
                 dest_enemies.append((enemy.rect.center, pygame.time.get_ticks(), 20))  # explosion size 20
 
+                ##increase score for kill
+                score_system.increase(10) ##increase by 10 points
+
                 # Remove enemy from group
                 enemy.kill()
 
