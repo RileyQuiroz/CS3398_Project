@@ -11,6 +11,7 @@ class Enemy(pygame.sprite.Sprite):
         self.pos_y = -30
         self.size = 10
         self.velocity = 2
+        self.heading_home = False
         # Next 3 lines are for ship's image on screen
         self.image = pygame.Surface((self.size, self.size)) 
         self.image.fill(self.color)  
