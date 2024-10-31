@@ -25,7 +25,7 @@ def startRetreat(enemy, list_of_retreating):
 # this is meant more for enemy type b, but will use type a for now
 def despawnEnemy(retreating):
     for enemy in retreating:
-        enemy.heading_home = True
+        #enemy.heading_home = True
         if(enemy.pos_y <= -30):
             enemy.kill()
 
