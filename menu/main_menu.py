@@ -338,8 +338,8 @@ def game_loop():
                 if event.key == pygame.K_l: # Press L to load game
                     message, start_time, score_system.score, timer.elapsed_time = user_save_and_load.loadHandling(score_system.get_score(), timer.elapsed_time)
                     save_text_show = True
-                if event.key == pygame.K_SPACE:  # Press SPACE to increase score (Testing) and damage enemies(Testing)
-                    timer.toggle()
+                ##if event.key == pygame.K_SPACE:  # Press SPACE to increase score (Testing) and damage enemies(Testing)
+                    #timer.toggle()
                 if event.key == pygame.K_SPACE: ## press space to make the player shoot
                     player.shoot() ## call player shoot function
                     
