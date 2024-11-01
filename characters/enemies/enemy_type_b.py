@@ -1,6 +1,7 @@
 import pygame
 from characters.enemies.enemy_structure import Enemy
 from projectiles.enemy_projectile import EnemyProjectile
+from projectiles.enemy_projectile_angled import EnemyProjectileAngled
 
 class EnemyTypeB(Enemy):
     def __init__(self, x, y, left_bound, right_bound, current_time):
@@ -20,7 +21,10 @@ class EnemyTypeB(Enemy):
         # Check if enough time has passed since the last shot
         if (current_time - self.last_shot_time >= self.fire_delay and self.living == True and paused == False and self.heading_home == False):
             projectile = EnemyProjectile(self.rect.centerx, self.rect.centery)
+            angled_projectile_a = EnemyProjectileAngled(self.rect.centerx, self.rect.centery, 45)
+            angled_projectile_a = EnemyProjectileAngled(self.rect.centerx, self.rect.centery, -45)
             proj_group.add(projectile)
+            proj_group.add(angled_projectile_a)
             self.last_shot_time = current_time
     
     def update(self, paused): # Updates position, will move left and right between specific values, and moves down upon spawning
@@ -31,7 +35,7 @@ class EnemyTypeB(Enemy):
         elif (self.heading_home == True and self.living == True and paused == False):
             self.rect.y -= 2 
             self.pos_y -= 2
-        elif (self.living == True and paused == False):
-            if (self.rect.centerx >= self.right_bound or self.rect.centerx <= self.left_bound):
-                self.velocity *= -1
-            self.rect.x += self.velocity
+        #elif (self.living == True and paused == False):
+        #    if (self.rect.centerx >= self.right_bound or self.rect.centerx <= self.left_bound):
+        #        self.velocity *= -1
+        #    self.rect.x += self.velocity
