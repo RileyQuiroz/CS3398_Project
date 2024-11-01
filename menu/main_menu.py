@@ -278,7 +278,7 @@ def game_loop():
         enemy_projectiles.draw(screen)
 
         for obstacle in obstacle_group:
-            obstacle.update(None, delta_time)
+            obstacle.update(player, delta_time)
             obstacle.draw(screen)
 
         if not timer.stopped and len(enemy_group) < max_enemies and timer.elapsed_time - last_spawn >= 3:

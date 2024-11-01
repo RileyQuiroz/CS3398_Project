@@ -6,8 +6,8 @@ from obstacles.Rotator import Rotator
 # in a zig-zag pattern along a specified trajectory
 class ZigZag(Mover, Rotator):
     def __init__(self, position, velocity, sprite_path):
-        Mover.__init__(self, position, velocity, sprite_path)
         Rotator.__init__(self, position, sprite_path)
+        Mover.__init__(self, position, velocity, sprite_path)
     
     def move(self, dt):
         self.rotate(dt)
