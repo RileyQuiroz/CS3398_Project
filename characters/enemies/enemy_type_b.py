@@ -13,7 +13,7 @@ class EnemyTypeB(Enemy):
         self.image = pygame.Surface((self.size, self.size))
         self.image.fill(self.color)
         self.rect = self.image.get_rect(center=(self.pos_x, self.pos_y))
-        self.fire_delay = 0.9  # Time between shots
+        self.fire_delay = 1.4  # Time between shots
         self.last_shot_time = current_time  # Time since the last shot
         
     def fire_shot(self, proj_group, paused, curr): # Fires a spread of bullets
@@ -21,10 +21,12 @@ class EnemyTypeB(Enemy):
         # Check if enough time has passed since the last shot
         if (current_time - self.last_shot_time >= self.fire_delay and self.living == True and paused == False and self.heading_home == False):
             projectile = EnemyProjectile(self.rect.centerx, self.rect.centery)
-            angled_projectile_a = EnemyProjectileAngled(self.rect.centerx, self.rect.centery, 45)
-            angled_projectile_a = EnemyProjectileAngled(self.rect.centerx, self.rect.centery, -45)
+            angled_projectile_a = EnemyProjectileAngled(self.rect.centerx, self.rect.centery, 135)
+            angled_projectile_b = EnemyProjectileAngled(self.rect.centerx, self.rect.centery, 45)
+            # Shotgun type attack
             proj_group.add(projectile)
             proj_group.add(angled_projectile_a)
+            proj_group.add(angled_projectile_b)
             self.last_shot_time = current_time
     
     def update(self, paused): # Updates position, will move left and right between specific values, and moves down upon spawning

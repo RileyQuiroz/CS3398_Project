@@ -2,9 +2,10 @@
 import pygame
 import random
 from characters.enemies.enemy_type_a import EnemyTypeA
+from characters.enemies.enemy_type_b import EnemyTypeB
 
 # spawns an enemy out of sight
-def spawnEnemy(enemy_list, current_time):
+def spawnEnemy(enemy_list, current_time, enemy_type = 0):
     new_ship_x = random.randint(50, 750)
     new_ship_y = random.randint(30, 200)
     ship_path_distance = random.randint(100, 200)
@@ -15,7 +16,11 @@ def spawnEnemy(enemy_list, current_time):
         left_bound = 30
     if(right_bound > 770):
         right_bound = 770
-    enemy_list.add(EnemyTypeA(new_ship_x, new_ship_y, left_bound, right_bound, current_time))
+    # Spawn in correct type of enemy
+    if(enemy_type == 0):
+        enemy_list.add(EnemyTypeA(new_ship_x, new_ship_y, left_bound, right_bound, current_time))
+    elif(enemy_type == 1):
+        enemy_list.add(EnemyTypeB(new_ship_x, new_ship_y, left_bound, right_bound, current_time))
 
 # this is meant more for enemy type b, but will use type a for now
 def startRetreat(enemy, list_of_retreating):

@@ -12,7 +12,6 @@ from obstacles.Rotator import Rotator
 from obstacles.ZigZag import ZigZag
 from tools.game_states import GameState
 from tools.win_lose_system import WinLoseSystem
-from characters.enemies.enemy_spawn_and_despawn import spawnEnemy
 from characters.player_char import CharacterPawn
 from characters.enemies.enemy_spawn_and_despawn import spawnEnemy, despawnEnemy, startRetreat, destroyEnemy
 from tools.collision_hanlder import check_projectile_enemy_collisions, check_player_projectile_collisions
@@ -255,6 +254,9 @@ def game_loop():
     last_spawn = 0
     last_spawn_wave = 0
     ticks_last_frame = pygame.time.get_ticks()
+    
+    # Testing enemy type B
+    spawnEnemy(enemy_group, timer.elapsed_time, 1)
 
     while running:
         screen.fill(black_bg)
@@ -281,12 +283,12 @@ def game_loop():
             obstacle.draw(screen)
 
         if not timer.stopped and len(enemy_group) < max_enemies and timer.elapsed_time - last_spawn >= 3:
-            spawnEnemy(enemy_group, timer.elapsed_time)
+            spawnEnemy(enemy_group, timer.elapsed_time, 0)
             last_spawn = timer.elapsed_time
 
         if not timer.stopped and timer.elapsed_time - last_spawn_wave >= 60:
             for _ in range(3):
-                spawnEnemy(enemy_group, timer.elapsed_time)
+                spawnEnemy(enemy_group, timer.elapsed_time, 0)
             last_spawn_wave = timer.elapsed_time
 
         for enemy in enemy_group:
