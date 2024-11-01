@@ -11,6 +11,7 @@ from obstacles.Mover import Mover
 from obstacles.Rotator import Rotator
 from obstacles.ZigZag import ZigZag
 from tools.game_states import GameState
+from tools.end_screen import EndScreen
 from tools.win_lose_system import WinLoseSystem
 from characters.enemies.enemy_spawn_and_despawn import spawnEnemy
 from characters.player_char import CharacterPawn
@@ -304,14 +305,42 @@ def game_loop():
 
         draw_text(f"{timer.elapsed_time:.2f}", small_font, NEON_CYAN, screen, 100, 100)
         score_display.display_score(score_system.get_score())
-
+        
         current_game_state = win_lose_system.update()
 
-        # Game over logic: check if player health is 0
-        if player.health <= 0:
-            display_defeat_message(screen, font)  # Display "Defeated" message
-            pygame.time.delay(2000)  # Pause for 2 seconds
-            return  # Exit game_loop to go back to the main menu
+        ## Check win/loss condition and then go to end screen
+        if current_game_state != GameState.ONGOING:
+            end_screen = EndScreen(screen, player)
+            end_screen_display = True
+            while end_screen_display:
+                end_screen.display(current_game_state)
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        pygame.quit()
+                        sys.exit()
+                    elif event.type == pygame.MOUSEBUTTONDOWN:
+                        if event.button == 1:  # Left mouse button
+                            pos = event.pos
+                            selected_option = end_screen.check_option_click(pos)
+                            if selected_option == "Restart":
+                                end_screen_display = False
+                                score_system.reset()
+                                timer.reset()
+                                player.heal(100)
+                                player.is_alive = True
+                                print("Game restarted!")
+                                timer.start()
+                                win_lose_system.reset()
+                            elif selected_option == "Main Menu":
+                                end_screen_display = False
+                                score_system.reset()
+                                timer.reset()
+                                player.heal(100)
+                                player.is_alive = True
+                                main_menu()
+                            elif selected_option == "Quit":
+                                pygame.quit()
+                                exit()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
