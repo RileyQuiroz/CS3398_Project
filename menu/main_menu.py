@@ -16,6 +16,8 @@ from characters.enemies.enemy_spawn_and_despawn import spawnEnemy
 from characters.player_char import CharacterPawn
 from characters.enemies.enemy_spawn_and_despawn import spawnEnemy, despawnEnemy, startRetreat, destroyEnemy
 from tools.collision_hanlder import check_projectile_enemy_collisions, check_player_projectile_collisions
+from tools.Star_and_planet_bg_logic import Background
+
 
 # Initialize pygame and mixer for sound
 pygame.init()
@@ -106,6 +108,8 @@ def main_menu():
 
     while True:
         screen.blit(background, (0, 0))  # Draw the background
+        #background.update()
+        #background.draw()
         mouse_pos = pygame.mouse.get_pos()
 
         # Handle the main menu
@@ -231,8 +235,13 @@ def display_defeat_message(screen, font):
     screen.blit(defeat_text, text_rect)
     pygame.display.flip()  # Update the display
 
+
+
 def game_loop():
     small_font = pygame.font.Font("assets/fonts/Future Edge.ttf", 32)
+    #init background
+    background = Background(screen)
+
     # Containers and variables for enemies and projectiles
     enemy_group = pygame.sprite.Group()
     proj_group = pygame.sprite.Group()
@@ -257,7 +266,9 @@ def game_loop():
     ticks_last_frame = pygame.time.get_ticks()
 
     while running:
-        screen.fill(black_bg)
+        ##screen.fill(black_bg)
+        background.update()
+        background.draw()
 
         ticks = pygame.time.get_ticks()
         delta_time = (ticks - ticks_last_frame) / 1000.0
