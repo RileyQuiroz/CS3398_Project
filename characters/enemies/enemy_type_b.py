@@ -25,9 +25,9 @@ class EnemyTypeB(Enemy):
         current_time = curr
         # Check if enough time has passed since the last shot
         if (current_time - self.last_shot_time >= self.fire_delay and self.living == True and paused == False and self.heading_home == False):
-            projectile = EnemyProjectile(self.rect.centerx, self.rect.centery)
-            angled_projectile_a = EnemyProjectileAngled(self.rect.centerx, self.rect.centery, 135)
-            angled_projectile_b = EnemyProjectileAngled(self.rect.centerx, self.rect.centery, 45)
+            projectile = EnemyProjectile(self.rect.centerx, self.rect.centery, 5)
+            angled_projectile_a = EnemyProjectileAngled(self.rect.centerx, self.rect.centery, 135, 5)
+            angled_projectile_b = EnemyProjectileAngled(self.rect.centerx, self.rect.centery, 45, 5)
             # Shotgun type attack
             proj_group.add(projectile)
             proj_group.add(angled_projectile_a)
