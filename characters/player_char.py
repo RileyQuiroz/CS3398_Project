@@ -67,8 +67,8 @@ class CharacterPawn:
         bar_width = self.width
         bar_height = 5
         fill = (self.health / 100) * bar_width
-        health_bar = pygame.Rect(self.x, self.y - 10, bar_width, bar_height)
-        health_fill = pygame.Rect(self.x, self.y - 10, fill, bar_height)
+        health_bar = pygame.Rect(10, self.screen_height - bar_height - 10, bar_width, bar_height)
+        health_fill = pygame.Rect(10, self.screen_height - bar_height - 10, fill, bar_height)
 
         pygame.draw.rect(screen, (255, 0, 0), health_bar)
         pygame.draw.rect(screen, (0, 255, 0), health_fill)
