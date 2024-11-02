@@ -8,7 +8,7 @@ class EnemyTypeB(Enemy):
     def __init__(self, x, y, left_bound, right_bound, current_time):
         super().__init__(3, x, y)
         self.size = 25  
-        self.velocity = 3
+        self.velocity = 4
         self.left_bound = left_bound
         self.right_bound = right_bound  
         self.image = pygame.Surface((self.size, self.size))
@@ -43,9 +43,11 @@ class EnemyTypeB(Enemy):
         elif (self.pos_y < self.spawn_destination_y and self.heading_home == False and paused == False):
             self.rect.y += self.velocity 
             self.pos_y += self.velocity
+        # Go home
         elif (self.heading_home == True and self.living == True and paused == False):
             self.rect.y -= 2 
             self.pos_y -= 2
+        # Movement
         elif (self.living == True and paused == False):
             self.movement_angle += self.movement_direction
             if (self.movement_angle >= math.pi or self.movement_angle <= 0):  # math.pi radians = 180 degrees
