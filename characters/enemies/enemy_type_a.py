@@ -1,6 +1,6 @@
 import pygame
 from characters.enemies.enemy_structure import Enemy
-from characters.enemies.enemy_projectile import EnemyProjectile
+from projectiles.enemy_projectile import EnemyProjectile
 
 class EnemyTypeA(Enemy):
     def __init__(self, x, y, left_bound, right_bound, current_time):

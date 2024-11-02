@@ -4,9 +4,9 @@ import random
 from tools.timer import Timer
 from tools.score_counter import Score
 from tools.score_display import ScoreDisplay
+from tools.collision_hanlder import *
 from savesystem.leaderboard import Leaderboard
 from savesystem import user_save_and_load
-from characters.enemies.enemy_type_a import EnemyTypeA
 from obstacles.Mover import Mover
 from obstacles.Rotator import Rotator
 from obstacles.ZigZag import ZigZag
@@ -267,13 +267,13 @@ def game_loop():
         timer.update(delta_time)
 
         check_projectile_enemy_collisions(proj_group, enemy_group, damage=1)
-        check_player_projectile_collisions(player, enemy_projectiles, damage=10)
+        check_player_projectile_collisions(player, enemy_projectiles, 10, timer.elapsed_time)
 
         proj_group.update(timer.stopped)
         enemy_projectiles.update(timer.stopped)
 
-        player.handle_input()
-        player.draw(screen)
+        player.handle_input(timer.stopped)
+        player.draw(screen, timer.elapsed_time)
         proj_group.draw(screen)
         enemy_projectiles.draw(screen)
 
@@ -291,19 +291,15 @@ def game_loop():
             last_spawn_wave = timer.elapsed_time
 
         for enemy in enemy_group:
+            enemy.change_color()
             enemy.update(paused=timer.stopped)
             enemy.fire_shot(enemy_projectiles, paused=timer.stopped, curr=timer.elapsed_time)
-
-            if player.is_alive and player.rect.colliderect(enemy.rect):
-                player.take_dmg(10)
-                if not player.is_alive:
-                    print("Player defeated!")
+            
+            check_player_enemy_physical_collision(player, enemy, timer.elapsed_time)
 
             if not enemy.living:
-                ship_destroyed_sound.play()
-                dest_enemies.append((enemy.rect.center, pygame.time.get_ticks(), 20))
+                destroyEnemy(dest_enemies, enemy, ship_destroyed_sound)
                 score_system.increase(10)
-                enemy.kill()
 
         enemy_group.draw(screen)
 
@@ -337,8 +333,8 @@ def game_loop():
                     message, start_time, score_system.score, timer.elapsed_time = user_save_and_load.loadHandling(score_system.get_score(), timer.elapsed_time)
                     save_text_show = True
                 if event.key == pygame.K_h: # Press H to send enemies home FOR TESTING ONLY, REMOVE FOR FINAL PRODUCT
-                 for enemy in enemy_group:
-                    startRetreat(enemy, to_despawn)
+                    for enemy in enemy_group:
+                        startRetreat(enemy, to_despawn)
 
         if save_text_show:
             current_time = pygame.time.get_ticks()
