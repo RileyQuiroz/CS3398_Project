@@ -23,7 +23,7 @@ class EnemyTypeA(Enemy):
             proj_group.add(projectile)
             self.last_shot_time = current_time
     
-    def update(self, paused): # Updates position, will move left and right between specific values, and moves down upon spawning
+    def update(self, paused, curr_time): # Updates position, will move left and right between specific values, and moves down upon spawning
         if (self.pos_y < self.spawn_destination_y and self.heading_home == False and paused == False):
             self.rect.y += self.velocity 
             self.pos_y += self.velocity

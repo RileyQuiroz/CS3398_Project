@@ -20,6 +20,9 @@ class EnemyTypeB(Enemy):
         self.movement_radius = right_bound - x
         self.movement_direction = 0.05
         self.movement_center = x
+        self.movement_stop_time = 0
+        self.arc_stopped = False
+        self.arcs_complete = 0
         
     def fire_shot(self, proj_group, paused, curr): # Fires a spread of bullets
         current_time = curr
@@ -35,7 +38,7 @@ class EnemyTypeB(Enemy):
             self.last_shot_time = current_time
     
     
-    def update(self, paused): # Updates position, will move left and right between specific values, and moves down upon spawning
+    def update(self, paused, curr_time): # Updates position, will move left and right between specific values, and moves down upon spawning
         # Move into position
         if(self.pos_x < self.right_bound+20 and self.heading_home == False and paused == False):
             self.rect.x += self.velocity 
@@ -49,9 +52,19 @@ class EnemyTypeB(Enemy):
             self.pos_y -= 2
         # Movement
         elif (self.living == True and paused == False):
-            self.movement_angle += self.movement_direction
+            if(self.arc_stopped == False):
+                self.movement_angle += self.movement_direction
             if (self.movement_angle >= math.pi or self.movement_angle <= 0):  # math.pi radians = 180 degrees
-                self.movement_direction = -1 * self.movement_direction
+                if(self.arc_stopped == False): # Stops when at either end of arc
+                    self.movement_stop_time = curr_time
+                    self.arc_stopped = True
+                    self.arcs_complete += 1
+                    if(self.arcs_complete == 5): # Leave after 5 arcs completed
+                        self.heading_home = True
+                elif(curr_time - self.movement_stop_time >= 2): # Moves every two seconds
+                    self.arc_stopped = False
+                    self.movement_direction = -1 * self.movement_direction
             # Update position along the circular arc
-            self.rect.x = self.movement_center + int(self.movement_radius * math.cos(self.movement_angle))
-            self.rect.y = self.pos_y + int(self.movement_radius * math.sin(self.movement_angle))
+            if(self.arc_stopped == False):
+                self.rect.x = self.movement_center + int(self.movement_radius * math.cos(self.movement_angle))
+                self.rect.y = self.pos_y + int(self.movement_radius * math.sin(self.movement_angle))

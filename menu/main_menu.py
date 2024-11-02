@@ -293,7 +293,7 @@ def game_loop():
 
         for enemy in enemy_group:
             enemy.change_color()
-            enemy.update(paused=timer.stopped)
+            enemy.update(timer.stopped, timer.elapsed_time)
             enemy.fire_shot(enemy_projectiles, paused=timer.stopped, curr=timer.elapsed_time)
             
             check_player_enemy_physical_collision(player, enemy, timer.elapsed_time)
