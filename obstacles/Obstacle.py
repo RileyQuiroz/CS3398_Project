@@ -21,19 +21,27 @@ class Obstacle:
         x_dist = playerCenter[0] - center[0]
         y_dist = playerCenter[1] - center[1]
 
-
+        # Determine if the obstacle is to the left of the player
         if x_dist < 0:
             x_dir = -1
         else:
             x_dir = 1
 
+        # Determine if the obstacle is to the right of the player
         if y_dist < 0:
             y_dir = -1
         else:
             y_dir = 1
 
-        player.x += self.velocity[0] * x_dir
-        player.y += self.velocity[1] * y_dir
+        # Player knockback is based on object velocity, which
+        # must be greater than or equal to (10, 10)
+        if self.velocity[0] < 10 and self.velocity[1] < 10:
+            knockback = (10, 10)
+        else:
+            knockback = self.velocity
+        
+        player.x += knockback[0] * x_dir
+        player.y += knockback[1] * y_dir
 
     def move(self, dt):
         # In-game obstacles do not move by default
@@ -44,6 +52,9 @@ class Obstacle:
         pygame.draw.rect(surface, (100, 100, 100), self.rect)
 
     def update(self, player, dt):
+        self.rect.x = self.position[0]
+        self.rect.y = self.position[1]
+
         if player:
             self.check_for_player_collision(player)
 

@@ -28,3 +28,4 @@ class Rotator(Obstacle):
         new_y_pos = self.center[1] + math.sin(self.theta) * self.center_distance
 
         self.position = (new_x_pos, new_y_pos)
+
