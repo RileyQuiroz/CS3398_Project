@@ -10,8 +10,8 @@ class CharacterPawn:
         self.x = x
         self.y = y
         self.speed = 5
-        self.width = 40
-        self.height = 60
+        self.width = 20
+        self.height = 30
         self.projectiles_group = projectiles_group  # Group for handling projectiles
         self.screen_width = screen_width
         self.screen_height = screen_height
