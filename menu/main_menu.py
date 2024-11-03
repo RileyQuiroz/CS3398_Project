@@ -10,6 +10,8 @@ from savesystem import user_save_and_load
 from obstacles.Mover import Mover
 from obstacles.Rotator import Rotator
 from obstacles.ZigZag import ZigZag
+from obstacles.Destructible import Destructible
+from obstacles.Dangerous import Dangerous
 from tools.game_states import GameState
 from tools.win_lose_system import WinLoseSystem
 from characters.player_char import CharacterPawn
@@ -45,7 +47,9 @@ BOULDER_PATH = "assets/objects/spr_boulder_0.png"
 obstacle_group = [
     Mover((200, 200), (10, 10), BOULDER_PATH),
     Rotator((200, 400), BOULDER_PATH),
-    ZigZag((0, 300), (50, 0), BOULDER_PATH)
+    ZigZag((0, 300), (50, 0), BOULDER_PATH),
+    Dangerous((500, 550), BOULDER_PATH),
+    Destructible((550, 300), 5, BOULDER_PATH)
 ]
 
 ############# FONT AND TEXT ALIGNTMENT #########################
