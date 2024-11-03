@@ -212,7 +212,6 @@ def main_menu():
                     # Check which option is clicked and switch to the respective menu
                     if start_game_rect.collidepoint(event.pos):
                         print("Start Game clicked!")
-                        score_system.increase(10)  # For testing purposes
                         timer.reset()  # Reset timer when starting a new game
                         timer.start()  # Start the timer
                         game_loop()  # Switch to the game loop
