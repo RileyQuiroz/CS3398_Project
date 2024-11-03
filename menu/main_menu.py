@@ -48,7 +48,9 @@ BOULDER_PATH = "assets/objects/spr_boulder_0.png"
 obstacle_group = [
     Mover((200, 200), (10, 10), BOULDER_PATH),
     Rotator((200, 400), BOULDER_PATH),
-    ZigZag((0, 300), (50, 0), BOULDER_PATH)
+    ZigZag((0, 300), (50, 0), BOULDER_PATH),
+    Dangerous((500, 550), BOULDER_PATH),
+    Destructible((550, 300), 5, BOULDER_PATH)
 ]
 
 ############# FONT AND TEXT ALIGNTMENT #########################
