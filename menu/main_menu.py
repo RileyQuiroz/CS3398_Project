@@ -295,7 +295,7 @@ def game_loop():
         if not timer.stopped and len(enemy_group) < max_enemies and timer.elapsed_time - last_spawn >= 4:
             spawnEnemy(enemy_group, timer.elapsed_time, 0)
             last_spawn = timer.elapsed_time
-        if not timer.stopped and timer.elapsed_time - last_spawn_wave >= 20: #Spawn wave is not blocked by max enemies, set to 20s for demoing(ideally would be longer)
+        if not timer.stopped and timer.elapsed_time - last_spawn_wave >= 30: #Spawn wave is not blocked by max enemies, set to 30s for demoing(ideally would be longer)
             spawnEnemy(enemy_group, timer.elapsed_time, 1)
             spawnEnemy(enemy_group, timer.elapsed_time, 0)
             spawnEnemy(enemy_group, timer.elapsed_time, 0)
