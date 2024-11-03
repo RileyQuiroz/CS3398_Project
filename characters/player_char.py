@@ -9,9 +9,9 @@ class CharacterPawn:
         # Initialize character position, movement attributes, and screen dimensions
         self.x = x
         self.y = y
-        self.speed = 5
-        self.width = 40
-        self.height = 60
+        self.speed = 4.5
+        self.width = 20
+        self.height = 30
         self.projectiles_group = projectiles_group  # Group for handling projectiles
         self.screen_width = screen_width
         self.screen_height = screen_height
@@ -64,11 +64,11 @@ class CharacterPawn:
         self.draw_health_bar(screen)
 
     def draw_health_bar(self, screen):
-        bar_width = self.width
-        bar_height = 5
+        bar_width = 200
+        bar_height = 20
         fill = (self.health / 100) * bar_width
-        health_bar = pygame.Rect(self.x, self.y - 10, bar_width, bar_height)
-        health_fill = pygame.Rect(self.x, self.y - 10, fill, bar_height)
+        health_bar = pygame.Rect(10, self.screen_height - bar_height - 10, bar_width, bar_height)
+        health_fill = pygame.Rect(10, self.screen_height - bar_height - 10, fill, bar_height)
 
         pygame.draw.rect(screen, (255, 0, 0), health_bar)
         pygame.draw.rect(screen, (0, 255, 0), health_fill)

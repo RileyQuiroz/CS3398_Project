@@ -15,6 +15,8 @@ from tools.win_lose_system import WinLoseSystem
 from characters.player_char import CharacterPawn
 from characters.enemies.enemy_spawn_and_despawn import spawnEnemy, despawnEnemy, startRetreat, destroyEnemy
 from tools.collision_hanlder import check_projectile_enemy_collisions, check_player_projectile_collisions
+from tools.Star_and_planet_bg_logic import Background
+
 
 # Initialize pygame and mixer for sound
 pygame.init()
@@ -39,10 +41,11 @@ BLACK = (0, 0, 0)
 leaderboard = Leaderboard("time_scoreboard.json")
 
 # Define in-game obstacles
+BOULDER_PATH = "assets/objects/spr_boulder_0.png"
 obstacle_group = [
-    Mover(30, (200, 200), (10, 10), WHITE),
-    Rotator(30, (200, 400), NEON_PURPLE),
-    ZigZag(30, (0, 300), (50, 0), NEON_CYAN)
+    Mover((200, 200), (10, 10), BOULDER_PATH),
+    Rotator((200, 400), BOULDER_PATH),
+    ZigZag((0, 300), (50, 0), BOULDER_PATH)
 ]
 
 ############# FONT AND TEXT ALIGNTMENT #########################
@@ -105,6 +108,8 @@ def main_menu():
 
     while True:
         screen.blit(background, (0, 0))  # Draw the background
+        #background.update()
+        #background.draw()
         mouse_pos = pygame.mouse.get_pos()
 
         # Handle the main menu
@@ -230,8 +235,13 @@ def display_defeat_message(screen, font):
     screen.blit(defeat_text, text_rect)
     pygame.display.flip()  # Update the display
 
+
+
 def game_loop():
     small_font = pygame.font.Font("assets/fonts/Future Edge.ttf", 32)
+    #init background
+    background = Background(screen)
+
     # Containers and variables for enemies and projectiles
     enemy_group = pygame.sprite.Group()
     proj_group = pygame.sprite.Group()
@@ -259,7 +269,9 @@ def game_loop():
     spawnEnemy(enemy_group, timer.elapsed_time, 1)
 
     while running:
-        screen.fill(black_bg)
+        ##screen.fill(black_bg)
+        background.update()
+        background.draw()
 
         ticks = pygame.time.get_ticks()
         delta_time = (ticks - ticks_last_frame) / 1000.0
@@ -279,7 +291,7 @@ def game_loop():
         enemy_projectiles.draw(screen)
 
         for obstacle in obstacle_group:
-            obstacle.update(None, delta_time)
+            obstacle.update(player, delta_time)
             obstacle.draw(screen)
 
         if not timer.stopped and len(enemy_group) < max_enemies and timer.elapsed_time - last_spawn >= 3:
