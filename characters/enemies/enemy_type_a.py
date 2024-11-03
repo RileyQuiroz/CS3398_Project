@@ -6,13 +6,13 @@ class EnemyTypeA(Enemy):
     def __init__(self, x, y, left_bound, right_bound, current_time):
         super().__init__(3, x, y)
         self.size = 25  
-        self.velocity = 3
+        self.velocity = 2
         self.left_bound = left_bound
         self.right_bound = right_bound  
         self.image = pygame.Surface((self.size, self.size))
         self.image.fill(self.color)
         self.rect = self.image.get_rect(center=(self.pos_x, self.pos_y))
-        self.fire_delay = 0.9  # Time between shots
+        self.fire_delay = 1.1  # Time between shots
         self.last_shot_time = current_time  # Time since the last shot
         
     def fire_shot(self, proj_group, paused, curr): # Fires a single bullet
@@ -27,10 +27,6 @@ class EnemyTypeA(Enemy):
         if (self.pos_y < self.spawn_destination_y and self.heading_home == False and paused == False):
             self.rect.y += self.velocity 
             self.pos_y += self.velocity
-        # This elif will be moved to enemy b when it is complete
-        elif (self.heading_home == True and self.living == True and paused == False):
-            self.rect.y -= 2 
-            self.pos_y -= 2
         elif (self.living == True and paused == False):
             if (self.rect.centerx >= self.right_bound or self.rect.centerx <= self.left_bound):
                 self.velocity *= -1

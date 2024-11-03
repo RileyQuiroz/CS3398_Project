@@ -8,7 +8,7 @@ from characters.enemies.enemy_type_b import EnemyTypeB
 def spawnEnemy(enemy_list, current_time, enemy_type = 0):
     # Spawn in correct type of enemy
     if (enemy_type == 0):
-        # Enemy moves back and forth and fires one pellet
+        # Enemy type A
         new_ship_x = random.randint(50, 750)
         new_ship_y = random.randint(30, 200)
         ship_path_distance = random.randint(100, 200)
@@ -20,7 +20,7 @@ def spawnEnemy(enemy_list, current_time, enemy_type = 0):
             right_bound = 770
         enemy_list.add(EnemyTypeA(new_ship_x, new_ship_y, left_bound, right_bound, current_time))
     elif (enemy_type == 1):
-        # Enemy arcs and fires spread pattern
+        # Enemy type B
         new_ship_x = 400
         new_ship_y = 50   
         ship_path_distance = 200
@@ -31,7 +31,6 @@ def spawnEnemy(enemy_list, current_time, enemy_type = 0):
 def startRetreat(enemy, list_of_retreating):
     if enemy.heading_home == True and enemy not in list_of_retreating:
         list_of_retreating.add(enemy)
-        print("going home")
 
 def despawnEnemy(retreating):
     for enemy in retreating:

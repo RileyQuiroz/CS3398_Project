@@ -264,9 +264,6 @@ def game_loop():
     last_spawn = 0
     last_spawn_wave = 0
     ticks_last_frame = pygame.time.get_ticks()
-    
-    # Testing enemy type B
-    spawnEnemy(enemy_group, timer.elapsed_time, 1)
 
     while running:
         ##screen.fill(black_bg)
@@ -293,31 +290,27 @@ def game_loop():
         for obstacle in obstacle_group:
             obstacle.update(player, delta_time)
             obstacle.draw(screen)
-
-        if not timer.stopped and len(enemy_group) < max_enemies and timer.elapsed_time - last_spawn >= 5:
+            
+        # Enemy Spawning
+        if not timer.stopped and len(enemy_group) < max_enemies and timer.elapsed_time - last_spawn >= 4:
             spawnEnemy(enemy_group, timer.elapsed_time, 0)
             last_spawn = timer.elapsed_time
-
         if not timer.stopped and timer.elapsed_time - last_spawn_wave >= 60: #Spawn wave is not blocked by max enemies
             spawnEnemy(enemy_group, timer.elapsed_time, 1)
             spawnEnemy(enemy_group, timer.elapsed_time, 0)
             spawnEnemy(enemy_group, timer.elapsed_time, 0)
-            last_spawn_wave = timer.elapsed_time
-            
-        for enemy in enemy_group:
-            startRetreat(enemy, to_despawn)
+            last_spawn_wave = timer.elapsed_time            
 
+        # Update enemy conditions
         for enemy in enemy_group:
-            enemy.change_color()
+            startRetreat(enemy, to_despawn) # Enemy B retreat call
+            enemy.change_color() # Change color if hurt
             enemy.update(timer.stopped, timer.elapsed_time)
             enemy.fire_shot(enemy_projectiles, paused=timer.stopped, curr=timer.elapsed_time)
-            
             check_player_enemy_physical_collision(player, enemy, timer.elapsed_time)
-
             if not enemy.living:
                 destroyEnemy(dest_enemies, enemy, ship_destroyed_sound)
                 score_system.increase(10)
-
         enemy_group.draw(screen)
 
         draw_text(f"{timer.elapsed_time:.2f}", small_font, NEON_CYAN, screen, 100, 100)
@@ -349,9 +342,6 @@ def game_loop():
                 elif event.key == pygame.K_l:
                     message, start_time, score_system.score, timer.elapsed_time = user_save_and_load.loadHandling(score_system.get_score(), timer.elapsed_time)
                     save_text_show = True
-                #if event.key == pygame.K_h: # Press H to send enemies home FOR TESTING ONLY, REMOVE FOR FINAL PRODUCT
-                #    for enemy in enemy_group:
-                #        startRetreat(enemy, to_despawn)
 
         if save_text_show:
             current_time = pygame.time.get_ticks()
