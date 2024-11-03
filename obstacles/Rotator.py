@@ -5,8 +5,8 @@ from obstacles.Obstacle import Obstacle
 # in a circle around a central point in the game
 # environment
 class Rotator(Obstacle):
-    def __init__(self, radius, position, color):
-        super().__init__(radius, position, color)
+    def __init__(self, position, sprite_path):
+        super().__init__(position, sprite_path)
 
         self.center = self.position
         self.theta = 0
@@ -28,3 +28,4 @@ class Rotator(Obstacle):
         new_y_pos = self.center[1] + math.sin(self.theta) * self.center_distance
 
         self.position = (new_x_pos, new_y_pos)
+

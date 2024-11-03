@@ -4,9 +4,9 @@ import random
 from tools.timer import Timer
 from tools.score_counter import Score
 from tools.score_display import ScoreDisplay
+from tools.collision_hanlder import *
 from savesystem.leaderboard import Leaderboard
 from savesystem import user_save_and_load
-from characters.enemies.enemy_type_a import EnemyTypeA
 from obstacles.Mover import Mover
 from obstacles.Rotator import Rotator
 from obstacles.ZigZag import ZigZag
@@ -16,6 +16,8 @@ from characters.enemies.enemy_spawn_and_despawn import spawnEnemy
 from characters.player_char import CharacterPawn
 from characters.enemies.enemy_spawn_and_despawn import spawnEnemy, despawnEnemy, startRetreat, destroyEnemy
 from tools.collision_hanlder import check_projectile_enemy_collisions, check_player_projectile_collisions
+from tools.Star_and_planet_bg_logic import Background
+
 
 # Initialize pygame and mixer for sound
 pygame.init()
@@ -40,10 +42,11 @@ BLACK = (0, 0, 0)
 leaderboard = Leaderboard("time_scoreboard.json")
 
 # Define in-game obstacles
+BOULDER_PATH = "assets/objects/spr_boulder_0.png"
 obstacle_group = [
-    Mover(30, (200, 200), (10, 10), WHITE),
-    Rotator(30, (200, 400), NEON_PURPLE),
-    ZigZag(30, (0, 300), (50, 0), NEON_CYAN)
+    Mover((200, 200), (10, 10), BOULDER_PATH),
+    Rotator((200, 400), BOULDER_PATH),
+    ZigZag((0, 300), (50, 0), BOULDER_PATH)
 ]
 
 ############# FONT AND TEXT ALIGNTMENT #########################
@@ -106,6 +109,8 @@ def main_menu():
 
     while True:
         screen.blit(background, (0, 0))  # Draw the background
+        #background.update()
+        #background.draw()
         mouse_pos = pygame.mouse.get_pos()
 
         # Handle the main menu
@@ -231,8 +236,13 @@ def display_defeat_message(screen, font):
     screen.blit(defeat_text, text_rect)
     pygame.display.flip()  # Update the display
 
+
+
 def game_loop():
     small_font = pygame.font.Font("assets/fonts/Future Edge.ttf", 32)
+    #init background
+    background = Background(screen)
+
     # Containers and variables for enemies and projectiles
     enemy_group = pygame.sprite.Group()
     proj_group = pygame.sprite.Group()
@@ -257,7 +267,9 @@ def game_loop():
     ticks_last_frame = pygame.time.get_ticks()
 
     while running:
-        screen.fill(black_bg)
+        ##screen.fill(black_bg)
+        background.update()
+        background.draw()
 
         ticks = pygame.time.get_ticks()
         delta_time = (ticks - ticks_last_frame) / 1000.0
@@ -266,18 +278,18 @@ def game_loop():
         timer.update(delta_time)
 
         check_projectile_enemy_collisions(proj_group, enemy_group, damage=1)
-        check_player_projectile_collisions(player, enemy_projectiles, damage=10)
+        check_player_projectile_collisions(player, enemy_projectiles, 10, timer.elapsed_time)
 
         proj_group.update(timer.stopped)
         enemy_projectiles.update(timer.stopped)
 
-        player.handle_input()
-        player.draw(screen)
+        player.handle_input(timer.stopped)
+        player.draw(screen, timer.elapsed_time)
         proj_group.draw(screen)
         enemy_projectiles.draw(screen)
 
         for obstacle in obstacle_group:
-            obstacle.update(None, delta_time)
+            obstacle.update(player, delta_time)
             obstacle.draw(screen)
 
         if not timer.stopped and len(enemy_group) < max_enemies and timer.elapsed_time - last_spawn >= 3:
@@ -290,19 +302,15 @@ def game_loop():
             last_spawn_wave = timer.elapsed_time
 
         for enemy in enemy_group:
+            enemy.change_color()
             enemy.update(paused=timer.stopped)
             enemy.fire_shot(enemy_projectiles, paused=timer.stopped, curr=timer.elapsed_time)
-
-            if player.is_alive and player.rect.colliderect(enemy.rect):
-                player.take_dmg(10)
-                if not player.is_alive:
-                    print("Player defeated!")
+            
+            check_player_enemy_physical_collision(player, enemy, timer.elapsed_time)
 
             if not enemy.living:
-                ship_destroyed_sound.play()
-                dest_enemies.append((enemy.rect.center, pygame.time.get_ticks(), 20))
+                destroyEnemy(dest_enemies, enemy, ship_destroyed_sound)
                 score_system.increase(10)
-                enemy.kill()
 
         enemy_group.draw(screen)
 
@@ -336,8 +344,8 @@ def game_loop():
                     message, start_time, score_system.score, timer.elapsed_time = user_save_and_load.loadHandling(score_system.get_score(), timer.elapsed_time)
                     save_text_show = True
                 if event.key == pygame.K_h: # Press H to send enemies home FOR TESTING ONLY, REMOVE FOR FINAL PRODUCT
-                 for enemy in enemy_group:
-                    startRetreat(enemy, to_despawn)
+                    for enemy in enemy_group:
+                        startRetreat(enemy, to_despawn)
 
         if save_text_show:
             current_time = pygame.time.get_ticks()

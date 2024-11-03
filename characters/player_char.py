@@ -9,9 +9,9 @@ class CharacterPawn:
         # Initialize character position, movement attributes, and screen dimensions
         self.x = x
         self.y = y
-        self.speed = 5
-        self.width = 40
-        self.height = 60
+        self.speed = 4.5
+        self.width = 20
+        self.height = 30
         self.projectiles_group = projectiles_group  # Group for handling projectiles
         self.screen_width = screen_width
         self.screen_height = screen_height
@@ -23,18 +23,21 @@ class CharacterPawn:
         # Cooldown to prevent spamming bullets
         self.last_shot_time = pygame.time.get_ticks()
         self.shot_cooldown = 500  # in milliseconds
+        self.last_enemy_collision = 0
+        self.got_hit = False
 
-    def handle_input(self):
+    def handle_input(self, stopped):
         # Handle basic movement input
         keys = pygame.key.get_pressed()
-        if keys[pygame.K_LEFT]:
-            self.x -= self.speed
-        if keys[pygame.K_RIGHT]:
-            self.x += self.speed
-        if keys[pygame.K_UP]:
-            self.y -= self.speed
-        if keys[pygame.K_DOWN]:
-            self.y += self.speed
+        if(stopped == False):
+            if keys[pygame.K_LEFT]:
+                self.x -= self.speed
+            if keys[pygame.K_RIGHT]:
+                self.x += self.speed
+            if keys[pygame.K_UP]:
+                self.y -= self.speed
+            if keys[pygame.K_DOWN]:
+                self.y += self.speed
 
         # Boundary conditions
         self.x = max(0, min(self.screen_width - self.width, self.x))
@@ -51,19 +54,21 @@ class CharacterPawn:
             self.projectiles_group.add(bullet)
             self.last_shot_time = current_time
 
-    def draw(self, screen):
+    def draw(self, screen, curr_time):
         # Determine color based on health
         color = (255, 0, 0) if self.health < 50 else (0, 255, 0)
+        if(self.got_hit):
+            color = (255,255,255)
         pygame.draw.rect(screen, color, self.rect)
         # Draw health bar
         self.draw_health_bar(screen)
 
     def draw_health_bar(self, screen):
-        bar_width = self.width
-        bar_height = 5
+        bar_width = 200
+        bar_height = 20
         fill = (self.health / 100) * bar_width
-        health_bar = pygame.Rect(self.x, self.y - 10, bar_width, bar_height)
-        health_fill = pygame.Rect(self.x, self.y - 10, fill, bar_height)
+        health_bar = pygame.Rect(10, self.screen_height - bar_height - 10, bar_width, bar_height)
+        health_fill = pygame.Rect(10, self.screen_height - bar_height - 10, fill, bar_height)
 
         pygame.draw.rect(screen, (255, 0, 0), health_bar)
         pygame.draw.rect(screen, (0, 255, 0), health_fill)
