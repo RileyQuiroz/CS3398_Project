@@ -28,15 +28,13 @@ def spawnEnemy(enemy_list, current_time, enemy_type = 0):
         left_bound = new_ship_x - ship_path_distance
         enemy_list.add(EnemyTypeB(new_ship_x, new_ship_y, left_bound, right_bound, current_time))
 
-# this is meant more for enemy type b, but will use type a for now
 def startRetreat(enemy, list_of_retreating):
-    enemy.heading_home = True
-    list_of_retreating.add(enemy)
+    if enemy.heading_home == True and enemy not in list_of_retreating:
+        list_of_retreating.add(enemy)
+        print("going home")
 
-# this is meant more for enemy type b, but will use type a for now
 def despawnEnemy(retreating):
     for enemy in retreating:
-        #enemy.heading_home = True
         if(enemy.pos_y <= -30):
             enemy.kill()
 
