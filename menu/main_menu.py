@@ -45,7 +45,7 @@ leaderboard = Leaderboard("time_scoreboard.json")
 BOULDER_PATH = "assets/objects/spr_boulder_0.png"
 obstacle_group = [
     Mover((200, 200), (10, 10), BOULDER_PATH),
-    Rotator((200, 400), BOULDER_PATH),
+    Rotator((300, 300), BOULDER_PATH),
     ZigZag((0, 300), (50, 0), BOULDER_PATH)
 ]
 
