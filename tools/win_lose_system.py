@@ -4,7 +4,7 @@ class WinLoseSystem:
     def __init__(self, score_system, player=None):
         self.score_system = score_system
         self.state = GameState.ONGOING
-        self.player = player  # Player object for future use, e.g., for health checks, life checks etc
+        self.player = player  # Player object for health checks, life checks, etc.
 
     def check_win_condition(self):
         """Check if the player has won based on the score, could add more parameters."""
@@ -38,3 +38,5 @@ class WinLoseSystem:
 
     def reset(self):
         self.state = GameState.ONGOING
+        self.player.health = 100
+        self.player.is_alive = True

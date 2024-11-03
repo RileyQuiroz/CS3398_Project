@@ -232,6 +232,19 @@ def display_defeat_message(screen, font):
     screen.blit(defeat_text, text_rect)
     pygame.display.flip()  # Update the display
 
+def reset_game_state(player, score_system, timer, win_lose_system, proj_group, enemy_group, enemy_projectiles):
+    score_system.reset()
+    timer.reset()
+    player.heal(100)
+    player.is_alive = True
+    win_lose_system.reset()
+    proj_group.empty()
+    enemy_group.empty()  # Clear all enemies
+    enemy_projectiles.empty()
+    timer.start()
+    player.x = WIDTH // 2
+    player.y = HEIGHT - 100
+
 def game_loop():
     small_font = pygame.font.Font("assets/fonts/Future Edge.ttf", 32)
     # Containers and variables for enemies and projectiles
@@ -324,19 +337,10 @@ def game_loop():
                             selected_option = end_screen.check_option_click(pos)
                             if selected_option == "Restart":
                                 end_screen_display = False
-                                score_system.reset()
-                                timer.reset()
-                                player.heal(100)
-                                player.is_alive = True
-                                print("Game restarted!")
-                                timer.start()
-                                win_lose_system.reset()
+                                reset_game_state(player, score_system, timer, win_lose_system, proj_group, enemy_group, enemy_projectiles)
                             elif selected_option == "Main Menu":
                                 end_screen_display = False
-                                score_system.reset()
-                                timer.reset()
-                                player.heal(100)
-                                player.is_alive = True
+                                reset_game_state(player, score_system, timer, win_lose_system, proj_group, enemy_group, enemy_projectiles)
                                 main_menu()
                             elif selected_option == "Quit":
                                 pygame.quit()
