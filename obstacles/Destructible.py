@@ -9,6 +9,7 @@ class Destructible(Obstacle):
 
         self.health = health
         self.destroyed = False
+        self.color = (175, 175, 175)
 
     def draw(self, surface):
         if not self.destroyed:

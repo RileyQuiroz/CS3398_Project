@@ -8,7 +8,9 @@ class ZigZag(Mover, Rotator):
     def __init__(self, position, velocity, sprite_path):
         Rotator.__init__(self, position, sprite_path)
         Mover.__init__(self, position, velocity, sprite_path)
-    
+
+        self.color = (255, 255, 255)
+
     def move(self, dt):
         self.rotate(dt)
 
