@@ -10,7 +10,11 @@ from savesystem import user_save_and_load
 from obstacles.Mover import Mover
 from obstacles.Rotator import Rotator
 from obstacles.ZigZag import ZigZag
+from obstacles.Dangerous import Dangerous
+from obstacles.Destructible import Destructible
+from obstacles.Friend import Friend
 from tools.game_states import GameState
+from tools.end_screen import EndScreen
 from tools.win_lose_system import WinLoseSystem
 from characters.enemies.enemy_spawn_and_despawn import spawnEnemy
 from characters.player_char import CharacterPawn
@@ -40,14 +44,6 @@ BLACK = (0, 0, 0)
 
 # Define leaderboard for fastest finishing times
 leaderboard = Leaderboard("time_scoreboard.json")
-
-# Define in-game obstacles
-BOULDER_PATH = "assets/objects/spr_boulder_0.png"
-obstacle_group = [
-    Mover((200, 200), (10, 10), BOULDER_PATH),
-    Rotator((200, 400), BOULDER_PATH),
-    ZigZag((0, 300), (50, 0), BOULDER_PATH)
-]
 
 ############# FONT AND TEXT ALIGNTMENT #########################
 # Load a futuristic font (if you have one)
@@ -86,6 +82,17 @@ score_display = ScoreDisplay(screen, font_size=36, color=NEON_CYAN, position=(50
 
 # Win/Lose System to update game state
 win_lose_system = WinLoseSystem(score_system, player=None) ##player set after instantiation
+
+# Define in-game obstacles
+BOULDER_PATH = "assets/objects/spr_boulder_0.png"
+obstacle_group = [
+    Mover((200, 200), (10, 10), BOULDER_PATH),
+    Rotator((200, 400), BOULDER_PATH),
+    ZigZag((0, 300), (50, 0), BOULDER_PATH),
+    Dangerous((500, 550), BOULDER_PATH),
+    Destructible((550, 300), 5, BOULDER_PATH),
+    Friend((100, 200), 5, score_system, BOULDER_PATH)
+]
 
 # Define menu options
 def draw_text(text, font, color, surface, x, y):
@@ -207,7 +214,6 @@ def main_menu():
                     # Check which option is clicked and switch to the respective menu
                     if start_game_rect.collidepoint(event.pos):
                         print("Start Game clicked!")
-                        score_system.increase(10)  # For testing purposes
                         timer.reset()  # Reset timer when starting a new game
                         timer.start()  # Start the timer
                         game_loop()  # Switch to the game loop
@@ -236,7 +242,18 @@ def display_defeat_message(screen, font):
     screen.blit(defeat_text, text_rect)
     pygame.display.flip()  # Update the display
 
-
+def reset_game_state(player, score_system, timer, win_lose_system, proj_group, enemy_group, enemy_projectiles):
+    score_system.reset()
+    timer.reset()
+    player.heal(100)
+    player.is_alive = True
+    win_lose_system.reset()
+    proj_group.empty()
+    enemy_group.empty()  # Clear all enemies
+    enemy_projectiles.empty()
+    timer.start()
+    player.x = WIDTH // 2
+    player.y = HEIGHT - 100
 
 def game_loop():
     small_font = pygame.font.Font("assets/fonts/Future Edge.ttf", 32)
@@ -316,14 +333,33 @@ def game_loop():
 
         draw_text(f"{timer.elapsed_time:.2f}", small_font, NEON_CYAN, screen, 100, 100)
         score_display.display_score(score_system.get_score())
-
+        
         current_game_state = win_lose_system.update()
 
-        # Game over logic: check if player health is 0
-        if player.health <= 0:
-            display_defeat_message(screen, font)  # Display "Defeated" message
-            pygame.time.delay(2000)  # Pause for 2 seconds
-            return  # Exit game_loop to go back to the main menu
+        ## Check win/loss condition and then go to end screen
+        if current_game_state != GameState.ONGOING:
+            end_screen = EndScreen(screen, player)
+            end_screen_display = True
+            while end_screen_display:
+                end_screen.display(current_game_state)
+                for event in pygame.event.get():
+                    if event.type == pygame.QUIT:
+                        pygame.quit()
+                        sys.exit()
+                    elif event.type == pygame.MOUSEBUTTONDOWN:
+                        if event.button == 1:  # Left mouse button
+                            pos = event.pos
+                            selected_option = end_screen.check_option_click(pos)
+                            if selected_option == "Restart":
+                                end_screen_display = False
+                                reset_game_state(player, score_system, timer, win_lose_system, proj_group, enemy_group, enemy_projectiles)
+                            elif selected_option == "Main Menu":
+                                end_screen_display = False
+                                reset_game_state(player, score_system, timer, win_lose_system, proj_group, enemy_group, enemy_projectiles)
+                                main_menu()
+                            elif selected_option == "Quit":
+                                pygame.quit()
+                                exit()
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
