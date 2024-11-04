@@ -13,17 +13,20 @@ class Destructible(Obstacle):
     def draw(self, surface):
         if not self.destroyed:
             super().draw(surface)
-    
+
+    def take_damage(self):
+        self.health -= 1
+
+        if self.health <= 0:
+            self.destroyed = True
+
     def update(self, player, dt):
         if not self.destroyed:
             super().update(player, dt)
 
             for bullet in player.projectiles_group:
                 if pygame.sprite.collide_rect(self, bullet):
-                    self.health -= 1
+                    self.take_damage()
                     bullet.kill()
-
-                    if self.health <= 0:
-                        self.destroyed = True
 
 
