@@ -12,7 +12,7 @@ class Rotator(Obstacle):
         self.theta = 0
         self.rotational_speed = 2
         self.center_distance = 100
-        self.color = (200, 200, 200)
+        self.color = (75, 75, 175)
 
     def rotate(self, dt):
         self.theta = self.theta + self.rotational_speed * dt

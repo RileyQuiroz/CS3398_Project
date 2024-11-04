@@ -8,7 +8,7 @@ class Mover(Obstacle):
         super().__init__(position, sprite_path)
 
         self.velocity = velocity
-        self.color = (150, 150, 150)
+        self.color = (100, 100, 100)
 
     def adjust_velocity(self, x, y):
         self.velocity = (self.velocity[0] + x, self.velocity[1] + y)
