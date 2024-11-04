@@ -13,6 +13,14 @@ class Score:
     def increase_flat(self, points) -> None:
         self.score += points
 
+    # Decrease score by points and current multiplier
+    def decrease(self, points) -> None:
+        self.score -= points * self.multiplier
+
+    # Decrease score with flat points
+    def decrease_flat(self, points) -> None:
+        self.score -= points
+
     # Reset score and combo count
     def reset(self) -> None:
         self.score = 0
