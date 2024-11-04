@@ -16,7 +16,6 @@ from obstacles.Friend import Friend
 from tools.game_states import GameState
 from tools.end_screen import EndScreen
 from tools.win_lose_system import WinLoseSystem
-from characters.enemies.enemy_spawn_and_despawn import spawnEnemy
 from characters.player_char import CharacterPawn
 from characters.enemies.enemy_spawn_and_despawn import spawnEnemy, despawnEnemy, startRetreat, destroyEnemy
 from tools.collision_hanlder import check_projectile_enemy_collisions, check_player_projectile_collisions
@@ -266,7 +265,7 @@ def game_loop():
     enemy_projectiles = pygame.sprite.Group()
     to_despawn = pygame.sprite.Group()
     dest_enemies = []
-    max_enemies = 5
+    max_enemies = 3
 
     save_text_show = False
     message = ""
@@ -308,27 +307,27 @@ def game_loop():
         for obstacle in obstacle_group:
             obstacle.update(player, delta_time)
             obstacle.draw(screen)
-
-        if not timer.stopped and len(enemy_group) < max_enemies and timer.elapsed_time - last_spawn >= 3:
-            spawnEnemy(enemy_group, timer.elapsed_time)
-            last_spawn = timer.elapsed_time
-
-        if not timer.stopped and timer.elapsed_time - last_spawn_wave >= 60:
-            for _ in range(3):
-                spawnEnemy(enemy_group, timer.elapsed_time)
-            last_spawn_wave = timer.elapsed_time
-
-        for enemy in enemy_group:
-            enemy.change_color()
-            enemy.update(paused=timer.stopped)
-            enemy.fire_shot(enemy_projectiles, paused=timer.stopped, curr=timer.elapsed_time)
             
-            check_player_enemy_physical_collision(player, enemy, timer.elapsed_time)
+        # Enemy Spawning
+        if not timer.stopped and len(enemy_group) < max_enemies and timer.elapsed_time - last_spawn >= 4:
+            spawnEnemy(enemy_group, timer.elapsed_time, 0)
+            last_spawn = timer.elapsed_time
+        if not timer.stopped and timer.elapsed_time - last_spawn_wave >= 30: #Spawn wave is not blocked by max enemies, set to 30s for demoing(ideally would be longer)
+            spawnEnemy(enemy_group, timer.elapsed_time, 1)
+            spawnEnemy(enemy_group, timer.elapsed_time, 0)
+            spawnEnemy(enemy_group, timer.elapsed_time, 0)
+            last_spawn_wave = timer.elapsed_time            
 
+        # Update enemy conditions
+        for enemy in enemy_group:
+            startRetreat(enemy, to_despawn) # Enemy B retreat call
+            enemy.change_color() # Change color if hurt
+            enemy.update(timer.stopped, timer.elapsed_time)
+            enemy.fire_shot(enemy_projectiles, paused=timer.stopped, curr=timer.elapsed_time)
+            check_player_enemy_physical_collision(player, enemy, timer.elapsed_time)
             if not enemy.living:
                 destroyEnemy(dest_enemies, enemy, ship_destroyed_sound)
                 score_system.increase(10)
-
         enemy_group.draw(screen)
 
         draw_text(f"{timer.elapsed_time:.2f}", small_font, NEON_CYAN, screen, 100, 100)
@@ -379,9 +378,6 @@ def game_loop():
                 elif event.key == pygame.K_l:
                     message, start_time, score_system.score, timer.elapsed_time = user_save_and_load.loadHandling(score_system.get_score(), timer.elapsed_time)
                     save_text_show = True
-                if event.key == pygame.K_h: # Press H to send enemies home FOR TESTING ONLY, REMOVE FOR FINAL PRODUCT
-                    for enemy in enemy_group:
-                        startRetreat(enemy, to_despawn)
 
         if save_text_show:
             current_time = pygame.time.get_ticks()
