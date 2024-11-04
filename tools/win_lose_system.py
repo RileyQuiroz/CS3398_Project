@@ -1,3 +1,4 @@
+import pygame
 from tools.game_states import GameState
 
 class WinLoseSystem:
@@ -22,9 +23,11 @@ class WinLoseSystem:
 
     def trigger_win(self):
         print("Win state triggered!")
+        pygame.mixer.Sound("assets\sound_efx\game_win.ogg").play()
 
     def trigger_lose(self):
         print("Lose state triggered!")
+        pygame.mixer.Sound("assets\sound_efx\game_over.mp3").play()
 
     def update(self):
         """Update the game state by checking win and lose conditions."""
