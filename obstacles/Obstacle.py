@@ -7,8 +7,9 @@ class Obstacle:
     def __init__(self, position, sprite_path):
         self.position = position
         self.velocity = (0, 0)
+        self.color = (100, 100, 100)
         self.sprite = pygame.image.load(sprite_path).convert_alpha()
-        self.rect = pygame.Rect(self.position[0], self.position[1], 60, 60)
+        self.rect = pygame.Rect(self.position[0], self.position[1], 45, 45)
         self.is_colliding = False
 
     def check_for_player_collision(self, player):
@@ -49,7 +50,7 @@ class Obstacle:
 
     def draw(self, surface):
         # surface.blit(self.sprite, self.position)
-        pygame.draw.rect(surface, (100, 100, 100), self.rect)
+        pygame.draw.rect(surface, self.color, self.rect)
 
     def update(self, player, dt):
         self.rect.x = self.position[0]
