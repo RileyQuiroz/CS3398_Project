@@ -6,6 +6,7 @@ class Friend(Destructible):
         super().__init__(position, health, sprite_path)
 
         self.score_system = score_system
+        self.color = (75, 175, 75)
 
     def take_damage(self):
         self.health -= 1

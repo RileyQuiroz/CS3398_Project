@@ -5,7 +5,9 @@ from obstacles.Obstacle import Obstacle
 class Dangerous(Obstacle):
     def __init__(self, position, sprite_path):
         super().__init__(position, sprite_path)
-    
+
+        self.color = (175, 75, 75)
+
     def handle_player_collision(self, player):
         super().handle_player_collision(player)
         player.take_dmg(1)
