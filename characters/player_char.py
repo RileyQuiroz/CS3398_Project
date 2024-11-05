@@ -56,7 +56,7 @@ class CharacterPawn:
 
     def draw(self, screen, curr_time):
         # Determine color based on health
-        color = (255, 0, 0) if self.health < 50 else (0, 255, 0)
+        color = (255, 255, 0) if self.health < 50 else (0, 255, 0)
         if(self.got_hit):
             color = (255,255,255)
         pygame.draw.rect(screen, color, self.rect)

@@ -43,6 +43,6 @@ class Background:
     def draw(self):
         self.screen.fill((0, 0, 0))
         for star in self.stars:
-            pygame.draw.circle(self.screen, (255, 255, 255), (int(star[0]), int(star[1])), 2)
+            pygame.draw.circle(self.screen, (255, 255, 255), (int(star[0]), int(star[1])), 1)
         for planet in self.planets:
             self.screen.blit(planet[4], (int(planet[0]), int(planet[1])))
