@@ -352,6 +352,7 @@ def game_loop():
                             if selected_option == "Restart":
                                 end_screen_display = False
                                 reset_game_state(player, score_system, timer, win_lose_system, proj_group, enemy_group, enemy_projectiles)
+                                game_loop()
                             elif selected_option == "Main Menu":
                                 end_screen_display = False
                                 reset_game_state(player, score_system, timer, win_lose_system, proj_group, enemy_group, enemy_projectiles)
