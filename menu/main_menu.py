@@ -284,7 +284,7 @@ def game_loop():
 
     while running:
         ##screen.fill(black_bg)
-        background.update()
+        background.update(timer)
         background.draw()
 
         ticks = pygame.time.get_ticks()
