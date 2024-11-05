@@ -27,7 +27,7 @@ class WinLoseSystem:
 
     def trigger_lose(self):
         print("Lose state triggered!")
-        pygame.mixer.Sound("assets\sound_efx\game_over.mp3").play()
+        pygame.mixer.Sound("assets/sound_efx/game_over.mp3").play()
 
     def update(self):
         """Update the game state by checking win and lose conditions."""
