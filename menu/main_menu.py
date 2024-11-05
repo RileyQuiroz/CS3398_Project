@@ -84,14 +84,18 @@ win_lose_system = WinLoseSystem(score_system, player=None) ##player set after in
 
 # Define in-game obstacles
 BOULDER_PATH = "assets/objects/spr_boulder_0.png"
-obstacle_group = [
-    Mover((200, 200), (10, 10), BOULDER_PATH),
-    Rotator((200, 400), BOULDER_PATH),
-    ZigZag((0, 300), (50, 0), BOULDER_PATH),
-    Dangerous((500, 550), BOULDER_PATH),
-    Destructible((550, 300), 5, BOULDER_PATH),
-    Friend((100, 200), 5, score_system, BOULDER_PATH)
-]
+
+def set_obstacles():
+    return [
+        Mover((200, 200), (10, 10), BOULDER_PATH),
+        Rotator((200, 400), BOULDER_PATH),
+        ZigZag((0, 300), (50, 0), BOULDER_PATH),
+        Dangerous((500, 550), BOULDER_PATH),
+        Destructible((550, 300), 5, BOULDER_PATH),
+        Friend((100, 200), 5, score_system, BOULDER_PATH)
+    ]
+
+obstacle_group = set_obstacles()
 
 # Define menu options
 def draw_text(text, font, color, surface, x, y):
@@ -213,6 +217,7 @@ def main_menu():
                     # Check which option is clicked and switch to the respective menu
                     if start_game_rect.collidepoint(event.pos):
                         print("Start Game clicked!")
+                        obstacle_group = set_obstacles()
                         timer.reset()  # Reset timer when starting a new game
                         timer.start()  # Start the timer
                         game_loop()  # Switch to the game loop
@@ -239,6 +244,7 @@ def display_defeat_message(screen, font):
     defeat_text = font.render("Defeated", True, (255, 0, 0))  # Red text for defeated message
     text_rect = defeat_text.get_rect(center=(WIDTH // 2, HEIGHT // 2))
     screen.blit(defeat_text, text_rect)
+    obstacle_group = set_obstacles()
     pygame.display.flip()  # Update the display
 
 def reset_game_state(player, score_system, timer, win_lose_system, proj_group, enemy_group, enemy_projectiles):
@@ -251,6 +257,7 @@ def reset_game_state(player, score_system, timer, win_lose_system, proj_group, e
     enemy_group.empty()  # Clear all enemies
     enemy_projectiles.empty()
     timer.start()
+    obstacle_group = set_obstacles()
     player.x = WIDTH // 2
     player.y = HEIGHT - 100
 
@@ -266,6 +273,8 @@ def game_loop():
     to_despawn = pygame.sprite.Group()
     dest_enemies = []
     max_enemies = 3
+
+    obstacle_group = set_obstacles()
 
     save_text_show = False
     message = ""
