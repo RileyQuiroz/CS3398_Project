@@ -162,13 +162,41 @@ Emilio: Created the player pawn containing the ability to move and shoot. Implim
   - BitBucket: [https://bitbucket.org/%7B0fa85d64-5596-4404-975e-240762e14465%7D/%7B8f57bb94-4a5c-4e61-84ee-0f7ddb6c2c7a%7D/pull-requests/38/commits](https://bitbucket.org/%7B0fa85d64-5596-4404-975e-240762e14465%7D/%7B8f57bb94-4a5c-4e61-84ee-0f7ddb6c2c7a%7D/pull-requests/38/commits)
 
 
+Joseph: Designed and implemented the in-game obstacles that impede the player in various ways. Each obstacle type expands upon a base Obstacle class and even one another in a few cases.
 
+* SCRUM-78 Design and implement basic obstacle lass
+ - Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-78
+ - Bitbucket: https://bitbucket.org/cs3398-edosians-f24/%7B8f57bb94-4a5c-4e61-84ee-0f7ddb6c2c7a%7D/branch/SCRUM-78-design-and-implement-basic-obstacle-class
+
+* SCRUM-79 Implement obstacles that deal damage to the player
+ - Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-79
+ - Bitbucket: https://bitbucket.org/cs3398-edosians-f24/%7B8f57bb94-4a5c-4e61-84ee-0f7ddb6c2c7a%7D/branch/SCRUM-79-implement-obstacles-that-deal-damage-to-the-player
+ 
+* SCRUM-80 Implement obstacles that impede movement
+ - Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-80
+ - Bitbucket: https://bitbucket.org/cs3398-edosians-f24/%7B8f57bb94-4a5c-4e61-84ee-0f7ddb6c2c7a%7D/branch/SCRUM-80-implement-obstacles-that-impede-movement
+
+* SCRUM-81 Implement destructible obstacles
+ - Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-81
+ - Bitbucket: https://bitbucket.org/cs3398-edosians-f24/%7B8f57bb94-4a5c-4e61-84ee-0f7ddb6c2c7a%7D/branch/SCRUM-81-implement-destructible-obstacles
+
+* SCRUM-82 Implement "friendly" obstacles
+ - Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-82
+ - Bitbucket: https://bitbucket.org/cs3398-edosians-f24/%7B8f57bb94-4a5c-4e61-84ee-0f7ddb6c2c7a%7D/branch/SCRUM-82-implement-friendly-obstacles
+
+* SCRUM-83 Design unique visuals for each obstacle type
+ - Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-83
+ - Bitbucket: https://bitbucket.org/cs3398-edosians-f24/%7B8f57bb94-4a5c-4e61-84ee-0f7ddb6c2c7a%7D/branch/SCRUM-83-design-unique-visuals-for-each-obstacle-type
+
+* SCRUM-84 Implement obstacle movement
+ - Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-84
+ - Bitbucket: https://bitbucket.org/cs3398-edosians-f24/%7B8f57bb94-4a5c-4e61-84ee-0f7ddb6c2c7a%7D/branch/SCRUM-84-implement-obstacle-movement
+ 
 ## Next steps:
 
 Oscar: Next, I plan to work on more tasks that improve game flow and the structure of the game. I can look towards creating more game states beyond the current high-level ones. I also want to see and test if my current work that was done in Sprint 2 is completely bug-free and finished. It seemed mostly finished and fixed, but I plan to confirm more in detail. Lastly, I think I would like to plan out future design decisions so we know as a team, going forward, what we are aiming to accomplish and how our tasks should reflect that.
 
-
-
+Joseph: In our next sprint, I will work on our game's state machine and the various game states that it will use. This will allow for greater efficiency and will help to improve the readability of our codebase.
 
 
 
