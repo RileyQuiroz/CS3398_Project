@@ -23,7 +23,7 @@ class WinLoseSystem:
 
     def trigger_win(self):
         print("Win state triggered!")
-        pygame.mixer.Sound("assets\sound_efx\game_win.ogg").play()
+        pygame.mixer.Sound("assets/sound_efx/game_win.ogg").play()
 
     def trigger_lose(self):
         print("Lose state triggered!")
