@@ -134,12 +134,44 @@ Oscar: Created high-level game states that detect if the player has won or lost 
 * SCRUM-63 Implement Basic Lose Condition Logic
  - Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-63
  - BitBucket: https://bitbucket.org/cs3398-edosians-f24/edosians_/commits/branch/feature%2FSCRUM-63-implement-basic-lose-condition-
+ 
+Riley: Created two types of enemies and a spawning/deletion system
+
+* SCRUM-72 Create enemy class
+ - Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-72
+ - BitBucket: https://bitbucket.org/cs3398-edosians-f24/edosians_/commits/branch/feature%2FSCRUM-72-create-enemy-class
+
+* SCRUM-73 Create enemy type A
+ - Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-73
+ - BitBucket: https://bitbucket.org/cs3398-edosians-f24/edosians_/commits/branch/feature%2FSCRUM-73-create-enemy-type-a
+
+* SCRUM-74 Implement enemy spawn functionality
+ - Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-74
+ - BitBucket: https://bitbucket.org/cs3398-edosians-f24/edosians_/commits/branch/feature%2FSCRUM-74-implement-enemy-spawn-functiona
+
+* SCRUM-76 Implement enemy despawn functionality
+ - Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-76
+ - BitBucket: https://bitbucket.org/cs3398-edosians-f24/edosians_/commits/branch/feature%2FSCRUM-76-implement-enemy-despawn-functio
+
+* SCRUM-85 Fix Enemy Despawning
+ - Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-85
+ - BitBucket: https://bitbucket.org/cs3398-edosians-f24/edosians_/commits/branch/feature%2FSCRUM-85-fix-enemy-despawning
+
+* SCRUM-75 Enemy/Player interactions
+ - Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-75
+ - BitBucket: https://bitbucket.org/cs3398-edosians-f24/edosians_/commits/branch/feature%2FSCRUM-75-enemy-player-interactions
+
+* SCRUM-77 Create enemy type B
+ - Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-77
+ - BitBucket: https://bitbucket.org/cs3398-edosians-f24/edosians_/commits/branch/feature%2FSCRUM-77-create-enemy-type-b
 
 
 ## Next steps:
 
 Oscar: Next, I plan to work on more tasks that improve game flow and the structure of the game. I can look towards creating more game states beyond the current high-level ones. I also want to see and test if my current work that was done in Sprint 2 is completely bug-free and finished. It seemed mostly finished and fixed, but I plan to confirm more in detail. Lastly, I think I would like to plan out future design decisions so we know as a team, going forward, what we are aiming to accomplish and how our tasks should reflect that.
+Riley:
 
+- Creating a boss enemy and updating save/load system to work with current variables. 
 
 
 
