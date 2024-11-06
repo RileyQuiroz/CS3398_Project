@@ -153,7 +153,7 @@ Emilio: Created the player pawn containing the ability to move and shoot. Implim
   - Jira: [https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-68](https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-68)  
   - BitBucket: [https://bitbucket.org/%7B0fa85d64-5596-4404-975e-240762e14465%7D/%7B8f57bb94-4a5c-4e61-84ee-0f7ddb6c2c7a%7D/pull-requests/36/commits](https://bitbucket.org/%7B0fa85d64-5596-4404-975e-240762e14465%7D/%7B8f57bb94-4a5c-4e61-84ee-0f7ddb6c2c7a%7D/pull-requests/36/commits)
 
-* **SCRUM-69 Adjust Movement Speed**  
+* **SCRUM-69 Adjust Movement Speed and health bar + player fixes**  
   - Jira: [https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-69](https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-69)  
   - BitBucket: [https://bitbucket.org/%7B0fa85d64-5596-4404-975e-240762e14465%7D/%7B8f57bb94-4a5c-4e61-84ee-0f7ddb6c2c7a%7D/pull-requests/42/commits](https://bitbucket.org/%7B0fa85d64-5596-4404-975e-240762e14465%7D/%7B8f57bb94-4a5c-4e61-84ee-0f7ddb6c2c7a%7D/pull-requests/42/commits)
 
