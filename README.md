@@ -191,7 +191,7 @@ Joseph: Designed and implemented the in-game obstacles that impede the player in
  - Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-84
  - Bitbucket: https://bitbucket.org/cs3398-edosians-f24/%7B8f57bb94-4a5c-4e61-84ee-0f7ddb6c2c7a%7D/branch/SCRUM-84-implement-obstacle-movement
 
- ## Burnup Report
+## Burnup Report
 
  ![image](/images/sprint2_burnup.png)
 
