@@ -135,13 +135,12 @@ Oscar: Created high-level game states that detect if the player has won or lost 
  - Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-63
  - BitBucket: https://bitbucket.org/cs3398-edosians-f24/edosians_/commits/branch/feature%2FSCRUM-63-implement-basic-lose-condition-
 
+
 Emilio: Created the player pawn containing the ability to move and shoot. Implimented a health mechanic 
         to the player allowing it to be damaged and die upon hit a threshold. Also work on the Collision
         handling allowing object to hit the player and projectiles to damage the player. Animated background 
         was also implimented this sprint.
-
-## Project Tasks
-
+        
 * **SCRUM-66 Implement Basic Player Pawn and Movement**  
   - Jira: [https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-66](https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-66)  
   - BitBucket: [https://bitbucket.org/cs3398-edosians-f24/edosians_/pull-requests/26/commits](https://bitbucket.org/cs3398-edosians-f24/edosians_/pull-requests/26/commits)
