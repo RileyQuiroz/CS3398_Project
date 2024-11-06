@@ -193,7 +193,7 @@ Emilio: Created the player pawn containing the ability to move and shoot. Implim
 
 Joseph: Designed and implemented the in-game obstacles that impede the player in various ways. Each obstacle type expands upon a base Obstacle class and even one another in a few cases.
 
-* SCRUM-78 Design and implement basic obstacle lass
+* SCRUM-78 Design and implement basic obstacle class
  - Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-78
  - Bitbucket: https://bitbucket.org/cs3398-edosians-f24/%7B8f57bb94-4a5c-4e61-84ee-0f7ddb6c2c7a%7D/branch/SCRUM-78-design-and-implement-basic-obstacle-class
 
