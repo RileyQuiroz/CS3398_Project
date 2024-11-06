@@ -167,6 +167,9 @@ Emilio: Created the player pawn containing the ability to move and shoot. Implim
 
 Oscar: Next, I plan to work on more tasks that improve game flow and the structure of the game. I can look towards creating more game states beyond the current high-level ones. I also want to see and test if my current work that was done in Sprint 2 is completely bug-free and finished. It seemed mostly finished and fixed, but I plan to confirm more in detail. Lastly, I think I would like to plan out future design decisions so we know as a team, going forward, what we are aiming to accomplish and how our tasks should reflect that.
 
+Emilio: For sprint 3 I plan to impliment consumable items for the player like health packs and sheilds. I would also like to have the player able to pick up various weapons
+        Another thing I would like to work on is finding assets to replace the current use of shapes.
+
 
 
 
