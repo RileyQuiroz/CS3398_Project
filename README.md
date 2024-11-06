@@ -161,7 +161,9 @@ Emilio: Created the player pawn containing the ability to move and shoot. Implim
   - Jira: [https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-70](https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-70)  
   - BitBucket: [https://bitbucket.org/%7B0fa85d64-5596-4404-975e-240762e14465%7D/%7B8f57bb94-4a5c-4e61-84ee-0f7ddb6c2c7a%7D/pull-requests/38/commits](https://bitbucket.org/%7B0fa85d64-5596-4404-975e-240762e14465%7D/%7B8f57bb94-4a5c-4e61-84ee-0f7ddb6c2c7a%7D/pull-requests/38/commits)
 
+## Burnup Report
 
+![image](/images/sprint2_burnup.png)
 
 ## Next steps:
 
