@@ -135,6 +135,34 @@ Oscar: Created high-level game states that detect if the player has won or lost 
  - Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-63
  - BitBucket: https://bitbucket.org/cs3398-edosians-f24/edosians_/commits/branch/feature%2FSCRUM-63-implement-basic-lose-condition-
 
+Emilio: Created the player pawn containing the ability to move and shoot. Implimented a health mechanic 
+        to the player allowing it to be damaged and die upon hit a threshold. Also work on the Collision
+        handling allowing object to hit the player and projectiles to damage the player. Animated background 
+        was also implimented this sprint.
+
+## Project Tasks
+
+* **SCRUM-66 Implement Basic Player Pawn and Movement**  
+  - Jira: [https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-66](https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-66)  
+  - BitBucket: [https://bitbucket.org/cs3398-edosians-f24/edosians_/pull-requests/26/commits](https://bitbucket.org/cs3398-edosians-f24/edosians_/pull-requests/26/commits)
+
+* **SCRUM-67 Add Shooting Mechanism**  
+  - Jira: [https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-67](https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-67)  
+  - BitBucket: [https://bitbucket.org/%7B0fa85d64-5596-4404-975e-240762e14465%7D/%7B8f57bb94-4a5c-4e61-84ee-0f7ddb6c2c7a%7D/pull-requests/32/commits](https://bitbucket.org/%7B0fa85d64-5596-4404-975e-240762e14465%7D/%7B8f57bb94-4a5c-4e61-84ee-0f7ddb6c2c7a%7D/pull-requests/32/commits)
+
+* **SCRUM-68 Set Movement Boundaries**  
+  - Jira: [https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-68](https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-68)  
+  - BitBucket: [https://bitbucket.org/%7B0fa85d64-5596-4404-975e-240762e14465%7D/%7B8f57bb94-4a5c-4e61-84ee-0f7ddb6c2c7a%7D/pull-requests/36/commits](https://bitbucket.org/%7B0fa85d64-5596-4404-975e-240762e14465%7D/%7B8f57bb94-4a5c-4e61-84ee-0f7ddb6c2c7a%7D/pull-requests/36/commits)
+
+* **SCRUM-69 Adjust Movement Speed**  
+  - Jira: [https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-69](https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-69)  
+  - BitBucket: [https://bitbucket.org/%7B0fa85d64-5596-4404-975e-240762e14465%7D/%7B8f57bb94-4a5c-4e61-84ee-0f7ddb6c2c7a%7D/pull-requests/42/commits](https://bitbucket.org/%7B0fa85d64-5596-4404-975e-240762e14465%7D/%7B8f57bb94-4a5c-4e61-84ee-0f7ddb6c2c7a%7D/pull-requests/42/commits)
+
+* **SCRUM-70 Collision Detection and Optimization/Testing**  
+  - Jira: [https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-70](https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-70)  
+  - BitBucket: [https://bitbucket.org/%7B0fa85d64-5596-4404-975e-240762e14465%7D/%7B8f57bb94-4a5c-4e61-84ee-0f7ddb6c2c7a%7D/pull-requests/38/commits](https://bitbucket.org/%7B0fa85d64-5596-4404-975e-240762e14465%7D/%7B8f57bb94-4a5c-4e61-84ee-0f7ddb6c2c7a%7D/pull-requests/38/commits)
+
+
 
 ## Next steps:
 
