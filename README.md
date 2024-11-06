@@ -109,6 +109,44 @@ Project is: IN PROGRESS
 
 <!-- You don't have to include all sections - just the one's relevant to your project -->
 
+# Sprint 2
+
+## Contributions
+
+Oscar: Created high-level game states that detect if the player has won or lost the game depending on different parameters (player health and score). Also added reset game logic to reset game and re-initialize logic.
+
+* SCRUM-61 Design Win/Lose Conditions System
+ - Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-61
+ - BitBucket: https://bitbucket.org/cs3398-edosians-f24/edosians_/commits/branch/feature%2FSCRUM-61-design-win-lose-conditions-systems
+
+* SCRUM-62 Implement Basic Win Condition Logic
+ - Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-62
+ - BitBucket: https://bitbucket.org/cs3398-edosians-f24/edosians_/commits/branch/feature%2FSCRUM-62-implement-basic-win-condition-logic
+
+* SCRUM-64 Display Win/Lose Screen Prompts
+ - Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-64
+ - BitBucket: https://bitbucket.org/cs3398-edosians-f24/edosians_/commits/branch/feature%2FSCRUM-64-display-win-lose-screen-prompts
+
+* SCRUM-71 Test Win/Lose Conditions & Bug fixes
+ - Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-71
+ - BitBucket: https://bitbucket.org/cs3398-edosians-f24/edosians_/commits/branch/SCRUM-71-test-win-lose-conditions-bug-fi
+
+* SCRUM-63 Implement Basic Lose Condition Logic
+ - Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-63
+ - BitBucket: https://bitbucket.org/cs3398-edosians-f24/edosians_/commits/branch/feature%2FSCRUM-63-implement-basic-lose-condition-
+
+
+## Next steps:
+
+Oscar: Next, I plan to work on more tasks that improve game flow and the structure of the game. I can look towards creating more game states beyond the current high-level ones. I also want to see and test if my current work that was done in Sprint 2 is completely bug-free and finished. It seemed mostly finished and fixed, but I plan to confirm more in detail. Lastly, I think I would like to plan out future design decisions so we know as a team, going forward, what we are aiming to accomplish and how our tasks should reflect that.
+
+
+
+
+
+
+
+
 # Sprint 1 
 
 ## Contributions 
