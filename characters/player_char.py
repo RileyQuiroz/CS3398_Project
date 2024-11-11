@@ -25,6 +25,7 @@ class CharacterPawn:
         self.shot_cooldown = 250  # in milliseconds
         self.last_enemy_collision = 0
         self.got_hit = False
+        self. shield = 0
 
     def handle_input(self, stopped):
         # Handle basic movement input
@@ -82,3 +83,9 @@ class CharacterPawn:
     def heal(self, amount):
         if self.is_alive:
             self.health = min(100, self.health + amount)
+    
+    def consume(self, consumable):
+        if consumable == "repair_kit":
+            self.health = 100
+        if consumable == "shield":
+            self.shield = 100
