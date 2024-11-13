@@ -2,9 +2,6 @@ import pygame
 import json
 import os
 
-# had trouble getting these to work, so moved their functions to this file
-#from save_progress import save_game
-#from load_progress import load_game
 
 save_state = {
     # Temporary variable names, will change and add more according to other files
@@ -18,7 +15,6 @@ save_state = {
     "finish_time": 0
 }
 
-# moved here until I can figure out why imports don't work
 def save_game(state, filename):
     # Will write all variables in save_state to a json file to be accessed later
     file_path = os.path.join('savesystem/savedata', filename)
@@ -27,7 +23,6 @@ def save_game(state, filename):
     print("Save success")
     return pygame.time.get_ticks()
 
-# moved here until I can figure out why imports don't work
 def load_game(filename):
     # Attempt to load the desired save file
     file_path = os.path.join('savesystem/savedata', filename)
