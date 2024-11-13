@@ -89,6 +89,18 @@ class CharacterPawn:
     
     def consume(self, consumable):
         if consumable == "repair_kit":
-            self.health = 100
-        if consumable == "shield":
-            self.shield = 100
+            # Heal to max but respect current health limit
+            self.health = min(100, self.health + 100)
+        elif consumable == "shield_pack":
+            # Recharge shield to max but respect shield limit
+            self.shield = min(100, self.shield + 100)
+
+class Consumable(pygame.sprite.Sprite):
+    def __init__(self, x, y, consumable_type):
+        super().__init__()
+        self.x = x
+        self.y = y
+        self.consumable_type = consumable_type  # this can be "repair_kit" or "shield_pack"
+        self.image = pygame.Surface((20,20))
+        self.image.fill((0, 255, 255) if consumable_type == "shield_pack" else (255, 255, 0))
+        self.rect = self.image.get_rect(topleft=(x, y))
