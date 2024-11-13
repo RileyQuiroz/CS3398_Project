@@ -5,7 +5,7 @@ import pygame
 from projectiles.projectiles import Projectile
 
 class CharacterPawn:
-    def __init__(self, x, y, projectiles_group, screen_width, screen_height, health=100):
+    def __init__(self, x, y, projectiles_group, screen_width, screen_height, health=100, shield=100):
         # Initialize character position, movement attributes, and screen dimensions
         self.x = x
         self.y = y
@@ -25,7 +25,7 @@ class CharacterPawn:
         self.shot_cooldown = 250  # in milliseconds
         self.last_enemy_collision = 0
         self.got_hit = False
-        self. shield = 0
+        self.shield = 0
 
     def handle_input(self, stopped):
         # Handle basic movement input
@@ -75,10 +75,13 @@ class CharacterPawn:
         pygame.draw.rect(screen, (0, 255, 0), health_fill)
 
     def take_dmg(self, amount):
-        self.health -= amount
-        if self.health <= 0:
-            self.health = 0
-            self.is_alive = False
+        if self.shield > 0:
+            self.shield -= 25
+        else:
+            self.health -= amount
+            if self.health <= 0:
+                self.health = 0
+                self.is_alive = False
 
     def heal(self, amount):
         if self.is_alive:
