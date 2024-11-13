@@ -5,7 +5,7 @@ import pygame
 from projectiles.projectiles import Projectile
 
 class CharacterPawn:
-    def __init__(self, x, y, projectiles_group, screen_width, screen_height, health=100):
+    def __init__(self, x, y, projectiles_group, screen_width, screen_height, health=100, shield=100):
         # Initialize character position, movement attributes, and screen dimensions
         self.x = x
         self.y = y
@@ -25,6 +25,7 @@ class CharacterPawn:
         self.shot_cooldown = 250  # in milliseconds
         self.last_enemy_collision = 0
         self.got_hit = False
+        self.shield = 0
 
     def handle_input(self, stopped):
         # Handle basic movement input
@@ -74,11 +75,32 @@ class CharacterPawn:
         pygame.draw.rect(screen, (0, 255, 0), health_fill)
 
     def take_dmg(self, amount):
-        self.health -= amount
-        if self.health <= 0:
-            self.health = 0
-            self.is_alive = False
+        if self.shield > 0:
+            self.shield -= 25
+        else:
+            self.health -= amount
+            if self.health <= 0:
+                self.health = 0
+                self.is_alive = False
 
     def heal(self, amount):
         if self.is_alive:
             self.health = min(100, self.health + amount)
+    
+    def consume(self, consumable):
+        if consumable == "repair_kit":
+            # Heal to max but respect current health limit
+            self.health = min(100, self.health + 100)
+        elif consumable == "shield_pack":
+            # Recharge shield to max but respect shield limit
+            self.shield = min(100, self.shield + 100)
+
+class Consumable(pygame.sprite.Sprite):
+    def __init__(self, x, y, consumable_type):
+        super().__init__()
+        self.x = x
+        self.y = y
+        self.consumable_type = consumable_type  # this can be "repair_kit" or "shield_pack"
+        self.image = pygame.Surface((20,20))
+        self.image.fill((0, 255, 255) if consumable_type == "shield_pack" else (255, 255, 0))
+        self.rect = self.image.get_rect(topleft=(x, y))
