@@ -36,16 +36,27 @@ def load_game(filename):
 # Update save_state's score
 def updateScore(currScore):
     save_state["score"] = currScore
+    
+def updatePlayer(player):
+    save_state["player_health"] = player.health
+    save_state["weapon_type"] = 1 # Will be player weapon variable
+    save_state["player_model"] = 1 # Will be player weapon variable
+    save_state["shield_active"] = 1 # Will be player weapon variable
+    
+def updateLevel(level):
+    save_state["current_level"] = level # Will be variable
 
-# Rework to health
-#def updateTime(currTime):
-#    save_state["total_time"] = currTime
+def updateDifficulty(currDiff):
+    save_state["difficulty"] = currDiff
 
 # Will call all update functions to update save_state, currently just score and time, returns the message
 # to be printed to the screen as well as the begining of its countdown before text disappears
-def saveHandling(newScore):
+# variables that do not exist yet will be default 1 for testing functionality
+def saveHandling(newScore, player, currLevel, currDiff):
     updateScore(newScore)
-    #updateTime(newTime)
+    updateLevel(currLevel)
+    updateDifficulty(currDiff)
+    updatePlayer(player)
     start_time = save_game(save_state, 'save_data_one.json')
     return 'Game Saved', start_time
 

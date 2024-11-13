@@ -383,7 +383,7 @@ def game_loop():
                 elif event.key == pygame.K_SPACE:
                     player.shoot(timer.stopped)
                 elif event.key == pygame.K_s:
-                    message, start_time = user_save_and_load.saveHandling(score_system.get_score())
+                    message, start_time = user_save_and_load.saveHandling(score_system.get_score(), player, 1, 1) # last two should be current level and current difficulty
                     save_text_show = True
                 elif event.key == pygame.K_l:
                     message, start_time, score_system.score, timer.elapsed_time = user_save_and_load.loadHandling(score_system.get_score(), timer.elapsed_time)
