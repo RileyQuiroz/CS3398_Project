@@ -63,12 +63,12 @@ def saveHandling(newScore, player, currLevel, currDiff):
 # Will load the data from the JSON file and put it in the save_state, then it returns the message
 # to be printed to the screen as well as the begining of its countdown before text disappears and 
 # the values of save_state, currently just score and time. takes arguments in event of load failure
-def loadHandling(currScore, currTime):
+def loadHandling(currScore, currTime, currPlayer, currLevel, diff):
     loaded_game, start_time = load_game('save_data_one.json')
     if loaded_game: #only completes the load if it was successful
         save_state = loaded_game
         message = 'Save loaded'
-        return message, start_time, save_state["score"], 0 # Load puts you at beginning of last level
+        return message, start_time, save_state["player_health"], save_state["score"], save_state["weapon_type"], save_state["current_level"], save_state["difficulty"], save_state["shield_active"], save_state["player_model"], 0 # Load puts you at beginning of last level
     else:
         message = 'No save data found'
-        return message, start_time, currScore, currTime
+        return message, start_time, currPlayer.health, currScore, currPlayer.player_weapon, currLevel, diff, currPlayer.shield, currPlayer.player_model, currTime
