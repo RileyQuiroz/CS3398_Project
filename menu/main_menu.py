@@ -375,6 +375,12 @@ def game_loop():
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_h:
+                    player.consume("repair_kit")
+                    print("health kit activated")
+                elif event.key == pygame.K_n:
+                    player.consume("shield_pack")
+                    print("shield pack consumed")
                 if event.key == pygame.K_ESCAPE:
                     running = False
                     timer.stop()
