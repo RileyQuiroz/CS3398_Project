@@ -63,6 +63,7 @@ class CharacterPawn:
         pygame.draw.rect(screen, color, self.rect)
         # Draw health bar
         self.draw_health_bar(screen)
+        self.draw_shield_bar(screen)
 
     def draw_health_bar(self, screen):
         bar_width = 200
