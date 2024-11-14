@@ -71,8 +71,20 @@ class CharacterPawn:
         health_bar = pygame.Rect(10, self.screen_height - bar_height - 10, bar_width, bar_height)
         health_fill = pygame.Rect(10, self.screen_height - bar_height - 10, fill, bar_height)
 
-        pygame.draw.rect(screen, (255, 0, 0), health_bar)
-        pygame.draw.rect(screen, (0, 255, 0), health_fill)
+        pygame.draw.rect(screen, (255, 0, 0), health_bar)  # Red background for health bar
+        pygame.draw.rect(screen, (0, 255, 0), health_fill)  # Green fill for current health
+
+    def draw_shield_bar(self, screen):
+        bar_width = 200
+        bar_height = 20
+        fill = (self.shield / 100) * bar_width
+        # Position shield bar just above the health bar
+        shield_bar = pygame.Rect(10, self.screen_height - 2 * bar_height - 20, bar_width, bar_height)
+        shield_fill = pygame.Rect(10, self.screen_height - 2 * bar_height - 20, fill, bar_height)
+
+        pygame.draw.rect(screen, (0, 0, 255), shield_bar)  # Blue background for shield bar
+        pygame.draw.rect(screen, (0, 255, 255), shield_fill)  # Cyan fill for current shield
+
 
     def take_dmg(self, amount):
         if self.shield > 0:
