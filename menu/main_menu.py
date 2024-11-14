@@ -290,6 +290,8 @@ def game_loop():
     last_spawn = 0
     last_spawn_wave = 0
     ticks_last_frame = pygame.time.get_ticks()
+    
+    spawnEnemy(enemy_group, timer.elapsed_time, 2) # Spawned in for testing
 
     while running:
         ##screen.fill(black_bg)
