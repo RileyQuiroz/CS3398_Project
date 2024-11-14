@@ -30,8 +30,8 @@ def spawnEnemy(enemy_list, current_time, enemy_type = 0):
         enemy_list.add(EnemyTypeB(new_ship_x, new_ship_y, left_bound, right_bound, current_time))
     elif (enemy_type == 2):
         # Enemy type C
-        new_ship_x = random.randint(50, 750)
-        new_ship_y = random.randint(30, 200)
+        new_ship_x = random.randint(100, 700)
+        new_ship_y = random.randint(50, 150)
         ship_path_distance = random.randint(100, 200)
         right_bound = new_ship_x + ship_path_distance
         left_bound = new_ship_x - ship_path_distance

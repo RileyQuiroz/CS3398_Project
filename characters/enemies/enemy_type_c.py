@@ -5,14 +5,14 @@ from projectiles.enemy_projectile import EnemyProjectile
 class EnemyTypeC(Enemy):
     def __init__(self, x, y, left_bound, right_bound, current_time):
         super().__init__(3, x, y)
-        self.size = 40  
-        self.velocity = 2
+        self.size = 32  
+        self.velocity = 1
         self.left_bound = left_bound
         self.right_bound = right_bound  
         self.image = pygame.Surface((self.size, self.size))
         self.image.fill(self.color)
         self.rect = self.image.get_rect(center=(self.pos_x, self.pos_y))
-        self.fire_delay = 1.1  # Time between shots
+        self.fire_delay = 1.7  # Time between shots
         self.last_shot_time = current_time  # Time since the last shot
         
     def fire_shot(self, proj_group, paused, curr): # Fires a single bullet
