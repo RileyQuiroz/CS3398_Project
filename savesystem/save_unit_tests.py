@@ -2,8 +2,7 @@ import unittest
 import os
 import json
 from unittest.mock import patch, mock_open
-from save_progress import save_game
-from load_progress import load_game
+from user_save_and_load import save_game, load_game
 
 
 class TestSaveLoadGameState(unittest.TestCase):

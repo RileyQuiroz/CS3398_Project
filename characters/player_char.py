@@ -26,6 +26,8 @@ class CharacterPawn:
         self.last_enemy_collision = 0
         self.got_hit = False
         self.shield = 0
+        self.player_weapon = 0 # For use with save system, modify to your needs
+        self.player_model = 0 # For use with save system, modify to your needs
 
     def handle_input(self, stopped):
         # Handle basic movement input
