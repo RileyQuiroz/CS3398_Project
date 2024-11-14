@@ -398,7 +398,10 @@ def game_loop():
                     message, start_time = user_save_and_load.saveHandling(score_system.get_score(), player, current_level, difficulty)
                     save_text_show = True
                 elif event.key == pygame.K_l:
+                    reset_game_state(player, score_system, timer, win_lose_system, proj_group, enemy_group, enemy_projectiles)
                     message, start_time, player.health, score_system.score, player.player_weapon, current_level, difficulty, player.shield, player.player_model, timer.elapsed_time = user_save_and_load.loadHandling(score_system.get_score(), timer.elapsed_time, player, current_level, difficulty)
+                    last_spawn = 0
+                    last_spawn_wave = 0
                     save_text_show = True
 
         if save_text_show:
