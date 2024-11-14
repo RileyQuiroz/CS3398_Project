@@ -1,17 +1,22 @@
 import pygame
 from tools.game_states import GameState
+from tools.level_manager import LevelManager
 
 class WinLoseSystem:
     def __init__(self, score_system, player=None):
         self.score_system = score_system
         self.state = GameState.ONGOING
         self.player = player  # Player object for health checks, life checks, etc.
+        self.level_manager = LevelManager()
 
     def check_win_condition(self):
         """Check if the player has won based on the score, could add more parameters."""
-        if self.score_system.score >= 50:  # Example score-based win condition
+        if self.score_system.score >= 50 and self.level_manager.get_current_level() == 3:  # Example score-based win condition
             self.trigger_win()
             self.state = GameState.WIN  # Update state to WIN
+        elif self.score_system.score >= 50 and self.level_manager.get_current_level() < 3:
+            print("debug: level win condition! next level!")
+            self.level_manager.start_next_level()
         return self.state
 
     def check_lose_condition(self):
