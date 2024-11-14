@@ -39,9 +39,9 @@ def updateScore(currScore):
     
 def updatePlayer(player):
     save_state["player_health"] = player.health
-    save_state["weapon_type"] = 1 # Will be player weapon variable
-    save_state["player_model"] = 1 # Will be player weapon variable
-    save_state["shield_active"] = 1 # Will be player weapon variable
+    save_state["weapon_type"] = player.player_weapon # Will be player weapon variable
+    save_state["player_model"] = player.player_model # Will be player weapon variable
+    save_state["shield_active"] = player.shield # Will be player weapon variable
     
 def updateLevel(level):
     save_state["current_level"] = level # Will be variable
