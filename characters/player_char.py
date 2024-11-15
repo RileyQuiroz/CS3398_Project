@@ -106,6 +106,9 @@ class CharacterPawn:
         if consumable == "repair_kit":
             # Heal to max but respect current health limit
             self.health = min(100, self.health + 100)
+            # sound efx for repair_kit
+            #repair_audio = pygame.mixer.Sound()
+            #repair_audio.play()
         elif consumable == "shield_pack":
             # Recharge shield to max but respect shield limit
             self.shield = min(100, self.shield + 100)
