@@ -83,8 +83,10 @@ class CharacterPawn:
         shield_bar = pygame.Rect(10, self.screen_height - 2 * bar_height - 20, bar_width, bar_height)
         shield_fill = pygame.Rect(10, self.screen_height - 2 * bar_height - 20, fill, bar_height)
 
-        pygame.draw.rect(screen, (0, 0, 255), shield_bar)  # Blue background for shield bar
-        pygame.draw.rect(screen, (0, 255, 255), shield_fill)  # Cyan fill for current shield
+        ##this makes the bar transparent unless there is shield active 
+        shield_surface = pygame.Surface((shield_bar.width, shield_bar.height), pygame.SRCALPHA)
+        shield_surface.fill((255, 0, 0, 128)) 
+        pygame.draw.rect(screen, (0, 253, 255), shield_fill)  # Cyan fill for current shield
 
 
     def take_dmg(self, amount):
