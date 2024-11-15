@@ -119,3 +119,17 @@ class Consumable(pygame.sprite.Sprite):
         self.image = pygame.Surface((20,20))
         self.image.fill((0, 255, 255) if consumable_type == "shield_pack" else (255, 255, 0))
         self.rect = self.image.get_rect(topleft=(x, y))
+    
+        # logic for the appearance based on the type of consumbale
+        if consumable_type == "shield_pack":
+            self.image.fill((0,244,244))
+        elif consumable_type == "repair_kit":
+            self.image.fill((255, 255, 0))
+        else:
+            raise ValueError("whered you find this???")
+        self.rect=self.image.get_rect(topleft=(x,y))
+
+    #this draws the consumables on the screen
+    def draw(self, screen):
+        screen.blit(self.image, self.rect.topleft)
+    
