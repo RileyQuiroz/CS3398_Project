@@ -87,12 +87,12 @@ BOULDER_PATH = "assets/objects/spr_boulder_0.png"
 
 def set_obstacles():
     return [
-        Mover((200, 200), (10, 10), BOULDER_PATH),
-        Rotator((200, 400), BOULDER_PATH),
-        ZigZag((0, 300), (50, 0), BOULDER_PATH),
-        Dangerous((500, 550), BOULDER_PATH),
-        Destructible((550, 300), 5, BOULDER_PATH),
-        Friend((100, 200), 5, score_system, BOULDER_PATH)
+        Mover((200, 200), (10, 10), "assets/objects/obstacle_type_2.png"),
+        Rotator((200, 400), "assets/objects/rotator_obstacle.png"),
+        ZigZag((0, 300), (50, 0), "assets/objects/obstacle_type_1.png"),
+        Dangerous((500, 550), "assets/objects/dangerous_obstacle.png"),
+        Destructible((550, 300), 5, "assets/objects/obstacle_type_1.png"),
+        Friend((100, 200), 5, score_system, "assets/objects/friendly_obstacle.png")
     ]
 
 obstacle_group = set_obstacles()
