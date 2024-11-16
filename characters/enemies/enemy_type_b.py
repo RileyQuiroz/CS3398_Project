@@ -11,8 +11,6 @@ class EnemyTypeB(Enemy):
         self.velocity = 4
         self.left_bound = left_bound
         self.right_bound = right_bound  
-        #self.image = pygame.Surface((self.size, self.size))
-        #self.image.fill(self.color)
 
         image = pygame.image.load("assets/enemies/enemy_type_b.png").convert_alpha()
         self.image = pygame.transform.scale_by(image, (2, 2))
