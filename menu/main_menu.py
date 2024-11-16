@@ -330,7 +330,7 @@ def game_loop():
         # Update enemy conditions
         for enemy in enemy_group:
             startRetreat(enemy, to_despawn) # Enemy B retreat call
-            enemy.change_color() # Change color if hurt
+            # enemy.change_color() # Change color if hurt
             enemy.update(timer.stopped, timer.elapsed_time)
             enemy.fire_shot(enemy_projectiles, paused=timer.stopped, curr=timer.elapsed_time)
             check_player_enemy_physical_collision(player, enemy, timer.elapsed_time)

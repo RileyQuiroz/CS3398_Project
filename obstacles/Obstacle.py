@@ -10,7 +10,7 @@ class Obstacle:
         self.color = (100, 100, 100)
 
         image = pygame.image.load(sprite_path).convert_alpha()
-        self.sprite = pygame.transform.scale_by(image, (3, 3))
+        self.sprite = pygame.transform.scale_by(image, (2.5, 2.5))
 
         rect = self.sprite.get_rect()
         self.rect = pygame.Rect(self.position[0], self.position[1], rect.width, rect.height)
@@ -54,7 +54,6 @@ class Obstacle:
 
     def draw(self, surface):
         surface.blit(self.sprite, self.position)
-        #pygame.draw.rect(surface, self.color, self.rect)
 
     def update(self, player, dt):
         self.rect.x = self.position[0]
