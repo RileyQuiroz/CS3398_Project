@@ -334,9 +334,20 @@ def game_loop():
             enemy.update(timer.stopped, timer.elapsed_time)
             enemy.fire_shot(enemy_projectiles, paused=timer.stopped, curr=timer.elapsed_time)
             check_player_enemy_physical_collision(player, enemy, timer.elapsed_time)
+
+            enemy_health_bar = pygame.rect.Rect(
+                enemy.rect.x,
+                enemy.rect.y - 5,
+                enemy.rect.width / 3 * enemy.health,
+                3
+            )
+
+            pygame.draw.rect(screen, (100, 255, 100), enemy_health_bar)
+
             if not enemy.living:
                 destroyEnemy(dest_enemies, enemy, ship_destroyed_sound)
                 score_system.increase(10)
+            
         enemy_group.draw(screen)
 
         draw_text(f"{timer.elapsed_time:.2f}", small_font, NEON_CYAN, screen, 100, 100)
