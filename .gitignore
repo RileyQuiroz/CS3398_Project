@@ -50,3 +50,6 @@ Thumbs.db
 
 # Python environment
 .venv
+
+# Player save data
+savesystem/savedata/save_data_one.json

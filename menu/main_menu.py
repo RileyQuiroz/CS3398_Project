@@ -83,6 +83,8 @@ score_display = ScoreDisplay(screen, font_size=36, color=NEON_CYAN, position=(50
 # Win/Lose System to update game state
 win_lose_system = WinLoseSystem(score_system, player=None) ##player set after instantiation
 
+
+
 # Define in-game obstacles
 BOULDER_PATH = "assets/objects/spr_boulder_0.png"
 
@@ -291,6 +293,10 @@ def game_loop():
     last_spawn = 0
     last_spawn_wave = 0
     ticks_last_frame = pygame.time.get_ticks()
+    
+    #IMPORTANT: TEMP VARIABLEs FOR SAVE SYSTEM, USE/MODIFY FOR WHATEVER YOU NEED
+    current_level = 0
+    difficulty = 0
 
     ##CONSUMABLE CREATION
     consumables_group = pygame.sprite.Group()
@@ -398,10 +404,13 @@ def game_loop():
                 elif event.key == pygame.K_SPACE:
                     player.shoot(timer.stopped)
                 elif event.key == pygame.K_s:
-                    message, start_time = user_save_and_load.saveHandling(score_system.get_score(), timer.elapsed_time)
+                    message, start_time = user_save_and_load.saveHandling(score_system.get_score(), player, current_level, difficulty)
                     save_text_show = True
                 elif event.key == pygame.K_l:
-                    message, start_time, score_system.score, timer.elapsed_time = user_save_and_load.loadHandling(score_system.get_score(), timer.elapsed_time)
+                    reset_game_state(player, score_system, timer, win_lose_system, proj_group, enemy_group, enemy_projectiles)
+                    message, start_time, player.health, score_system.score, player.player_weapon, current_level, difficulty, player.shield, player.player_model, timer.elapsed_time = user_save_and_load.loadHandling(score_system.get_score(), timer.elapsed_time, player, current_level, difficulty)
+                    last_spawn = 0
+                    last_spawn_wave = 0
                     save_text_show = True
 
         if save_text_show:

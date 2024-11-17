@@ -2,23 +2,18 @@ import pygame
 import json
 import os
 
-# had trouble getting these to work, so moved their functions to this file
-#from save_progress import save_game
-#from load_progress import load_game
 
 save_state = {
-    # Temporary variable names, will change and add more according to other files
-    # Saved values will also be changed to reflect in-game values once those parts of code are finished
-    # only score and finish time actually change as of now
-    "player_health": 3,
-    "current_level": 0,
-    "current_weapon": 0,
-    "ship_color": 0,
+    # only score and total time actually change as of now
+    "player_health": 100,
     "score": 0,
-    "finish_time": 0
+    "weapon_type": 0,
+    "current_level": 0,
+    "difficulty": 0,
+    "shield_active": False,
+    "player_model": 0,
 }
 
-# moved here until I can figure out why imports don't work
 def save_game(state, filename):
     # Will write all variables in save_state to a json file to be accessed later
     file_path = os.path.join('savesystem/savedata', filename)
@@ -27,7 +22,6 @@ def save_game(state, filename):
     print("Save success")
     return pygame.time.get_ticks()
 
-# moved here until I can figure out why imports don't work
 def load_game(filename):
     # Attempt to load the desired save file
     file_path = os.path.join('savesystem/savedata', filename)
@@ -42,28 +36,39 @@ def load_game(filename):
 # Update save_state's score
 def updateScore(currScore):
     save_state["score"] = currScore
+    
+def updatePlayer(player):
+    save_state["player_health"] = player.health
+    save_state["weapon_type"] = player.player_weapon # Will be player weapon variable
+    save_state["player_model"] = player.player_model # Will be player weapon variable
+    save_state["shield_active"] = player.shield # Will be player weapon variable
+    
+def updateLevel(level):
+    save_state["current_level"] = level # Will be variable
 
-# Update save_state's total time
-def updateTime(currTime):
-    save_state["finish_time"] = currTime
+def updateDifficulty(currDiff):
+    save_state["difficulty"] = currDiff
 
 # Will call all update functions to update save_state, currently just score and time, returns the message
 # to be printed to the screen as well as the begining of its countdown before text disappears
-def saveHandling(newScore, newTime):
+# variables that do not exist yet will be default 1 for testing functionality
+def saveHandling(newScore, player, currLevel, currDiff):
     updateScore(newScore)
-    updateTime(newTime)
+    updateLevel(currLevel)
+    updateDifficulty(currDiff)
+    updatePlayer(player)
     start_time = save_game(save_state, 'save_data_one.json')
     return 'Game Saved', start_time
 
 # Will load the data from the JSON file and put it in the save_state, then it returns the message
 # to be printed to the screen as well as the begining of its countdown before text disappears and 
 # the values of save_state, currently just score and time. takes arguments in event of load failure
-def loadHandling(currScore, currTime):
+def loadHandling(currScore, currTime, currPlayer, currLevel, diff):
     loaded_game, start_time = load_game('save_data_one.json')
     if loaded_game: #only completes the load if it was successful
         save_state = loaded_game
         message = 'Save loaded'
-        return message, start_time, save_state["score"], save_state["finish_time"]
+        return message, start_time, save_state["player_health"], save_state["score"], save_state["weapon_type"], save_state["current_level"], save_state["difficulty"], save_state["shield_active"], save_state["player_model"], 0 # Load puts you at beginning of last level
     else:
         message = 'No save data found'
-        return message, start_time, currScore, currTime
+        return message, start_time, currPlayer.health, currScore, currPlayer.player_weapon, currLevel, diff, currPlayer.shield, currPlayer.player_model, currTime
