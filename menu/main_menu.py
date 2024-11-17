@@ -87,12 +87,12 @@ BOULDER_PATH = "assets/objects/spr_boulder_0.png"
 
 def set_obstacles():
     return [
-        Mover((200, 200), (10, 10), "assets/objects/obstacle_type_2.png"),
-        Rotator((200, 400), "assets/objects/rotator_obstacle.png"),
-        ZigZag((0, 300), (50, 0), "assets/objects/obstacle_type_1.png"),
-        Dangerous((500, 550), "assets/objects/dangerous_obstacle.png"),
-        Destructible((550, 300), 5, "assets/objects/obstacle_type_1.png"),
-        Friend((100, 200), 5, score_system, "assets/objects/friendly_obstacle.png")
+        Mover((200, 200), (10, 10), 0.75, "assets/objects/spr_boulder_0.png"),
+        Rotator((200, 400), 2.5, "assets/objects/rotator_obstacle.png"),
+        ZigZag((0, 300), (50, 0), 2.5, "assets/objects/obstacle_type_1.png"),
+        Dangerous((500, 550), 2.5, "assets/objects/dangerous_obstacle.png"),
+        Destructible((550, 300), 5, score_system, 2.5, "assets/objects/obstacle_type_2.png"),
+        Friend((100, 200), 5, score_system, 2.5, "assets/objects/friendly_obstacle.png")
     ]
 
 obstacle_group = set_obstacles()
@@ -328,6 +328,7 @@ def game_loop():
             last_spawn_wave = timer.elapsed_time            
 
         # Update enemy conditions
+        enemy_max_health = 3
         for enemy in enemy_group:
             startRetreat(enemy, to_despawn) # Enemy B retreat call
             # enemy.change_color() # Change color if hurt
@@ -338,7 +339,7 @@ def game_loop():
             enemy_health_bar = pygame.rect.Rect(
                 enemy.rect.x,
                 enemy.rect.y - 5,
-                enemy.rect.width / 3 * enemy.health,
+                enemy.rect.width / enemy_max_health * enemy.health,
                 3
             )
 
