@@ -3,6 +3,7 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import pygame
 from projectiles.projectiles import Projectile
+import assets
 
 class CharacterPawn:
     def __init__(self, x, y, projectiles_group, screen_width, screen_height, health=100, shield=100):
@@ -112,6 +113,9 @@ class CharacterPawn:
         elif consumable == "shield_pack":
             # Recharge shield to max but respect shield limit
             self.shield = min(100, self.shield + 100)
+            # sound efx for repair_kit
+            shield_audio = pygame.mixer.Sound("assets/sound_efx/shield_pick_up.mp3")
+            shield_audio.play()
 
 class Consumable(pygame.sprite.Sprite):
     def __init__(self, x, y, consumable_type):

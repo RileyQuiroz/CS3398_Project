@@ -295,6 +295,7 @@ def game_loop():
     ##CONSUMABLE CREATION
     consumables_group = pygame.sprite.Group()
     consumables_group.add(Consumable(100,100, "repair_kit"))
+    consumables_group.add(Consumable(120,120, "shield_pack"))
 
     while running:
         ##screen.fill(black_bg)
