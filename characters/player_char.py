@@ -129,7 +129,8 @@ class Consumable(pygame.sprite.Sprite):
     
         # logic for the appearance based on the type of consumbale
         if consumable_type == "shield_pack":
-            self.image.fill((0,244,244))
+            ##self.image.fill((0,244,244)) ## this can be used for testing
+            self.image = pygame.image.load("assets/objects/Item_Shield.png").convert_alpha()
         elif consumable_type == "repair_kit":
             self.image.fill((255, 255, 0))
         else:
