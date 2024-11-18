@@ -111,6 +111,7 @@ class CharacterPawn:
             self.health = min(100, self.health + 100)
             # sound efx for repair_kit
             repair_audio = pygame.mixer.Sound("assets/sound_efx/repair_kit_pick_up.mp3")
+            # repair audio 2 is used for sound layering CAN BE DISABLED IF ANOTHER SOUND IS FOUND
             repair_audio2 = pygame.mixer.Sound("assets/sound_efx/repair_kit_pick_up2.mp3")
             repair_audio.play()
             repair_audio2.play()
