@@ -20,6 +20,7 @@ from characters.player_char import CharacterPawn
 from characters.enemies.enemy_spawn_and_despawn import spawnEnemy, despawnEnemy, startRetreat, destroyEnemy
 from tools.collision_hanlder import check_projectile_enemy_collisions, check_player_projectile_collisions
 from tools.Star_and_planet_bg_logic import Background
+from characters.player_char import Consumable
 
 
 # Initialize pygame and mixer for sound
@@ -297,10 +298,18 @@ def game_loop():
     current_level = 0
     difficulty = 0
 
+    ##CONSUMABLE CREATION
+    consumables_group = pygame.sprite.Group()
+    consumables_group.add(Consumable(100,100, "repair_kit"))
+    consumables_group.add(Consumable(120,120, "shield_pack"))
+
     while running:
         ##screen.fill(black_bg)
         background.update(timer)
         background.draw()
+
+        ##DRAW CONSUMABLES
+        consumables_group.draw(screen)
 
         ticks = pygame.time.get_ticks()
         delta_time = (ticks - ticks_last_frame) / 1000.0
@@ -381,10 +390,10 @@ def game_loop():
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_h:
+                if event.key == pygame.K_h: #THIS IS FOR TESTING##################
                     player.consume("repair_kit")
                     print("health kit activated")
-                elif event.key == pygame.K_n:
+                elif event.key == pygame.K_n: #THIS IS FOR TESTING#################
                     player.consume("shield_pack")
                     print("shield pack consumed")
                 if event.key == pygame.K_ESCAPE:
