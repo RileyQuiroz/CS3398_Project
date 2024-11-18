@@ -57,6 +57,10 @@ class CharacterPawn:
             bullet = Projectile(self.x + self.width // 2, self.y)  # Center the projectile
             self.projectiles_group.add(bullet)
             self.last_shot_time = current_time
+            shoot_default_audio = pygame.mixer.Sound("assets/sound_efx/shoot_default.mp3")
+            shoot_default_audio.play()
+            shoot_default_audio.set_volume(0.2)
+
 
     def draw(self, screen, curr_time):
         # Determine color based on health
@@ -115,12 +119,15 @@ class CharacterPawn:
             repair_audio2 = pygame.mixer.Sound("assets/sound_efx/repair_kit_pick_up2.mp3")
             repair_audio.play()
             repair_audio2.play()
+            repair_audio.set_volume(0.13)
+            repair_audio2.set_volume(0.13)
         elif consumable == "shield_pack":
             # Recharge shield to max but respect shield limit
             self.shield = min(100, self.shield + 100)
-            # sound efx for repair_kit
+            # sound efx for shield_pack
             shield_audio = pygame.mixer.Sound("assets/sound_efx/shield_pick_up.mp3")
             shield_audio.play()
+            shield_audio.set_volume(0.13)
 
 class Consumable(pygame.sprite.Sprite):
     def __init__(self, x, y, consumable_type):
