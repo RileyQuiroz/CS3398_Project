@@ -110,8 +110,10 @@ class CharacterPawn:
             # Heal to max but respect current health limit
             self.health = min(100, self.health + 100)
             # sound efx for repair_kit
-            #repair_audio = pygame.mixer.Sound()
-            #repair_audio.play()
+            repair_audio = pygame.mixer.Sound("assets/sound_efx/repair_kit_pick_up.mp3")
+            repair_audio2 = pygame.mixer.Sound("assets/sound_efx/repair_kit_pick_up2.mp3")
+            repair_audio.play()
+            repair_audio2.play()
         elif consumable == "shield_pack":
             # Recharge shield to max but respect shield limit
             self.shield = min(100, self.shield + 100)
@@ -138,7 +140,12 @@ class Consumable(pygame.sprite.Sprite):
             shield_height = 35
             self.image = pygame.transform.scale(image, (shield_width, shield_height))
         elif consumable_type == "repair_kit":
-            self.image.fill((255, 255, 0))
+            ##self.image.fill((255, 255, 0))
+            image = pygame.image.load("assets/objects/Item_repair_kit2.png").convert_alpha()
+            # TO RESIZE THE ASSET
+            repair_kit_width = 35
+            repair_kit_height = 35
+            self.image = pygame.transform.scale(image,(repair_kit_width, repair_kit_height))
         else:
             raise ValueError("whered you find this???")
         self.rect=self.image.get_rect(topleft=(x,y))
