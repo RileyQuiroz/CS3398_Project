@@ -4,6 +4,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 import pygame
 from projectiles.projectiles import Projectile
 import assets
+import random
 
 class CharacterPawn:
     def __init__(self, x, y, projectiles_group, screen_width, screen_height, health=100, shield=100):
@@ -161,4 +162,14 @@ class Consumable(pygame.sprite.Sprite):
     #this draws the consumables on the screen
     def draw(self, screen):
         screen.blit(self.image, self.rect.topleft)
+
+def spawn_consumable(consumables_group, screen_width, screen_height):
+    consumable_type = random.choice(["repair_kit", "shield_pack"])
+    # random spot on screen (within bounds)
+    x = random.randint(0, screen_width -35)
+    y = random.randint(0, screen_height -35)
+    #create the consumbale and then add it in the group
+    consumable = Consumable(x, y, consumable_type)
+    consumables_group.add(consumable)
+     
     
