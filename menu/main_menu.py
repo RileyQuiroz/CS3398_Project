@@ -20,6 +20,7 @@ from characters.player_char import CharacterPawn
 from characters.enemies.enemy_spawn_and_despawn import spawnEnemy, despawnEnemy, startRetreat, destroyEnemy
 from tools.collision_hanlder import check_projectile_enemy_collisions, check_player_projectile_collisions
 from tools.Star_and_planet_bg_logic import Background
+from characters.player_char import Consumable, spawn_consumable
 
 
 # Initialize pygame and mixer for sound
@@ -81,6 +82,8 @@ score_display = ScoreDisplay(screen, font_size=36, color=NEON_CYAN, position=(50
 
 # Win/Lose System to update game state
 win_lose_system = WinLoseSystem(score_system, player=None) ##player set after instantiation
+
+
 
 # Define in-game obstacles
 BOULDER_PATH = "assets/objects/spr_boulder_0.png"
@@ -291,18 +294,39 @@ def game_loop():
     last_spawn_wave = 0
     ticks_last_frame = pygame.time.get_ticks()
     
+    #IMPORTANT: TEMP VARIABLEs FOR SAVE SYSTEM, USE/MODIFY FOR WHATEVER YOU NEED
+    current_level = 0
+    difficulty = 0
+    
     spawnEnemy(enemy_group, timer.elapsed_time, 2) # Spawned in for testing
+
+    ##CONSUMABLE CREATION
+    consumables_group = pygame.sprite.Group()
+    consumable_spawn_timer = 0
+    consumable_spawn_rate = 5000 # seconds between spawns CHANGE IF NEEDED
+    #consumables_group.add(Consumable(200,100, "repair_kit"))
+    #consumables_group.add(Consumable(120,120, "shield_pack"))
 
     while running:
         ##screen.fill(black_bg)
         background.update(timer)
         background.draw()
 
+        ##DRAW CONSUMABLES
+        consumables_group.draw(screen)
+
         ticks = pygame.time.get_ticks()
         delta_time = (ticks - ticks_last_frame) / 1000.0
         ticks_last_frame = ticks
 
         timer.update(delta_time)
+
+        #SPAWN THE CONSUMABLES
+        max_consumables = 10
+        if not timer.stopped and ticks - consumable_spawn_timer > consumable_spawn_rate:
+            if len(consumables_group) < max_consumables:
+                spawn_consumable(consumables_group, WIDTH, HEIGHT)
+                consumable_spawn_timer = ticks
 
         check_projectile_enemy_collisions(proj_group, enemy_group, damage=1)
         check_player_projectile_collisions(player, enemy_projectiles, 10, timer.elapsed_time)
@@ -377,12 +401,25 @@ def game_loop():
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_h:
-                    player.consume("repair_kit")
-                    print("health kit activated")
-                elif event.key == pygame.K_n:
-                    player.consume("shield_pack")
-                    print("shield pack consumed")
+                if event.key == pygame.K_h: #THIS IS FOR TESTING##################
+                    for consumable in consumables_group:
+                        if consumable.consumable_type == "repair_kit":
+                            current_health = player.health
+                            player.consume(consumable.consumable_type)
+                            # despawn consumable only if the shield increases
+                            if player.health > current_health:
+                                consumables_group.remove(consumable)
+                                print("health kit activated")
+                            break
+                elif event.key == pygame.K_n: #THIS IS FOR TESTING#################
+                    for consumable in consumables_group:
+                        if consumable.consumable_type == "shield_pack":
+                            current_shield = player.shield
+                            player.consume(consumable.consumable_type)
+                            if player.shield > current_shield:
+                                consumables_group.remove(consumable)
+                                print("shield pack consumed")
+                            break
                 if event.key == pygame.K_ESCAPE:
                     running = False
                     timer.stop()
@@ -391,10 +428,13 @@ def game_loop():
                 elif event.key == pygame.K_SPACE:
                     player.shoot(timer.stopped)
                 elif event.key == pygame.K_s:
-                    message, start_time = user_save_and_load.saveHandling(score_system.get_score(), timer.elapsed_time)
+                    message, start_time = user_save_and_load.saveHandling(score_system.get_score(), player, current_level, difficulty)
                     save_text_show = True
                 elif event.key == pygame.K_l:
-                    message, start_time, score_system.score, timer.elapsed_time = user_save_and_load.loadHandling(score_system.get_score(), timer.elapsed_time)
+                    reset_game_state(player, score_system, timer, win_lose_system, proj_group, enemy_group, enemy_projectiles)
+                    message, start_time, player.health, score_system.score, player.player_weapon, current_level, difficulty, player.shield, player.player_model, timer.elapsed_time = user_save_and_load.loadHandling(score_system.get_score(), timer.elapsed_time, player, current_level, difficulty)
+                    last_spawn = 0
+                    last_spawn_wave = 0
                     save_text_show = True
 
         if save_text_show:
