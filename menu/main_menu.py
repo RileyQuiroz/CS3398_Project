@@ -320,9 +320,11 @@ def game_loop():
         timer.update(delta_time)
 
         #SPAWN THE CONSUMABLES
+        max_consumables = 10
         if not timer.stopped and ticks - consumable_spawn_timer > consumable_spawn_rate:
-            spawn_consumable(consumables_group, WIDTH, HEIGHT)
-            consumable_spawn_timer = ticks
+            if len(consumables_group) < max_consumables:
+                spawn_consumable(consumables_group, WIDTH, HEIGHT)
+                consumable_spawn_timer = ticks
 
         check_projectile_enemy_collisions(proj_group, enemy_group, damage=1)
         check_player_projectile_collisions(player, enemy_projectiles, 10, timer.elapsed_time)
@@ -398,11 +400,17 @@ def game_loop():
                 sys.exit()
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_h: #THIS IS FOR TESTING##################
-                    player.consume("repair_kit")
-                    print("health kit activated")
+                    for consumable in consumables_group:
+                        if consumable.consumable_type == "repair_kit":
+                            player.consume(consumable.consumable_type)
+                            consumables_group.remove(consumable)
+                            print("health kit activated")
                 elif event.key == pygame.K_n: #THIS IS FOR TESTING#################
-                    player.consume("shield_pack")
-                    print("shield pack consumed")
+                    for consumable in consumables_group:
+                        if consumable.consumable_type == "shield_pack":
+                            player.consume(consumable.consumable_type)
+                            consumables_group.remove(consumable)
+                            print("shield pack consumed")
                 if event.key == pygame.K_ESCAPE:
                     running = False
                     timer.stop()
