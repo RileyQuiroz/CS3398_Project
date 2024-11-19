@@ -402,15 +402,22 @@ def game_loop():
                 if event.key == pygame.K_h: #THIS IS FOR TESTING##################
                     for consumable in consumables_group:
                         if consumable.consumable_type == "repair_kit":
+                            current_health = player.health
                             player.consume(consumable.consumable_type)
-                            consumables_group.remove(consumable)
-                            print("health kit activated")
+                            # despawn consumable only if the shield increases
+                            if player.health > current_health:
+                                consumables_group.remove(consumable)
+                                print("health kit activated")
+                            break
                 elif event.key == pygame.K_n: #THIS IS FOR TESTING#################
                     for consumable in consumables_group:
                         if consumable.consumable_type == "shield_pack":
+                            current_shield = player.shield
                             player.consume(consumable.consumable_type)
-                            consumables_group.remove(consumable)
-                            print("shield pack consumed")
+                            if player.shield > current_shield:
+                                consumables_group.remove(consumable)
+                                print("shield pack consumed")
+                            break
                 if event.key == pygame.K_ESCAPE:
                     running = False
                     timer.stop()

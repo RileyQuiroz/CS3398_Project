@@ -112,23 +112,27 @@ class CharacterPawn:
     
     def consume(self, consumable):
         if consumable == "repair_kit":
-            # Heal to max but respect current health limit
-            self.health = min(100, self.health + 100)
-            # sound efx for repair_kit
-            repair_audio = pygame.mixer.Sound("assets/sound_efx/repair_kit_pick_up.mp3")
-            # repair audio 2 is used for sound layering CAN BE DISABLED IF ANOTHER SOUND IS FOUND
-            repair_audio2 = pygame.mixer.Sound("assets/sound_efx/repair_kit_pick_up2.mp3")
-            repair_audio.play()
-            repair_audio2.play()
-            repair_audio.set_volume(0.13)
-            repair_audio2.set_volume(0.13)
+            if self.health < 100:  # Only consume if health is not full
+                self.health = min(100, self.health + 100)
+                repair_audio = pygame.mixer.Sound("assets/sound_efx/repair_kit_pick_up.mp3")
+                repair_audio2 = pygame.mixer.Sound("assets/sound_efx/repair_kit_pick_up2.mp3")
+                repair_audio.play()
+                repair_audio2.play()
+                repair_audio.set_volume(0.13)
+                repair_audio2.set_volume(0.13)
+            else:
+                print("Health is already full. Cannot consume repair kit.")
+                
         elif consumable == "shield_pack":
-            # Recharge shield to max but respect shield limit
-            self.shield = min(100, self.shield + 100)
-            # sound efx for shield_pack
-            shield_audio = pygame.mixer.Sound("assets/sound_efx/shield_pick_up.mp3")
-            shield_audio.play()
-            shield_audio.set_volume(0.13)
+            if self.shield < 100:
+                # Recharge shield to max but respect shield limit
+                self.shield = min(100, self.shield + 100)
+                # sound efx for shield_pack
+                shield_audio = pygame.mixer.Sound("assets/sound_efx/shield_pick_up.mp3")
+                shield_audio.play()
+                shield_audio.set_volume(0.13)
+            else:
+                print("Shields are at full capacity!")
 
 class Consumable(pygame.sprite.Sprite):
     def __init__(self, x, y, consumable_type):
