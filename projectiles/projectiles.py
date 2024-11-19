@@ -17,7 +17,7 @@ class Projectile(pygame.sprite.Sprite):
         # Move the bullet upwards
         self.rect.y -= self.speed
 
-    def update(self,stopped):
+    def update(self,stopped, empty1, empty2):
         if(stopped == False):
             self.move()
 

@@ -1,6 +1,6 @@
 import pygame
 from characters.enemies.enemy_structure import Enemy
-from projectiles.enemy_projectile import EnemyProjectile
+from projectiles.enemy_projectile_delbur import EnemyProjectileDelayBurst
 
 class EnemyTypeC(Enemy):
     def __init__(self, x, y, left_bound, right_bound, current_time):
@@ -12,14 +12,14 @@ class EnemyTypeC(Enemy):
         self.image = pygame.Surface((self.size, self.size))
         self.image.fill(self.color)
         self.rect = self.image.get_rect(center=(self.pos_x, self.pos_y))
-        self.fire_delay = 1.7  # Time between shots
+        self.fire_delay = 2.5  # Time between shots
         self.last_shot_time = current_time  # Time since the last shot
         
     def fire_shot(self, proj_group, paused, curr): # Fires a single bullet
         current_time = curr
         # Check if enough time has passed since the last shot
         if (current_time - self.last_shot_time >= self.fire_delay and self.living == True and paused == False and self.heading_home == False):
-            projectile = EnemyProjectile(self.rect.centerx, self.rect.centery)
+            projectile = EnemyProjectileDelayBurst(self.rect.centerx, self.rect.centery, 2, current_time)
             proj_group.add(projectile)
             self.last_shot_time = current_time
     
