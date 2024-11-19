@@ -322,6 +322,8 @@ def game_loop():
         spawnBoss(enemy_group, 0, difficulty)
         
 
+    #current_level = 1
+
     while running:
         keys = pygame.key.get_pressed()
 
