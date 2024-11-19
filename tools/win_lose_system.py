@@ -7,16 +7,22 @@ class WinLoseSystem:
         self.score_system = score_system
         self.state = GameState.ONGOING
         self.player = player  # Player object for health checks, life checks, etc.
-        self.level_manager = LevelManager()
+        self.level_manager = LevelManager() # TODO: Maybe handle LevelManager differently later, and instead of score, use enemies
+        self.level_processed = set()
 
     def check_win_condition(self):
         """Check if the player has won based on the score, could add more parameters."""
-        if self.score_system.score >= 50 and self.level_manager.get_current_level() == 3:  # Example score-based win condition
+        current_level = self.level_manager.get_current_level()
+        if current_level == 1 and self.score_system.score >= 50 and 1 not in self.level_processed:
+            print("debug: level 1 win condition! Proceeding to level 2!")
+            self.level_manager.start_next_level()
+        elif current_level == 2 and self.score_system.score >= 100 and 2 not in self.level_processed:
+            print("debug: level 2 win condition! Proceeding to level 3!")
+            self.level_manager.start_next_level()
+        elif current_level == 3 and self.score_system.score >= 150 and 3 not in self.level_processed:
+            print("debug: Final level win condition! You won!")
             self.trigger_win()
             self.state = GameState.WIN  # Update state to WIN
-        elif self.score_system.score >= 50 and self.level_manager.get_current_level() < 3:
-            print("debug: level win condition! next level!")
-            self.level_manager.start_next_level()
         return self.state
 
     def check_lose_condition(self):

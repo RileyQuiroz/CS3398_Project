@@ -303,6 +303,8 @@ def game_loop():
     consumables_group.add(Consumable(200,100, "repair_kit"))
     consumables_group.add(Consumable(120,120, "shield_pack"))
 
+    #current_level = 1
+
     while running:
         ##screen.fill(black_bg)
         background.update(timer)
