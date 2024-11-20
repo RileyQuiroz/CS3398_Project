@@ -7,7 +7,7 @@ class EnemyProjectile(pygame.sprite.Sprite):
         self.rect = self.image.get_rect(center=(x, y))
         self.speed = speed
         
-    def update(self, paused):
+    def update(self, paused, empty1, empty2):
         # Move the projectile down the screen
         if (paused == False):
             self.rect.y += self.speed

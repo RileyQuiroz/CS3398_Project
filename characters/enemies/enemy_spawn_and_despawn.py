@@ -3,6 +3,7 @@ import pygame
 import random
 from characters.enemies.enemy_type_a import EnemyTypeA
 from characters.enemies.enemy_type_b import EnemyTypeB
+from characters.enemies.enemy_type_c import EnemyTypeC
 
 # spawns an enemy out of sight
 def spawnEnemy(enemy_list, current_time, enemy_type = 0):
@@ -27,6 +28,18 @@ def spawnEnemy(enemy_list, current_time, enemy_type = 0):
         right_bound = new_ship_x + ship_path_distance
         left_bound = new_ship_x - ship_path_distance
         enemy_list.add(EnemyTypeB(new_ship_x, new_ship_y, left_bound, right_bound, current_time))
+    elif (enemy_type == 2):
+        # Enemy type C
+        new_ship_x = random.randint(100, 700)
+        new_ship_y = random.randint(50, 150)
+        ship_path_distance = random.randint(100, 200)
+        right_bound = new_ship_x + ship_path_distance
+        left_bound = new_ship_x - ship_path_distance
+        if(left_bound  < 30):
+            left_bound = 30
+        if(right_bound > 770):
+            right_bound = 770
+        enemy_list.add(EnemyTypeC(new_ship_x, new_ship_y, left_bound, right_bound, current_time))
 
 def startRetreat(enemy, list_of_retreating):
     if enemy.heading_home == True and enemy not in list_of_retreating:

@@ -297,6 +297,8 @@ def game_loop():
     #IMPORTANT: TEMP VARIABLEs FOR SAVE SYSTEM, USE/MODIFY FOR WHATEVER YOU NEED
     current_level = 0
     difficulty = 0
+    
+    spawnEnemy(enemy_group, timer.elapsed_time, 2) # Spawned in for testing
 
     ##CONSUMABLE CREATION
     consumables_group = pygame.sprite.Group()
@@ -329,8 +331,8 @@ def game_loop():
         check_projectile_enemy_collisions(proj_group, enemy_group, damage=1)
         check_player_projectile_collisions(player, enemy_projectiles, 10, timer.elapsed_time)
 
-        proj_group.update(timer.stopped)
-        enemy_projectiles.update(timer.stopped)
+        proj_group.update(timer.stopped, proj_group, timer.elapsed_time)
+        enemy_projectiles.update(timer.stopped, enemy_projectiles, timer.elapsed_time)
 
         player.handle_input(timer.stopped)
         player.draw(screen, timer.elapsed_time)
