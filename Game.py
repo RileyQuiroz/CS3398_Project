@@ -74,6 +74,9 @@ class Game:
         self.score_system = Score()
         self.score_display = ScoreDisplay()
 
+        # Initialize win-lose system
+        self.win_lose_system = WinLoseSystem()
+
         # Initialize groups
         self.proj_group = pygame.sprite.Group()
         self.enemy_group = pygame.sprite.Group()
