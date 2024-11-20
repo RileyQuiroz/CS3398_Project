@@ -55,12 +55,12 @@ class Game:
         pygame.mixer.init()
 
         # Initialize screen
-        self.screen = pygame.display.set_mode((WIDTH, HEIGHT))
+        self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
         pygame.display.set_caption("BULLETHELL")
 
         # Initialize start menu background
         bg_image = pygame.image.load("assets/backgrounds/space_background4.png")
-        self.background = pygame.transform.scale(background, (WIDTH, HEIGHT))
+        self.background = pygame.transform.scale(self.background, (self.WIDTH, self.HEIGHT))
 
         # Initialize leaderboard
         self.leaderboard = Leaderboard("time_scoreboard.json")
