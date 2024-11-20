@@ -4,7 +4,7 @@ from projectiles.enemy_projectile_delbur import EnemyProjectileDelayBurst
 
 class EnemyTypeC(Enemy):
     def __init__(self, x, y, left_bound, right_bound, current_time):
-        super().__init__(3, x, y)
+        super().__init__(6, x, y)
         self.size = 32  
         self.velocity = 1
         self.left_bound = left_bound
