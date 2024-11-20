@@ -20,7 +20,7 @@ from characters.player_char import CharacterPawn
 from characters.enemies.enemy_spawn_and_despawn import spawnEnemy, despawnEnemy, startRetreat, destroyEnemy
 from tools.collision_hanlder import check_projectile_enemy_collisions, check_player_projectile_collisions
 from tools.Star_and_planet_bg_logic import Background
-from characters.player_char import Consumable
+from characters.player_char import Consumable, spawn_consumable
 
 
 # Initialize pygame and mixer for sound
@@ -297,11 +297,15 @@ def game_loop():
     #IMPORTANT: TEMP VARIABLEs FOR SAVE SYSTEM, USE/MODIFY FOR WHATEVER YOU NEED
     current_level = 0
     difficulty = 0
+    
+    spawnEnemy(enemy_group, timer.elapsed_time, 2) # Spawned in for testing
 
     ##CONSUMABLE CREATION
     consumables_group = pygame.sprite.Group()
-    consumables_group.add(Consumable(200,100, "repair_kit"))
-    consumables_group.add(Consumable(120,120, "shield_pack"))
+    consumable_spawn_timer = 0
+    consumable_spawn_rate = 5000 # seconds between spawns CHANGE IF NEEDED
+    #consumables_group.add(Consumable(200,100, "repair_kit"))
+    #consumables_group.add(Consumable(120,120, "shield_pack"))
 
     while running:
         ##screen.fill(black_bg)
@@ -317,11 +321,18 @@ def game_loop():
 
         timer.update(delta_time)
 
+        #SPAWN THE CONSUMABLES
+        max_consumables = 10
+        if not timer.stopped and ticks - consumable_spawn_timer > consumable_spawn_rate:
+            if len(consumables_group) < max_consumables:
+                spawn_consumable(consumables_group, WIDTH, HEIGHT)
+                consumable_spawn_timer = ticks
+
         check_projectile_enemy_collisions(proj_group, enemy_group, damage=1)
         check_player_projectile_collisions(player, enemy_projectiles, 10, timer.elapsed_time)
 
-        proj_group.update(timer.stopped)
-        enemy_projectiles.update(timer.stopped)
+        proj_group.update(timer.stopped, proj_group, timer.elapsed_time)
+        enemy_projectiles.update(timer.stopped, enemy_projectiles, timer.elapsed_time)
 
         player.handle_input(timer.stopped)
         player.draw(screen, timer.elapsed_time)
@@ -391,11 +402,24 @@ def game_loop():
                 sys.exit()
             elif event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_h: #THIS IS FOR TESTING##################
-                    player.consume("repair_kit")
-                    print("health kit activated")
+                    for consumable in consumables_group:
+                        if consumable.consumable_type == "repair_kit":
+                            current_health = player.health
+                            player.consume(consumable.consumable_type)
+                            # despawn consumable only if the shield increases
+                            if player.health > current_health:
+                                consumables_group.remove(consumable)
+                                print("health kit activated")
+                            break
                 elif event.key == pygame.K_n: #THIS IS FOR TESTING#################
-                    player.consume("shield_pack")
-                    print("shield pack consumed")
+                    for consumable in consumables_group:
+                        if consumable.consumable_type == "shield_pack":
+                            current_shield = player.shield
+                            player.consume(consumable.consumable_type)
+                            if player.shield > current_shield:
+                                consumables_group.remove(consumable)
+                                print("shield pack consumed")
+                            break
                 if event.key == pygame.K_ESCAPE:
                     running = False
                     timer.stop()

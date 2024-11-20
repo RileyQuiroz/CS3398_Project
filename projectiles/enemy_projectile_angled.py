@@ -11,7 +11,7 @@ class EnemyProjectileAngled(pygame.sprite.Sprite):
         self.x_speed = self.speed * math.cos(self.angle)  # Horizontal speed
         self.y_speed = self.speed * math.sin(self.angle)  # Vertical speed
         
-    def update(self, paused):
+    def update(self, paused,empty1, empty2):
         # Move the projectile down the screen
         if (paused == False):
             self.rect.y += self.y_speed # will change to move based on angle
