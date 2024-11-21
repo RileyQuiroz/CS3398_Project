@@ -48,12 +48,22 @@ class CharacterPawn:
         self.is_alive = True
         # Cooldown to prevent spamming bullets
         self.last_shot_time = pygame.time.get_ticks()
-        self.shot_cooldown = 250  # in milliseconds
+        self.shot_cooldown = 200  # in milliseconds
         self.last_enemy_collision = 0
         self.got_hit = False
         self.shield = 0
+        # weapon
         self.player_weapon = 0 # For use with save system, modify to your needs
-        self.player_model = 0 # For use with save system, modify to your needs
+        # self.player_model = 0 # For use with save system, modify to your needs
+        # weapon list
+        #self.weapon_list=[("auto_turrent",10, 200, (0,255,0)), 
+        #                   ("rocket_launcher", 25, 500, (255, 0, 0))]
+        self.current_weapon = 0
+        # self.last_shot_time = 0
+
+    # Weapon system
+    def swap_weapon(self):
+        self.current_weapon = 1
 
     def handle_input(self, stopped):
         # Handle basic movement input
@@ -83,7 +93,7 @@ class CharacterPawn:
         if keys[pygame.K_SPACE] and not stopped:
             weapon_info = {
                 "auto_turret": {
-                    "speed": 20,
+                    "speed": 12,
                     "color": (0, 255, 255),
                     "size": (5, 15),
                     "sound": "assets/sound_efx/shoot_default.mp3",
@@ -213,3 +223,5 @@ def spawn_consumable(consumables_group, screen_width, screen_height):
     y = random.randint(0, screen_height - 35)
     consumable = Consumable(x, y, consumable_type)
     consumables_group.add(consumable)
+     
+    
