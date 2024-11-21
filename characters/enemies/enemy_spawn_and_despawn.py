@@ -58,23 +58,32 @@ def destroyEnemy(destEnemies, enemy, destroySound):
 
 
 # Spawn logic for levels    
-def levelSpawner(currTime, isStopped, enemy_group, max_enemies, lastSpawn, lastSpecialSpawn, currLevel, lvlThreeSwitch):
+def levelSpawner(currTime, isStopped, enemy_group, max_enemies, lastSpawn, lastSpecialSpawn, currLevel, lvlThreeSwitch, difficulty):
     if(currLevel == 0): # Level 1
         if not isStopped and len(enemy_group) < max_enemies and currTime - lastSpawn >= 4:
             spawnEnemy(enemy_group, currTime, 0)
             lastSpawn = currTime
+        if not isStopped and len(enemy_group) < max_enemies and currTime - lastSpecialSpawn >= 10 and difficulty == 2: # only spawns on hard
+            spawnEnemy(enemy_group, currTime, 1)
+            lastSpecialSpawn = currTime
     if(currLevel == 1): # Level 2
         if not isStopped and len(enemy_group) < max_enemies and currTime - lastSpawn >= 4 and lastSpawn <= lastSpecialSpawn:
             spawnEnemy(enemy_group, currTime, 0)
             lastSpawn = currTime
-        if not isStopped and len(enemy_group) < max_enemies and currTime - lastSpecialSpawn >= 6:
+        if not isStopped and len(enemy_group) < max_enemies and currTime - lastSpecialSpawn >= 7:
             spawnEnemy(enemy_group, currTime, 1)
+            lastSpecialSpawn = currTime
+        if not isStopped and currTime >= 20 and currTime <=20.01 and difficulty == 2: # only spawns on hard
+            spawnEnemy(enemy_group, currTime, 2)
             lastSpecialSpawn = currTime
     if(currLevel == 2): # Level 3
         if not isStopped and len(enemy_group) < max_enemies and currTime - lastSpawn >= 4 and lastSpawn <= lastSpecialSpawn:
             spawnEnemy(enemy_group, currTime, 0)
             lastSpawn = currTime
         if not isStopped and len(enemy_group) < max_enemies and currTime - lastSpecialSpawn >= 6:
+            if (difficulty == 2): # only spawns on hard
+                spawnEnemy(enemy_group, currTime, 2)
+                lastSpawn = currTime
             if (lvlThreeSwitch == 0):
                 spawnEnemy(enemy_group, currTime, 2)
                 lvlThreeSwitch = 1

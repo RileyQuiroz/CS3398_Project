@@ -295,9 +295,11 @@ def game_loop():
     ticks_last_frame = pygame.time.get_ticks()
     
     #IMPORTANT: TEMP VARIABLEs FOR SAVE SYSTEM, USE/MODIFY FOR WHATEVER YOU NEED
-    current_level = 0
+    current_level = 1
     lvlThreeSwitch = 0 # Used only for level 3 spawning of type c and b
     difficulty = 0
+    
+    max_enemies = 3 + difficulty # Assumes 3 difficulties, easy(0), medium(1), hard(2)
 
     ##CONSUMABLE CREATION
     consumables_group = pygame.sprite.Group()
@@ -343,7 +345,7 @@ def game_loop():
             obstacle.draw(screen)
             
         # Enemy Spawning
-        last_spawn, last_spawn_wave, lvlThreeSwitch = levelSpawner(timer.elapsed_time, timer.stopped, enemy_group, max_enemies, last_spawn, last_spawn_wave, current_level, lvlThreeSwitch)
+        last_spawn, last_spawn_wave, lvlThreeSwitch = levelSpawner(timer.elapsed_time, timer.stopped, enemy_group, max_enemies, last_spawn, last_spawn_wave, current_level, lvlThreeSwitch, difficulty)
         #last_spawn, last_spawn_wave = oldSpawner(timer.elapsed_time, timer.stopped, enemy_group, max_enemies, last_spawn, last_spawn_wave)           
 
         # Update enemy conditions
