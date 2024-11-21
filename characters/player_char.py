@@ -23,16 +23,11 @@ CONSUMABLE_DATA = {
         "width": 35,
         "height": 35
     },
-    "plasma_gun": {
-        "image": "assets/objects/weapon_plasma_gun.png",
-        "width": 40,
-        "height": 40
-    },
-    "rocket_launcher": {
-        "image": "assets/objects/weapon_rocket_launcher.png",
-        "width": 45,
-        "height": 45
-    }
+    # "rocket_launcher": {
+    #     "image": "assets/objects/weapon_rocket_launcher.png",
+    #     "width": 45,
+    #     "height": 45
+    # }
 }
 
 class CharacterPawn:

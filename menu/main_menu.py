@@ -425,7 +425,12 @@ def game_loop():
                                 print("shield pack consumed")
                             break
                 elif event.key == pygame.K_c:
-                    player.consume("weapon")
+                    for consumable in consumables_group:
+                        if consumable.consumable_type in ["auto_turret", "plasma_gun", "rocket_launcher"]:
+                            player.consume(consumable.consumable_type)
+                            consumables_group.remove(consumable)  # Remove the consumed item
+                            print(f"Weapon switched to: {player.player_weapon}")
+                            break
                 if event.key == pygame.K_ESCAPE:
                     running = False
                     timer.stop()
