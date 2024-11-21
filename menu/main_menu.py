@@ -295,7 +295,7 @@ def game_loop():
     ticks_last_frame = pygame.time.get_ticks()
     
     #IMPORTANT: TEMP VARIABLEs FOR SAVE SYSTEM, USE/MODIFY FOR WHATEVER YOU NEED
-    current_level = 1
+    current_level = 0
     lvlThreeSwitch = 0 # Used only for level 3 spawning of type c and b
     difficulty = 0
     
