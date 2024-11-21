@@ -342,7 +342,8 @@ def game_loop():
             obstacle.draw(screen)
             
         # Enemy Spawning
-        last_spawn, last_spawn_wave = oldSpawner(timer.elapsed_time, timer.stopped, enemy_group, max_enemies, last_spawn, last_spawn_wave)           
+        last_spawn = levelSpawner(timer.elapsed_time, timer.stopped, enemy_group, max_enemies, last_spawn, last_spawn_wave, current_level)
+        #last_spawn, last_spawn_wave = oldSpawner(timer.elapsed_time, timer.stopped, enemy_group, max_enemies, last_spawn, last_spawn_wave)           
 
         # Update enemy conditions
         for enemy in enemy_group:

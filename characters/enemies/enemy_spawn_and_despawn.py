@@ -57,9 +57,21 @@ def destroyEnemy(destEnemies, enemy, destroySound):
     destroySound.play()
 
 # Spawn logic for levels    
-def levelSpawner():
+def levelSpawner(currTime, isStopped, enemy_group, max_enemies, lastSpawn, lastWave, currLevel):
     # In progress
-    print("will be working soon")
+    if(currLevel == 0): # Level 1
+        if not isStopped and len(enemy_group) < max_enemies and currTime - lastSpawn >= 4:
+            spawnEnemy(enemy_group, currTime, 0)
+            lastSpawn = currTime
+    if(currLevel == 1): # Level 2
+        if not isStopped and len(enemy_group) < max_enemies and currTime - lastSpawn >= 4:
+            spawnEnemy(enemy_group, currTime, 1)
+            lastSpawn = currTime
+    if(currLevel == 2): # Level 3
+        if not isStopped and len(enemy_group) < max_enemies and currTime - lastSpawn >= 4:
+            spawnEnemy(enemy_group, currTime, 2)
+            lastSpawn = currTime
+    return lastSpawn
 
 # Spawner from sprint 2, kept for version parity     
 def oldSpawner(currTime, isStopped, enemy_group, max_enemies, lastSpawn, lastWave):
