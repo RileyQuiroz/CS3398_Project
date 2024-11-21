@@ -395,6 +395,10 @@ def game_loop():
                             elif selected_option == "Quit":
                                 pygame.quit()
                                 exit()
+        # AUTO TURRET STUFF
+        keys = pygame.key.get_pressed()
+        if player.player_weapon == "auto_turret" and keys[pygame.K_SPACE]:
+         player.shoot(timer.stopped)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -420,6 +424,8 @@ def game_loop():
                                 consumables_group.remove(consumable)
                                 print("shield pack consumed")
                             break
+                elif event.key == pygame.K_c:
+                    player.consume("weapon")
                 if event.key == pygame.K_ESCAPE:
                     running = False
                     timer.stop()
