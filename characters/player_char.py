@@ -159,6 +159,15 @@ class Consumable(pygame.sprite.Sprite):
             repair_kit_width = 35
             repair_kit_height = 35
             self.image = pygame.transform.scale(image,(repair_kit_width, repair_kit_height))
+        elif consumable_type == "auto_turrent":
+            self.weapon_type = "auto_turrent"
+            # WEAPON ASSET WILL GO HERE
+            # image = pygame.image.load(weapon_asset).convert_alpha()
+
+            # RESIZE WEAPON ASSET
+            weapon_w = 35
+            weapon_h = 35
+            #self.image = pygame.transform.scale(image, (weapon_w, weapon_h))
         else:
             raise ValueError("whered you find this???")
         self.rect=self.image.get_rect(topleft=(x,y))
