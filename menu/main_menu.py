@@ -21,6 +21,7 @@ from characters.enemies.enemy_spawn_and_despawn import *
 from tools.collision_hanlder import check_projectile_enemy_collisions, check_player_projectile_collisions
 from tools.Star_and_planet_bg_logic import Background
 from characters.player_char import Consumable, spawn_consumable
+from tools.bonus_objectives import BonusObjective, NoDamageObjective, AccuracyObjective, UnderTimeObjective, KillStreakObjective, BonusObjectiveDisplay
 
 
 # Initialize pygame and mixer for sound
@@ -250,6 +251,19 @@ def display_defeat_message(screen, font):
     obstacle_group = set_obstacles()
     pygame.display.flip()  # Update the display
 
+def assign_bonus_objectives():
+    """
+    Randomly select two bonus objectives from the pool.
+    """
+    objectives_pool = [
+        NoDamageObjective(),
+        UnderTimeObjective(),
+        AccuracyObjective(),
+        KillStreakObjective(),
+    ]
+    return random.sample(objectives_pool, 2)
+
+
 def reset_game_state(player, score_system, timer, win_lose_system, proj_group, enemy_group, enemy_projectiles):
     score_system.reset()
     timer.reset()
@@ -324,6 +338,19 @@ def game_loop():
 
     #current_level = 1
 
+
+    # Assign and initialize objectives
+    current_objectives = assign_bonus_objectives()
+    for obj in current_objectives:
+        obj.initialize(player, current_level) # FIXME: current_level being passed isn't right or works
+
+    # Display objectives
+    print("Bonus Objectives for this level:")
+    for obj in current_objectives:
+        print(f"- {obj.description}")
+
+    objective_display = BonusObjectiveDisplay(current_objectives, font, screen)
+
     while running:
         keys = pygame.key.get_pressed()
 
@@ -375,6 +402,9 @@ def game_loop():
         ticks_last_frame = ticks
 
         timer.update(delta_time)
+
+        # FIXME TODO: Testing, might not work: *OBJECTIVE DISPLAY*
+        objective_display.draw()
 
         #SPAWN THE CONSUMABLES
         max_consumables = 10
