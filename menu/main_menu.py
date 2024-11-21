@@ -17,7 +17,7 @@ from tools.game_states import GameState
 from tools.end_screen import EndScreen
 from tools.win_lose_system import WinLoseSystem
 from characters.player_char import CharacterPawn
-from characters.enemies.enemy_spawn_and_despawn import spawnEnemy, despawnEnemy, startRetreat, destroyEnemy
+from characters.enemies.enemy_spawn_and_despawn import *
 from tools.collision_hanlder import check_projectile_enemy_collisions, check_player_projectile_collisions
 from tools.Star_and_planet_bg_logic import Background
 from characters.player_char import Consumable, spawn_consumable
@@ -297,8 +297,6 @@ def game_loop():
     #IMPORTANT: TEMP VARIABLEs FOR SAVE SYSTEM, USE/MODIFY FOR WHATEVER YOU NEED
     current_level = 0
     difficulty = 0
-    
-    spawnEnemy(enemy_group, timer.elapsed_time, 2) # Spawned in for testing
 
     ##CONSUMABLE CREATION
     consumables_group = pygame.sprite.Group()
@@ -344,14 +342,7 @@ def game_loop():
             obstacle.draw(screen)
             
         # Enemy Spawning
-        if not timer.stopped and len(enemy_group) < max_enemies and timer.elapsed_time - last_spawn >= 4:
-            spawnEnemy(enemy_group, timer.elapsed_time, 0)
-            last_spawn = timer.elapsed_time
-        if not timer.stopped and timer.elapsed_time - last_spawn_wave >= 30: #Spawn wave is not blocked by max enemies, set to 30s for demoing(ideally would be longer)
-            spawnEnemy(enemy_group, timer.elapsed_time, 1)
-            spawnEnemy(enemy_group, timer.elapsed_time, 0)
-            spawnEnemy(enemy_group, timer.elapsed_time, 0)
-            last_spawn_wave = timer.elapsed_time            
+        last_spawn, last_spawn_wave = oldSpawner(timer.elapsed_time, timer.stopped, enemy_group, max_enemies, last_spawn, last_spawn_wave)           
 
         # Update enemy conditions
         for enemy in enemy_group:
