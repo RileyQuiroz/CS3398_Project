@@ -55,12 +55,39 @@ class CharacterPawn:
         # Add a delay between shots
         current_time = pygame.time.get_ticks()
         if current_time - self.last_shot_time > self.shot_cooldown and stopped == False:
-            bullet = Projectile(self.x + self.width // 2, self.y)  # Center the projectile
+            weapon_info = {
+                        "auto_turret": {
+                            "speed": 12,
+                            "color": (0, 255, 255),
+                            "size": (5, 15),
+                            "sound": "assets/sound_efx/shoot_auto_turret.mp3"
+                        },
+                        "default": {
+                            "speed": 10,
+                            "color": (255, 0, 0),
+                            "size": (5, 10),
+                            "sound": "assets/sound_efx/shoot_default.mp3"
+                        }
+                    }
+            weapon = self.player_weapon if self.player_weapon in weapon_info else "default"
+            detail = weapon_info[weapon]
+
+            #here we can create the projectiles based on the weapons info
+            bullet = Projectile(
+            self.x + self.width // 2, 
+            self.y, 
+            speed=detail["speed"], 
+            color=detail["color"], 
+            size=detail["size"]
+            )
             self.projectiles_group.add(bullet)
             self.last_shot_time = current_time
-            shoot_default_audio = pygame.mixer.Sound("assets/sound_efx/shoot_default.mp3")
-            shoot_default_audio.play()
-            shoot_default_audio.set_volume(0.2)
+
+            # Play the weapon-specific sound
+            shoot_audio = pygame.mixer.Sound(detail["sound"])
+            shoot_audio.play()
+            shoot_audio.set_volume(0.2)
+
 
 
     def draw(self, screen, curr_time):
@@ -134,6 +161,13 @@ class CharacterPawn:
             else:
                 print("Shields are at full capacity!")
 
+        elif consumable == "weapon":
+            self.player_weapon = "auto_turret"
+            print("picked up auto turret")
+
+            # here i can add the audio for a weapon pickup, just copy code above and change files and var names
+
+
 class Consumable(pygame.sprite.Sprite):
     def __init__(self, x, y, consumable_type):
         super().__init__()
@@ -159,9 +193,10 @@ class Consumable(pygame.sprite.Sprite):
             repair_kit_width = 35
             repair_kit_height = 35
             self.image = pygame.transform.scale(image,(repair_kit_width, repair_kit_height))
-        elif consumable_type == "auto_turrent":
-            self.weapon_type = "auto_turrent"
+        elif consumable_type == "weapon":
+            self.weapon_type = "auto_turret"
             # WEAPON ASSET WILL GO HERE
+            # weapon_asset = "assets/objects/weapon_auto_turret.png"
             # image = pygame.image.load(weapon_asset).convert_alpha()
 
             # RESIZE WEAPON ASSET
@@ -177,7 +212,7 @@ class Consumable(pygame.sprite.Sprite):
         screen.blit(self.image, self.rect.topleft)
 
 def spawn_consumable(consumables_group, screen_width, screen_height):
-    consumable_type = random.choice(["repair_kit", "shield_pack"])
+    consumable_type = random.choice(["repair_kit", "shield_pack", "weapon"])
     # random spot on screen (within bounds)
     x = random.randint(0, screen_width -35)
     y = random.randint(0, screen_height -35)
