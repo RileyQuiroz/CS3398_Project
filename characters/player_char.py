@@ -52,41 +52,50 @@ class CharacterPawn:
         self.rect.topleft = (self.x, self.y)
 
     def shoot(self, stopped):
-        # Add a delay between shots
         current_time = pygame.time.get_ticks()
-        if current_time - self.last_shot_time > self.shot_cooldown and stopped == False:
+        keys = pygame.key.get_pressed()
+        
+        # Check if space is held down and the game is not stopped
+        if keys[pygame.K_SPACE] and not stopped:
             weapon_info = {
-                        "auto_turret": {
-                            "speed": 12,
-                            "color": (0, 255, 255),
-                            "size": (5, 15),
-                            "sound": "assets/sound_efx/shoot_auto_turret.mp3"
-                        },
-                        "default": {
-                            "speed": 10,
-                            "color": (255, 0, 0),
-                            "size": (5, 10),
-                            "sound": "assets/sound_efx/shoot_default.mp3"
-                        }
-                    }
+                "auto_turret": {
+                    "speed": 20,
+                    "color": (0, 255, 255),
+                    "size": (5, 15),
+                    "sound": "assets/sound_efx/shoot_default.mp3",
+                    "cooldown": 100  # Faster cooldown for machine gun effect
+                },
+                "default": {
+                    "speed": 10,
+                    "color": (255, 0, 0),
+                    "size": (5, 10),
+                    "sound": "assets/sound_efx/shoot_default.mp3",
+                    "cooldown": 250  # Standard cooldown for single shots
+                }
+            }
+
+            # Determine the weapon type
             weapon = self.player_weapon if self.player_weapon in weapon_info else "default"
             detail = weapon_info[weapon]
 
-            #here we can create the projectiles based on the weapons info
-            bullet = Projectile(
-            self.x + self.width // 2, 
-            self.y, 
-            speed=detail["speed"], 
-            color=detail["color"], 
-            size=detail["size"]
-            )
-            self.projectiles_group.add(bullet)
-            self.last_shot_time = current_time
+            # Check cooldown for firing
+            if current_time - self.last_shot_time > detail["cooldown"]:
+                # Create projectile with weapon-specific properties
+                bullet = Projectile(
+                    self.x + self.width // 2,
+                    self.y,
+                    speed=detail["speed"],
+                    color=detail["color"],
+                    size=detail["size"]
+                )
+                self.projectiles_group.add(bullet)
+                self.last_shot_time = current_time
 
-            # Play the weapon-specific sound
-            shoot_audio = pygame.mixer.Sound(detail["sound"])
-            shoot_audio.play()
-            shoot_audio.set_volume(0.2)
+                # Play the weapon-specific sound
+                shoot_audio = pygame.mixer.Sound(detail["sound"])
+                shoot_audio.play()
+                shoot_audio.set_volume(0.2)
+
 
 
 
