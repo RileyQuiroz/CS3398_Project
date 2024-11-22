@@ -333,7 +333,10 @@ def game_loop():
                 spawn_consumable(consumables_group, WIDTH, HEIGHT)
                 consumable_spawn_timer = ticks
 
-        check_projectile_enemy_collisions(proj_group, enemy_group, damage=1)
+        if(current_level == 3):
+            check_projectile_boss_collisions(proj_group, enemy_group, damage=1)
+        else:
+            check_projectile_enemy_collisions(proj_group, enemy_group, damage=1)
         check_player_projectile_collisions(player, enemy_projectiles, 10, timer.elapsed_time)
 
         proj_group.update(timer.stopped, proj_group, timer.elapsed_time)

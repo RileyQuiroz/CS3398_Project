@@ -10,23 +10,44 @@ class Boss(pygame.sprite.DirtySprite):
         self.time_destroyed = 0
         self.color = (255, 0, 0) # Default red color, will change when we have sprites
         self.spawn_destination_y = y
-        self.size = 30 # Used for destruction explosion
+        self.size = 100 # Used for destruction explosion
         self.velocity = 2
         self.heading_home = False
+        self.fire_delay = 1.1  # Time between shots
+        self.last_shot_time = current_time
         
-        self.centerSize = 75  # Center size
-        self.wingSizeX = 75  # Width of the second rectangle
-        self.wingSizeY = 20  # Height of the second rectangle
+        self.centerSize = 75
+        self.wingSizeX = 75
+        self.wingSizeY = 20
         
         width = self.centerSize + 2 * self.wingSizeX  # Total width
         height = self.centerSize # Total height
         self.image = pygame.Surface((width, height), pygame.SRCALPHA)
         self.drawShip()
-       
-        # Set up the rect attribute for positioning
+        
+        # Positioning box
         self.rect = self.image.get_rect(center=(x, y))
-        self.fire_delay = 1.1  # Time between shots
-        self.last_shot_time = current_time
+        # Hit boxes
+        self.central_rect = pygame.Rect(
+            self.rect.x + self.wingSizeX,
+            self.rect.y + (self.rect.height - self.centerSize) // 2,
+            self.centerSize,
+            self.centerSize
+        )
+
+        self.left_wing_rect = pygame.Rect(
+            self.rect.x,
+            self.rect.y + (self.rect.height - self.wingSizeY) // 2,
+            self.wingSizeX,
+            self.wingSizeY
+        )
+
+        self.right_wing_rect = pygame.Rect(
+            self.rect.x + self.wingSizeX + self.centerSize,
+            self.rect.y + (self.rect.height - self.wingSizeY) // 2,
+            self.wingSizeX,
+            self.wingSizeY
+        )        
     
     def drawShip(self): # Determines shape and color of ship
         # Clear the surface with transparency
@@ -89,3 +110,7 @@ class Boss(pygame.sprite.DirtySprite):
             if (self.rect.centerx >= 600 or self.rect.centerx <= 200):
                 self.velocity *= -1
             self.rect.x += self.velocity
+            
+            self.central_rect.x = self.rect.x + self.wingSizeX
+            self.left_wing_rect.x = self.rect.x
+            self.right_wing_rect.x = self.rect.x + self.wingSizeX + self.centerSize
