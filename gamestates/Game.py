@@ -15,26 +15,7 @@ from characters.enemies.enemy_spawn_and_despawn import spawnEnemy, despawnEnemy,
 from tools.collision_hanlder import check_projectile_enemy_collisions, check_player_projectile_collisions
 from tools.Star_and_planet_bg_logic import Background
 from characters.player_char import Consumable
-#import obstacles
 from obstacles import *
-
-class Colors:
-    NEON_CYAN = (0, 255, 255)
-    NEON_PURPLE = (155, 0, 255)
-    WHITE = (255, 255, 255)
-    BLACK = (0, 0, 0)
-
-class Sounds:
-    # Load hover sound
-    hover = pygame.mixer.Sound("assets/sound_efx/hover_sound.wav")  # Replace with your sound file
-
-    # Enemy sounds
-    ship_destroyed = pygame.mixer.Sound("assets/sound_efx/enemy_down.wav")
-    ship_destroyed .set_volume(.35)
-    enemy_shot = pygame.mixer.Sound("assets/sound_efx/enemy_shot.wav")
-    enemy_shot.set_volume(.2)
-    enemy_hurt = pygame.mixer.Sound("assets/sound_efx/enemy_hurt.wav")
-    enemy_hurt.set_volume(.15)
 
 class Game:
     # Define screen dimensions

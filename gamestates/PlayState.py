@@ -7,12 +7,6 @@ from tools.score_display import ScoreDisplay
 from tools.collision_hanlder import *
 from savesystem.leaderboard import Leaderboard
 from savesystem import user_save_and_load
-from obstacles.Mover import Mover
-from obstacles.Rotator import Rotator
-from obstacles.ZigZag import ZigZag
-from obstacles.Dangerous import Dangerous
-from obstacles.Destructible import Destructible
-from obstacles.Friend import Friend
 from tools.game_states import GameState
 from tools.end_screen import EndScreen
 from tools.win_lose_system import WinLoseSystem
@@ -21,8 +15,10 @@ from characters.enemies.enemy_spawn_and_despawn import spawnEnemy, despawnEnemy,
 from tools.collision_hanlder import check_projectile_enemy_collisions, check_player_projectile_collisions
 from tools.Star_and_planet_bg_logic import Background
 from characters.player_char import Consumable, spawn_consumable
+from obstacles import *
 
-from gamestates.Game import *
+from tools.colors import Colors
+from tools.sounds import Sounds
 from gamestates.GameState import GameState
 
 class PlayState(GameState):
