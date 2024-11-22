@@ -103,6 +103,17 @@ class CharacterPawn:
         
         # Check if space is held down and the game is not stopped
         if keys[pygame.K_SPACE] and not stopped:
+            if self.player_weapon == "super_weapon":
+                # Check if the super weapon can be used
+                if current_time - self.last_sw_time > self.sw_cooldown and not self.is_using_sw:
+                    self.is_using_sw = True
+                    self.sw_start_time = current_time
+                    self.last_sw_time = current_time
+                    print("Using super weapon!")
+                    # You might add sound effects or visual cues here for the beam activation
+                return  # Prevent further weapon logic from executing
+            
+            # Logic for other weapons
             weapon_info = {
                 "auto_turret": {
                     "speed": 12,
@@ -118,18 +129,11 @@ class CharacterPawn:
                     "sound": "assets/sound_efx/shoot_default.mp3",
                     "cooldown": 250  # Standard cooldown for single shots
                 },
-                "rocket_launcher":{
+                "rocket_launcher": {
                     "speed": 5,
-                    "color":(255,0,0),
+                    "color": (255, 0, 0),
                     "size": (5, 20),
                     "sound": "assets/sound_efx/rocket_launcher2.mp3",
-                    "cooldown": 500
-                },
-                "super_weapon":{
-                    "speed": 1,
-                    "color":(255,0,0),
-                    "size": (10, 20),
-                    "sound": "assets/sound_efx/super_weapon.mp3",
                     "cooldown": 500
                 }
             }
@@ -155,6 +159,7 @@ class CharacterPawn:
                 shoot_audio = pygame.mixer.Sound(detail["sound"])
                 shoot_audio.play()
                 shoot_audio.set_volume(0.2)
+
 
     def draw(self, screen, curr_time):
         # Determine color based on health
