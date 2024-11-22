@@ -55,3 +55,52 @@ def destroyEnemy(destEnemies, enemy, destroySound):
     destEnemies.append((enemy.rect.center, pygame.time.get_ticks(), enemy.size))
     enemy.kill()
     destroySound.play()
+
+
+# Spawn logic for levels    
+def levelSpawner(currTime, isStopped, enemy_group, max_enemies, lastSpawn, lastSpecialSpawn, currLevel, lvlThreeSwitch, difficulty):
+    if(currLevel == 0): # Level 1
+        if not isStopped and len(enemy_group) < max_enemies and currTime - lastSpawn >= 4:
+            spawnEnemy(enemy_group, currTime, 0)
+            lastSpawn = currTime
+        if not isStopped and len(enemy_group) < max_enemies and currTime - lastSpecialSpawn >= 10 and difficulty == 2: # only spawns on hard
+            spawnEnemy(enemy_group, currTime, 1)
+            lastSpecialSpawn = currTime
+    if(currLevel == 1): # Level 2
+        if not isStopped and len(enemy_group) < max_enemies and currTime - lastSpawn >= 4 and lastSpawn <= lastSpecialSpawn:
+            spawnEnemy(enemy_group, currTime, 0)
+            lastSpawn = currTime
+        if not isStopped and len(enemy_group) < max_enemies and currTime - lastSpecialSpawn >= 7:
+            spawnEnemy(enemy_group, currTime, 1)
+            lastSpecialSpawn = currTime
+        if not isStopped and currTime >= 20 and currTime <=20.01 and difficulty == 2: # only spawns on hard
+            spawnEnemy(enemy_group, currTime, 2)
+            lastSpecialSpawn = currTime
+    if(currLevel == 2): # Level 3
+        if not isStopped and len(enemy_group) < max_enemies and currTime - lastSpawn >= 4 and lastSpawn <= lastSpecialSpawn:
+            spawnEnemy(enemy_group, currTime, 0)
+            lastSpawn = currTime
+        if not isStopped and len(enemy_group) < max_enemies and currTime - lastSpecialSpawn >= 6:
+            if (difficulty == 2): # only spawns on hard
+                spawnEnemy(enemy_group, currTime, 2)
+                lastSpawn = currTime
+            if (lvlThreeSwitch == 0):
+                spawnEnemy(enemy_group, currTime, 2)
+                lvlThreeSwitch = 1
+            else:
+                spawnEnemy(enemy_group, currTime, 1)
+                lvlThreeSwitch = 0
+            lastSpecialSpawn = currTime
+    return lastSpawn, lastSpecialSpawn, lvlThreeSwitch
+
+# Spawner from sprint 2, kept for version parity     
+def oldSpawner(currTime, isStopped, enemy_group, max_enemies, lastSpawn, lastWave):
+    if not isStopped and len(enemy_group) < max_enemies and currTime - lastSpawn >= 4:
+        spawnEnemy(enemy_group, currTime, 0)
+        lastSpawn = currTime
+    if not isStopped and currTime - lastWave >= 30: #Spawn wave is not blocked by max enemies, set to 30s for demoing(ideally would be longer)
+        spawnEnemy(enemy_group, currTime, 1)
+        spawnEnemy(enemy_group, currTime, 0)
+        spawnEnemy(enemy_group, currTime, 0)
+        lastWave = currTime
+    return lastSpawn, lastWave
