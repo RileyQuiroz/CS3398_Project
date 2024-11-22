@@ -66,6 +66,13 @@ class CharacterPawn:
         self.current_weapon = 0
         # self.last_shot_time = 0
 
+        # SUPER WEAPON
+        self.is_using_sw = False
+        self.sw_start_time = 0
+        self.sw_durration = 2000
+        self.sw_cooldown = 5000
+        self.last_sw_time = 0
+
     # Weapon system
     def swap_weapon(self):
         self.current_weapon = 1
