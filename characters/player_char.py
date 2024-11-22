@@ -6,6 +6,30 @@ from projectiles.projectiles import Projectile
 import assets
 import random
 
+# Centralized consumable data
+CONSUMABLE_DATA = {
+    "shield_pack": {
+        "image": "assets/objects/Item_Shield3.png",
+        "width": 35,
+        "height": 35
+    },
+    "repair_kit": {
+        "image": "assets/objects/Item_repair_kit2.png",
+        "width": 35,
+        "height": 35
+    },
+    "auto_turret": {
+        "image": "assets/objects/weapon_auto_turret.png",
+        "width": 35,
+        "height": 35
+    },
+    # "rocket_launcher": {
+    #     "image": "assets/objects/weapon_rocket_launcher.png",
+    #     "width": 45,
+    #     "height": 45
+    # }
+}
+
 class CharacterPawn:
     def __init__(self, x, y, projectiles_group, screen_width, screen_height, health=100, shield=100):
         # Initialize character position, movement attributes, and screen dimensions
@@ -24,12 +48,22 @@ class CharacterPawn:
         self.is_alive = True
         # Cooldown to prevent spamming bullets
         self.last_shot_time = pygame.time.get_ticks()
-        self.shot_cooldown = 250  # in milliseconds
+        self.shot_cooldown = 200  # in milliseconds
         self.last_enemy_collision = 0
         self.got_hit = False
         self.shield = 0
+        # weapon
         self.player_weapon = 0 # For use with save system, modify to your needs
-        self.player_model = 0 # For use with save system, modify to your needs
+        # self.player_model = 0 # For use with save system, modify to your needs
+        # weapon list
+        #self.weapon_list=[("auto_turrent",10, 200, (0,255,0)), 
+        #                   ("rocket_launcher", 25, 500, (255, 0, 0))]
+        self.current_weapon = 0
+        # self.last_shot_time = 0
+
+    # Weapon system
+    def swap_weapon(self):
+        self.current_weapon = 1
 
     def handle_input(self, stopped):
         # Handle basic movement input
@@ -52,16 +86,49 @@ class CharacterPawn:
         self.rect.topleft = (self.x, self.y)
 
     def shoot(self, stopped):
-        # Add a delay between shots
         current_time = pygame.time.get_ticks()
-        if current_time - self.last_shot_time > self.shot_cooldown and stopped == False:
-            bullet = Projectile(self.x + self.width // 2, self.y)  # Center the projectile
-            self.projectiles_group.add(bullet)
-            self.last_shot_time = current_time
-            shoot_default_audio = pygame.mixer.Sound("assets/sound_efx/shoot_default.mp3")
-            shoot_default_audio.play()
-            shoot_default_audio.set_volume(0.2)
+        keys = pygame.key.get_pressed()
+        
+        # Check if space is held down and the game is not stopped
+        if keys[pygame.K_SPACE] and not stopped:
+            weapon_info = {
+                "auto_turret": {
+                    "speed": 12,
+                    "color": (0, 255, 255),
+                    "size": (5, 15),
+                    "sound": "assets/sound_efx/shoot_default.mp3",
+                    "cooldown": 100  # Faster cooldown for machine gun effect
+                },
+                "default": {
+                    "speed": 10,
+                    "color": (255, 0, 0),
+                    "size": (5, 10),
+                    "sound": "assets/sound_efx/shoot_default.mp3",
+                    "cooldown": 250  # Standard cooldown for single shots
+                }
+            }
 
+            # Determine the weapon type
+            weapon = self.player_weapon if self.player_weapon in weapon_info else "default"
+            detail = weapon_info[weapon]
+
+            # Check cooldown for firing
+            if current_time - self.last_shot_time > detail["cooldown"]:
+                # Create projectile with weapon-specific properties
+                bullet = Projectile(
+                    self.x + self.width // 2,
+                    self.y,
+                    speed=detail["speed"],
+                    color=detail["color"],
+                    size=detail["size"]
+                )
+                self.projectiles_group.add(bullet)
+                self.last_shot_time = current_time
+
+                # Play the weapon-specific sound
+                shoot_audio = pygame.mixer.Sound(detail["sound"])
+                shoot_audio.play()
+                shoot_audio.set_volume(0.2)
 
     def draw(self, screen, curr_time):
         # Determine color based on health
@@ -96,7 +163,6 @@ class CharacterPawn:
         shield_surface.fill((255, 0, 0, 128)) 
         pygame.draw.rect(screen, (0, 253, 255), shield_fill)  # Cyan fill for current shield
 
-
     def take_dmg(self, amount):
         if self.shield > 0:
             self.shield -= 25
@@ -122,57 +188,39 @@ class CharacterPawn:
                 repair_audio2.set_volume(0.13)
             else:
                 print("Health is already full. Cannot consume repair kit.")
-                
         elif consumable == "shield_pack":
             if self.shield < 100:
-                # Recharge shield to max but respect shield limit
                 self.shield = min(100, self.shield + 100)
-                # sound efx for shield_pack
                 shield_audio = pygame.mixer.Sound("assets/sound_efx/shield_pick_up.mp3")
                 shield_audio.play()
                 shield_audio.set_volume(0.13)
             else:
                 print("Shields are at full capacity!")
+        elif consumable in CONSUMABLE_DATA:
+            self.player_weapon = consumable
+            print(f"Picked up {consumable}!")
 
 class Consumable(pygame.sprite.Sprite):
     def __init__(self, x, y, consumable_type):
         super().__init__()
-        self.x = x
-        self.y = y
-        self.consumable_type = consumable_type  # this can be "repair_kit" or "shield_pack"
-        self.image = pygame.Surface((20,20))
-        self.image.fill((0, 255, 255) if consumable_type == "shield_pack" else (255, 255, 0))
-        self.rect = self.image.get_rect(topleft=(x, y))
-    
-        # logic for the appearance based on the type of consumbale
-        if consumable_type == "shield_pack":
-            ##self.image.fill((0,244,244)) ## this can be used for testing
-            image = pygame.image.load("assets/objects/Item_Shield3.png").convert_alpha()
-            # TO RESIZE THE ASSET CHANGE width and height 
-            shield_width = 35
-            shield_height = 35
-            self.image = pygame.transform.scale(image, (shield_width, shield_height))
-        elif consumable_type == "repair_kit":
-            ##self.image.fill((255, 255, 0))
-            image = pygame.image.load("assets/objects/Item_repair_kit2.png").convert_alpha()
-            # TO RESIZE THE ASSET
-            repair_kit_width = 35
-            repair_kit_height = 35
-            self.image = pygame.transform.scale(image,(repair_kit_width, repair_kit_height))
-        else:
-            raise ValueError("whered you find this???")
-        self.rect=self.image.get_rect(topleft=(x,y))
+        self.consumable_type = consumable_type
 
-    #this draws the consumables on the screen
+        if consumable_type in CONSUMABLE_DATA:
+            data = CONSUMABLE_DATA[consumable_type]
+            self.image = pygame.image.load(data["image"]).convert_alpha()
+            self.image = pygame.transform.scale(self.image, (data["width"], data["height"]))
+        else:
+            raise ValueError(f"Unknown consumable type: {consumable_type}")
+
+        self.rect = self.image.get_rect(topleft=(x, y))
+
     def draw(self, screen):
         screen.blit(self.image, self.rect.topleft)
 
 def spawn_consumable(consumables_group, screen_width, screen_height):
-    consumable_type = random.choice(["repair_kit", "shield_pack"])
-    # random spot on screen (within bounds)
-    x = random.randint(0, screen_width -35)
-    y = random.randint(0, screen_height -35)
-    #create the consumbale and then add it in the group
+    consumable_type = random.choice(list(CONSUMABLE_DATA.keys()))
+    x = random.randint(0, screen_width - 35)
+    y = random.randint(0, screen_height - 35)
     consumable = Consumable(x, y, consumable_type)
     consumables_group.add(consumable)
      
