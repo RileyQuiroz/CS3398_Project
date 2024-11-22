@@ -27,6 +27,11 @@ CONSUMABLE_DATA = {
         "image": "assets/objects/weapon_rocket_launcher2.png",
         "width": 38,
         "height": 38
+    },
+    "super_weapon":{
+        "image": "assets/objects/weapon_super_weapon.png",
+        "width": 38,
+        "height": 38
     }
 }
 
@@ -111,6 +116,13 @@ class CharacterPawn:
                     "color":(255,0,0),
                     "size": (5, 20),
                     "sound": "assets/sound_efx/rocket_launcher2.mp3",
+                    "cooldown": 500
+                },
+                "super_weapon":{
+                    "speed": 1,
+                    "color":(255,0,0),
+                    "size": (10, 20),
+                    "sound": "assets/sound_efx/super_weapon.mp3",
                     "cooldown": 500
                 }
             }
