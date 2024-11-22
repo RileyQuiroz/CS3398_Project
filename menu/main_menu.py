@@ -295,9 +295,9 @@ def game_loop():
     ticks_last_frame = pygame.time.get_ticks()
     
     #IMPORTANT: TEMP VARIABLEs FOR SAVE SYSTEM, USE/MODIFY FOR WHATEVER YOU NEED
-    current_level = 0
+    current_level = 3 # 0-2 are normal levels, 3 is boss
     lvlThreeSwitch = 0 # Used only for level 3 spawning of type c and b
-    difficulty = 0
+    difficulty = 0 # 0-easy, 1-medium, 2-hard
     
     max_enemies = 3 + difficulty # Assumes 3 difficulties, easy(0), medium(1), hard(2)
 
@@ -307,6 +307,10 @@ def game_loop():
     consumable_spawn_rate = 5000 # seconds between spawns CHANGE IF NEEDED
     #consumables_group.add(Consumable(200,100, "repair_kit"))
     #consumables_group.add(Consumable(120,120, "shield_pack"))
+    
+    if(current_level == 3):
+        spawnBoss(enemy_group, 0)
+        
 
     while running:
         ##screen.fill(black_bg)
