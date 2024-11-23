@@ -1,4 +1,5 @@
 import pygame
+import random
 from projectiles.enemy_projectile import EnemyProjectile
 
 class Boss(pygame.sprite.DirtySprite):
@@ -15,6 +16,10 @@ class Boss(pygame.sprite.DirtySprite):
         self.heading_home = False
         self.fire_delay = 1.1  # Time between shots
         self.last_shot_time = current_time
+        self.prev_shot_type = 0
+        self.curr_shot_type = 0
+        self.last_switch_time = current_time
+        self.spread_type = 0 # Used for spread shot logic
         
         self.centerSize = 75
         self.wingSizeX = 75
@@ -82,11 +87,36 @@ class Boss(pygame.sprite.DirtySprite):
            
     def fire_shot(self, proj_group, paused, curr): # Will have three firing modes
         current_time = curr
-        # Check if enough time has passed since the last shot
-        if (current_time - self.last_shot_time >= self.fire_delay and self.living == True and paused == False and self.heading_home == False):
-            projectile = EnemyProjectile(self.rect.centerx, self.rect.centery)
-            proj_group.add(projectile)
-            self.last_shot_time = current_time
+        if (self.living == True and paused == False and self.heading_home == False):
+            # Directed shots
+            if (self.curr_shot_type == 0):
+                if (current_time - self.last_shot_time >= self.fire_delay):
+                    projectile = EnemyProjectile(self.rect.centerx, self.rect.centery)
+                    proj_group.add(projectile)
+                    self.last_shot_time = current_time
+                    self.prev_shot_type = self.curr_shot_type
+                    self.curr_shot_type = random.randint(0, 2)
+                    print(self.curr_shot_type)
+            # Dual spreads
+            elif (self.curr_shot_type == 1):
+                if (current_time - self.last_shot_time >= self.fire_delay):
+                    projectile = EnemyProjectile(self.rect.centerx, self.rect.centery)
+                    proj_group.add(projectile)
+                    self.last_shot_time = current_time
+                    self.prev_shot_type = self.curr_shot_type
+                    self.curr_shot_type = random.randint(0, 1)
+                    if(self.curr_shot_type == 1):
+                        self.curr_shot_type == 2
+                    print(self.curr_shot_type)
+            # Bullet rain from wings
+            elif (self.curr_shot_type == 2):
+                if (current_time - self.last_shot_time >= self.fire_delay):
+                    projectile = EnemyProjectile(self.rect.centerx, self.rect.centery)
+                    proj_group.add(projectile)
+                    self.last_shot_time = current_time
+                    self.prev_shot_type = self.curr_shot_type
+                    self.curr_shot_type = random.randint(0, 1)
+                    print(self.curr_shot_type)
             
     def decrease_health(self, damage = 1):
         self.health -= damage
