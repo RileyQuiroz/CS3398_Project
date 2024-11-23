@@ -15,9 +15,10 @@ class Boss(pygame.sprite.DirtySprite):
         self.velocity = 2
         self.heading_home = False
         self.fire_delay = 1.1  # Time between shots
+        self.switch_delay = 5
         self.last_shot_time = current_time
         self.prev_shot_type = 0
-        self.curr_shot_type = 0
+        self.curr_shot_type = 2
         self.last_switch_time = current_time
         self.spread_type = 0 # Used for spread shot logic
         
@@ -90,19 +91,27 @@ class Boss(pygame.sprite.DirtySprite):
         if (self.living == True and paused == False and self.heading_home == False):
             # Directed shots
             if (self.curr_shot_type == 0):
+                self.fire_delay = 1.1
                 if (current_time - self.last_shot_time >= self.fire_delay):
                     projectile = EnemyProjectile(self.rect.centerx, self.rect.centery)
                     proj_group.add(projectile)
                     self.last_shot_time = current_time
+                if (current_time - self.switch_delay >= self.last_switch_time):
+                    # Switch
+                    self.last_switch_time = current_time
                     self.prev_shot_type = self.curr_shot_type
                     self.curr_shot_type = random.randint(0, 2)
                     print(self.curr_shot_type)
             # Dual spreads
             elif (self.curr_shot_type == 1):
+                self.fire_delay = 1.1
                 if (current_time - self.last_shot_time >= self.fire_delay):
                     projectile = EnemyProjectile(self.rect.centerx, self.rect.centery)
                     proj_group.add(projectile)
                     self.last_shot_time = current_time
+                    # Switch
+                if (current_time - self.switch_delay >= self.last_switch_time):
+                    self.last_switch_time = current_time
                     self.prev_shot_type = self.curr_shot_type
                     self.curr_shot_type = random.randint(0, 1)
                     if(self.curr_shot_type == 1):
@@ -110,10 +119,16 @@ class Boss(pygame.sprite.DirtySprite):
                     print(self.curr_shot_type)
             # Bullet rain from wings
             elif (self.curr_shot_type == 2):
+                self.fire_delay = .3
                 if (current_time - self.last_shot_time >= self.fire_delay):
-                    projectile = EnemyProjectile(self.rect.centerx, self.rect.centery)
+                    projectile = EnemyProjectile(self.rect.centerx + 90, self.rect.centery)
+                    proj_group.add(projectile)
+                    projectile = EnemyProjectile(self.rect.centerx - 90, self.rect.centery)
                     proj_group.add(projectile)
                     self.last_shot_time = current_time
+                # Switch    
+                if (current_time - self.switch_delay >= self.last_switch_time):
+                    self.last_switch_time = current_time
                     self.prev_shot_type = self.curr_shot_type
                     self.curr_shot_type = random.randint(0, 1)
                     print(self.curr_shot_type)
