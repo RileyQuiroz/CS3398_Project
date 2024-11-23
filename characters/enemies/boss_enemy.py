@@ -1,6 +1,7 @@
 import pygame
 import random
 from projectiles.enemy_projectile import EnemyProjectile
+from projectiles.enemy_projectile_angled import EnemyProjectileAngled
 
 class Boss(pygame.sprite.DirtySprite):
     def __init__(self, x, y, current_time):
@@ -18,9 +19,10 @@ class Boss(pygame.sprite.DirtySprite):
         self.switch_delay = 5
         self.last_shot_time = current_time
         self.prev_shot_type = 0
-        self.curr_shot_type = 2
+        self.curr_shot_type = 1
         self.last_switch_time = current_time
         self.spread_type = 0 # Used for spread shot logic
+        self.angled_shot_speed = 3
         
         self.centerSize = 75
         self.wingSizeX = 75
@@ -104,10 +106,28 @@ class Boss(pygame.sprite.DirtySprite):
                     print(self.curr_shot_type)
             # Dual spreads
             elif (self.curr_shot_type == 1):
-                self.fire_delay = 1.1
+                self.fire_delay = .5
                 if (current_time - self.last_shot_time >= self.fire_delay):
-                    projectile = EnemyProjectile(self.rect.centerx, self.rect.centery)
-                    proj_group.add(projectile)
+                    if(self.spread_type == 0):
+                        projectile = EnemyProjectile(self.rect.centerx, self.rect.centery, self.angled_shot_speed)
+                        angled_projectile_a = EnemyProjectileAngled(self.rect.centerx, self.rect.centery, 135, self.angled_shot_speed)
+                        angled_projectile_b = EnemyProjectileAngled(self.rect.centerx, self.rect.centery, 45, self.angled_shot_speed)
+                        # Shotgun type attack
+                        proj_group.add(projectile)
+                        proj_group.add(angled_projectile_a)
+                        proj_group.add(angled_projectile_b)
+                        self.spread_type = 1
+                    else:
+                        angled_projectile_a = EnemyProjectileAngled(self.rect.centerx, self.rect.centery, 20, self.angled_shot_speed)
+                        angled_projectile_b = EnemyProjectileAngled(self.rect.centerx, self.rect.centery, 70, self.angled_shot_speed)
+                        angled_projectile_c = EnemyProjectileAngled(self.rect.centerx, self.rect.centery, 110, self.angled_shot_speed)
+                        angled_projectile_d = EnemyProjectileAngled(self.rect.centerx, self.rect.centery, 160, self.angled_shot_speed)
+                        # Shotgun type attack
+                        proj_group.add(angled_projectile_a)
+                        proj_group.add(angled_projectile_b)
+                        proj_group.add(angled_projectile_c)
+                        proj_group.add(angled_projectile_d)
+                        self.spread_type = 0
                     self.last_shot_time = current_time
                     # Switch
                 if (current_time - self.switch_delay >= self.last_switch_time):
