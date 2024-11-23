@@ -365,6 +365,8 @@ def game_loop():
             if not enemy.living:
                 destroyEnemy(dest_enemies, enemy, ship_destroyed_sound)
                 score_system.increase(10)
+                if(enemy.size == 100): # Only boss has size 100
+                    score_system.increase(990) # Get more points for destroying boss
         enemy_group.draw(screen)
 
         draw_text(f"{timer.elapsed_time:.2f}", small_font, NEON_CYAN, screen, 100, 100)
