@@ -39,7 +39,7 @@ class NoDamageObjective(BonusObjective):
         self.completed = player.health == self.starting_health
         return self.completed
 
-
+# FIXME: Crashes if chosen, because level doesn't have start_time currently,
 class UnderTimeObjective(BonusObjective):
     def __init__(self):
         super().__init__("Complete the level in under 45 seconds")
@@ -91,7 +91,7 @@ class BonusObjectiveDisplay:
         :param spacing: Vertical spacing between objectives.
         """
         self.objectives = objectives
-        self.font = pygame.font.Font("assets/fonts/Future Edge.ttf", 22)
+        self.font = pygame.font.Font("assets/fonts/Future Edge.ttf", 16)
         self.screen = screen
         self.position = position
         self.spacing = spacing
@@ -102,7 +102,7 @@ class BonusObjectiveDisplay:
         """
         x, y = self.position
         for objective in self.objectives:
-            color = (0, 255, 0) if objective.completed else (255, 255, 255)  # Green if completed, white otherwise, Maybe change colors
+            color = (0, 255, 0) if objective.completed else (155, 0, 255)  # Green if completed, white otherwise, Maybe change colors
             text_surface = self.font.render(objective.description, True, color)
             self.screen.blit(text_surface, (x, y))
             y += self.spacing
