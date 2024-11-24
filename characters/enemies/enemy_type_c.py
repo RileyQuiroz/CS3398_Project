@@ -15,7 +15,7 @@ class EnemyTypeC(Enemy):
         self.fire_delay = 2.5  # Time between shots
         self.last_shot_time = current_time  # Time since the last shot
         
-    def fire_shot(self, proj_group, paused, curr): # Fires a single bullet
+    def fire_shot(self, proj_group, paused, curr, empty1, empty2): # Fires a single bullet
         current_time = curr
         # Check if enough time has passed since the last shot
         if (current_time - self.last_shot_time >= self.fire_delay and self.living == True and paused == False and self.heading_home == False):

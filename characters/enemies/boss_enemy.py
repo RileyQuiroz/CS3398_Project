@@ -1,4 +1,5 @@
 import pygame
+import math
 import random
 from projectiles.enemy_projectile import EnemyProjectile
 from projectiles.enemy_projectile_angled import EnemyProjectileAngled
@@ -19,7 +20,7 @@ class Boss(pygame.sprite.DirtySprite):
         self.switch_delay = 5
         self.last_shot_time = current_time
         self.prev_shot_type = 0
-        self.curr_shot_type = 1
+        self.curr_shot_type = 0
         self.last_switch_time = current_time
         self.spread_type = 0 # Used for spread shot logic
         self.angled_shot_speed = 3
@@ -88,14 +89,16 @@ class Boss(pygame.sprite.DirtySprite):
         )
         pygame.draw.rect(self.image, self.color, right_rect)
            
-    def fire_shot(self, proj_group, paused, curr): # Will have three firing modes
+    def fire_shot(self, proj_group, paused, curr, player_pos_x, player_pos_y): # Will have three firing modes
         current_time = curr
         if (self.living == True and paused == False and self.heading_home == False):
             # Directed shots
             if (self.curr_shot_type == 0):
-                self.fire_delay = 1.1
+                self.angled_shot_speed = 5
+                self.fire_delay = .2
+                curr_angle = math.degrees(math.atan2(player_pos_y - self.rect.centery, player_pos_x - self.rect.centerx))
                 if (current_time - self.last_shot_time >= self.fire_delay):
-                    projectile = EnemyProjectile(self.rect.centerx, self.rect.centery)
+                    projectile = EnemyProjectileAngled(self.rect.centerx, self.rect.centery, curr_angle, self.angled_shot_speed)
                     proj_group.add(projectile)
                     self.last_shot_time = current_time
                 if (current_time - self.switch_delay >= self.last_switch_time):
@@ -106,13 +109,13 @@ class Boss(pygame.sprite.DirtySprite):
                     print(self.curr_shot_type)
             # Dual spreads
             elif (self.curr_shot_type == 1):
-                self.fire_delay = .5
+                self.angled_shot_speed = 3
+                self.fire_delay = .7
                 if (current_time - self.last_shot_time >= self.fire_delay):
                     if(self.spread_type == 0):
                         projectile = EnemyProjectile(self.rect.centerx, self.rect.centery, self.angled_shot_speed)
                         angled_projectile_a = EnemyProjectileAngled(self.rect.centerx, self.rect.centery, 135, self.angled_shot_speed)
                         angled_projectile_b = EnemyProjectileAngled(self.rect.centerx, self.rect.centery, 45, self.angled_shot_speed)
-                        # Shotgun type attack
                         proj_group.add(projectile)
                         proj_group.add(angled_projectile_a)
                         proj_group.add(angled_projectile_b)
@@ -122,7 +125,6 @@ class Boss(pygame.sprite.DirtySprite):
                         angled_projectile_b = EnemyProjectileAngled(self.rect.centerx, self.rect.centery, 70, self.angled_shot_speed)
                         angled_projectile_c = EnemyProjectileAngled(self.rect.centerx, self.rect.centery, 110, self.angled_shot_speed)
                         angled_projectile_d = EnemyProjectileAngled(self.rect.centerx, self.rect.centery, 160, self.angled_shot_speed)
-                        # Shotgun type attack
                         proj_group.add(angled_projectile_a)
                         proj_group.add(angled_projectile_b)
                         proj_group.add(angled_projectile_c)

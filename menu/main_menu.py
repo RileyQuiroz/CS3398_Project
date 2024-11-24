@@ -360,7 +360,7 @@ def game_loop():
             startRetreat(enemy, to_despawn) # Enemy B retreat call
             enemy.change_color() # Change color if hurt
             enemy.update(timer.stopped, timer.elapsed_time)
-            enemy.fire_shot(enemy_projectiles, paused=timer.stopped, curr=timer.elapsed_time)
+            enemy.fire_shot(enemy_projectiles, timer.stopped, timer.elapsed_time, player.x, player.y)
             check_player_enemy_physical_collision(player, enemy, timer.elapsed_time)
             if not enemy.living:
                 destroyEnemy(dest_enemies, enemy, ship_destroyed_sound)
