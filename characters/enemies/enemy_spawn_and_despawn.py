@@ -7,8 +7,8 @@ from characters.enemies.enemy_type_c import EnemyTypeC
 from characters.enemies.boss_enemy import Boss
 
 
-def spawnBoss(enemy_list, current_time):
-    enemy_list.add(Boss(400,80,current_time))
+def spawnBoss(enemy_list, current_time, difficulty):
+    enemy_list.add(Boss(400,80,current_time, difficulty))
 
 # spawns an enemy out of sight
 def spawnEnemy(enemy_list, current_time, enemy_type = 0):

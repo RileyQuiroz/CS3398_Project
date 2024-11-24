@@ -309,7 +309,7 @@ def game_loop():
     #consumables_group.add(Consumable(120,120, "shield_pack"))
     
     if(current_level == 3):
-        spawnBoss(enemy_group, 0)
+        spawnBoss(enemy_group, 0, difficulty)
         
 
     while running:

@@ -5,10 +5,11 @@ from projectiles.enemy_projectile import EnemyProjectile
 from projectiles.enemy_projectile_angled import EnemyProjectileAngled
 
 class Boss(pygame.sprite.DirtySprite):
-    def __init__(self, x, y, current_time):
+    def __init__(self, x, y, current_time, difficulty):
         super().__init__()
-        self.max_health = 100
-        self.health = 100
+        self.diffuculty = difficulty
+        self.max_health = 100 + (50 * difficulty)
+        self.health = self.max_health
         self.living = True
         self.time_destroyed = 0
         self.color = (255, 0, 0) # Default red color, will change when we have sprites
@@ -19,7 +20,7 @@ class Boss(pygame.sprite.DirtySprite):
         self.fire_delay = 1.1  # Time between shots
         self.switch_delay = 5
         self.last_shot_time = current_time
-        self.prev_shot_type = 0
+        self.prev_shot_type = 3
         self.curr_shot_type = 0
         self.last_switch_time = current_time
         self.spread_type = 0 # Used for spread shot logic
@@ -43,14 +44,12 @@ class Boss(pygame.sprite.DirtySprite):
             self.centerSize,
             self.centerSize
         )
-
         self.left_wing_rect = pygame.Rect(
             self.rect.x,
             self.rect.y + (self.rect.height - self.wingSizeY) // 2,
             self.wingSizeX,
             self.wingSizeY
         )
-
         self.right_wing_rect = pygame.Rect(
             self.rect.x + self.wingSizeX + self.centerSize,
             self.rect.y + (self.rect.height - self.wingSizeY) // 2,
@@ -89,13 +88,13 @@ class Boss(pygame.sprite.DirtySprite):
         )
         pygame.draw.rect(self.image, self.color, right_rect)
            
-    def fire_shot(self, proj_group, paused, curr, player_pos_x, player_pos_y): # Will have three firing modes
+    def fire_shot(self, proj_group, paused, curr, player_pos_x, player_pos_y):
         current_time = curr
         if (self.living == True and paused == False and self.heading_home == False):
             # Directed shots
             if (self.curr_shot_type == 0):
                 self.angled_shot_speed = 5
-                self.fire_delay = .2
+                self.fire_delay = .25
                 curr_angle = math.degrees(math.atan2(player_pos_y - self.rect.centery, player_pos_x - self.rect.centerx))
                 if (current_time - self.last_shot_time >= self.fire_delay):
                     projectile = EnemyProjectileAngled(self.rect.centerx, self.rect.centery, curr_angle, self.angled_shot_speed)
@@ -105,7 +104,7 @@ class Boss(pygame.sprite.DirtySprite):
                     # Switch
                     self.last_switch_time = current_time
                     self.prev_shot_type = self.curr_shot_type
-                    self.curr_shot_type = random.randint(0, 2)
+                    self.curr_shot_type = random.randint(1, 2)
                     print(self.curr_shot_type)
             # Dual spreads
             elif (self.curr_shot_type == 1):
@@ -135,17 +134,17 @@ class Boss(pygame.sprite.DirtySprite):
                 if (current_time - self.switch_delay >= self.last_switch_time):
                     self.last_switch_time = current_time
                     self.prev_shot_type = self.curr_shot_type
-                    self.curr_shot_type = random.randint(0, 1)
-                    if(self.curr_shot_type == 1):
-                        self.curr_shot_type == 2
+                    self.curr_shot_type = random.randint(0, 2)
+                    if(self.curr_shot_type == self.prev_shot_type):
+                        self.curr_shot_type == 0
                     print(self.curr_shot_type)
             # Bullet rain from wings
             elif (self.curr_shot_type == 2):
-                self.fire_delay = .3
+                self.fire_delay = .2
                 if (current_time - self.last_shot_time >= self.fire_delay):
-                    projectile = EnemyProjectile(self.rect.centerx + 90, self.rect.centery)
+                    projectile = EnemyProjectile(self.rect.centerx + 90, self.rect.centery, 4)
                     proj_group.add(projectile)
-                    projectile = EnemyProjectile(self.rect.centerx - 90, self.rect.centery)
+                    projectile = EnemyProjectile(self.rect.centerx - 90, self.rect.centery, 4)
                     proj_group.add(projectile)
                     self.last_shot_time = current_time
                 # Switch    
