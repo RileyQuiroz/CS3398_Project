@@ -319,7 +319,7 @@ def game_loop():
     ticks_last_frame = pygame.time.get_ticks()
     
     #IMPORTANT: TEMP VARIABLEs FOR SAVE SYSTEM, USE/MODIFY FOR WHATEVER YOU NEED
-    current_level = 3 # 0-2 are normal levels, 3 is boss
+    current_level = 1 # 0-2 are normal levels, 3 is boss
     lvlThreeSwitch = 0 # Used only for level 3 spawning of type c and b
     difficulty = 0 # 0-easy, 1-medium, 2-hard
     
@@ -452,6 +452,8 @@ def game_loop():
         draw_text(f"{timer.elapsed_time:.2f}", small_font, NEON_CYAN, screen, 100, 100)
         score_display.display_score(score_system.get_score())
         
+        win_lose_system.update(timer.elapsed_time)
+        current_game_state = win_lose_system.update(timer.elapsed_time)
         current_game_state = win_lose_system.update()
         if current_game_state != GameState.ONGOING:
             # Stop beam sound and reset states
