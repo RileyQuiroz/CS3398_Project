@@ -8,7 +8,7 @@ class Boss(pygame.sprite.DirtySprite):
     def __init__(self, x, y, current_time, difficulty):
         super().__init__()
         self.difficulty = difficulty
-        self.max_health = 100 + (20 * difficulty)
+        self.max_health = 100 + (15 * difficulty)
         self.health = self.max_health
         self.living = True
         self.time_destroyed = 0
