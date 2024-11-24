@@ -25,6 +25,7 @@ class Game:
     # Define fonts
     MAIN_FONT = pygame.font.Font("assets/fonts/Future Edge.ttf", 74)
     SMALLER_FONT = pygame.font.Font("assets/fonts/Future Edge.ttf", 34)
+    SMALL_FONT = pygame.font.Font("assets/fonts/Future Edge.ttf", 32)
 
     # Define frame rate
     FPS = 60
@@ -76,10 +77,26 @@ class Game:
 
         self.win_lose_system.player = self.player
 
+        #IMPORTANT: TEMP VARIABLEs FOR SAVE SYSTEM, USE/MODIFY FOR WHATEVER YOU NEED
+        self.current_level = 0
+        self.difficulty = 0
+
         # Initialize game states
         self.states = {
 
         }
+
+        self.previous_state = ''
+        self.current_state = 'MainMenu'
+
+    # Change between game states
+    def change_state(self, next_state):
+        if self.states[next_state]:
+            self.previous_state = self.current_state
+            self.current_state = next_state
+
+            self.states[self.previous_state].leave()
+            self.states[self.current_state].enter()
 
     # Define menu options
     def draw_text(self, text, font, color, x, y):
@@ -119,3 +136,7 @@ class Game:
         self.set_obstacles() # Temporary
         self.player.x = self.WIDTH // 2
         self.player.y = self.HEIGHT - 100
+
+    # Update the current game state
+    def update(self, dt):
+        self.states[self.current_state].update(dt)
