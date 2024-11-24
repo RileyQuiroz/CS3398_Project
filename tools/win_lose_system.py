@@ -25,9 +25,9 @@ class WinLoseSystem:
         """Calculate and return elapsed time for the current level."""
         return time.time() - self.level_start_time
 
-    def reset_level_timer(self):
+    def reset_level_timer(self, elapsed_time):
         """Manually reset the timer, if needed."""
-        self.level_start_time = time.time()
+        self.level_start_time = elapsed_time
 
     # --- Win and Lose Conditions ---
     def check_win_condition(self, elapsed_time):
