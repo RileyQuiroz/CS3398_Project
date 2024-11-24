@@ -452,9 +452,8 @@ def game_loop():
         draw_text(f"{timer.elapsed_time:.2f}", small_font, NEON_CYAN, screen, 100, 100)
         score_display.display_score(score_system.get_score())
         
-        win_lose_system.update(timer.elapsed_time)
-        current_game_state = win_lose_system.update(timer.elapsed_time)
-        current_game_state = win_lose_system.update()
+        win_lose_system.update(timer.elapsed_time, current_objectives)
+        current_game_state = win_lose_system.update(timer.elapsed_time, current_objectives)
         if current_game_state != GameState.ONGOING:
             # Stop beam sound and reset states
             if hasattr(player, "beam_audio_playing") and player.beam_audio_playing:

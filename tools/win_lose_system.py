@@ -13,11 +13,15 @@ class WinLoseSystem:
         self.level_processed = set()  # Flags for levels where win conditions were processed
 
     # --- Level Management ---
-    def start_next_level(self, elapsed_time):
+    def start_next_level(self, elapsed_time, current_objectives):
         """Advance to the next level and reset necessary parameters."""
         self.current_level += 1
         self.level_start_time = elapsed_time  # Record the time the level starts
         self.difficulty = 1  # TODO: Maybe handle difficulty differently
+
+        for obj in current_objectives:
+            obj.check_completion(self.player, self.current_level)
+        print("start next level reached!")
         print(f"Starting Level {self.current_level} with difficulty {self.difficulty} with time of {elapsed_time}")
         return self.current_level
 
@@ -30,16 +34,16 @@ class WinLoseSystem:
         self.level_start_time = elapsed_time
 
     # --- Win and Lose Conditions ---
-    def check_win_condition(self, elapsed_time):
+    def check_win_condition(self, elapsed_time, current_objectives):
         """Determine if the player has met the win condition for the current level."""
         if self.current_level == 1 and self.score_system.score >= 50 and 1 not in self.level_processed:
             print("Level 1 win condition met! Proceeding to level 2.")
             self.level_processed.add(1)
-            self.start_next_level(elapsed_time)
+            self.start_next_level(elapsed_time, current_objectives)
         elif self.current_level == 2 and self.score_system.score >= 100 and 2 not in self.level_processed:
             print("Level 2 win condition met! Proceeding to level 3.")
             self.level_processed.add(2)
-            self.start_next_level(elapsed_time)
+            self.start_next_level(elapsed_time, current_objectives)
         elif self.current_level == 3 and self.score_system.score >= 150 and 3 not in self.level_processed:
             print("Final level win condition met! You win!")
             self.trigger_win()
@@ -65,9 +69,9 @@ class WinLoseSystem:
         pygame.mixer.Sound("assets/sound_efx/game_over.mp3").play()
 
     # --- Game State Management ---
-    def update(self, elapsed_time):
+    def update(self, elapsed_time, current_objectives):
         """Update game state based on win and lose conditions."""
-        self.check_win_condition(elapsed_time)
+        self.check_win_condition(elapsed_time, current_objectives)
         self.check_lose_condition()
         return self.state
 
