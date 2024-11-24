@@ -12,16 +12,16 @@ def check_projectile_boss_collisions(projectiles, enemies, damage = 1): # For bo
         for enemy in enemies:
             if enemy.central_rect.colliderect(projectile.rect):
                 enemy.decrease_health(damage=damage)
-                print(f"Projectile hit boss central square at {enemy.central_rect.topleft}, damage: {damage}")
-                projectile.kill()  # Remove projectile after a hit
+                projectile.kill()
+                print(f"Boss health: {enemy.health}")
             elif enemy.left_wing_rect.colliderect(projectile.rect):
                 enemy.decrease_health(damage=damage)
-                print(f"Projectile hit boss left wing at {enemy.left_wing_rect.topleft}, damage: {damage}")
                 projectile.kill()
+                print(f"Boss health: {enemy.health}")
             elif enemy.right_wing_rect.colliderect(projectile.rect):
                 enemy.decrease_health(damage=damage)
-                print(f"Projectile hit boss right wing at {enemy.right_wing_rect.topleft}, damage: {damage}")
                 projectile.kill()
+                print(f"Boss health: {enemy.health}")
 
 def check_player_projectile_collisions(player, enemy_projectiles, damage, curr_time):
     """

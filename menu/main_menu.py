@@ -297,7 +297,7 @@ def game_loop():
     #IMPORTANT: TEMP VARIABLEs FOR SAVE SYSTEM, USE/MODIFY FOR WHATEVER YOU NEED
     current_level = 3 # 0-2 are normal levels, 3 is boss
     lvlThreeSwitch = 0 # Used only for level 3 spawning of type c and b
-    difficulty = 0 # 0-easy, 1-medium, 2-hard
+    difficulty = 2 # 0-easy, 1-medium, 2-hard
     
     max_enemies = 3 + difficulty # Assumes 3 difficulties, easy(0), medium(1), hard(2)
 

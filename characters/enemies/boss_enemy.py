@@ -7,8 +7,8 @@ from projectiles.enemy_projectile_angled import EnemyProjectileAngled
 class Boss(pygame.sprite.DirtySprite):
     def __init__(self, x, y, current_time, difficulty):
         super().__init__()
-        self.diffuculty = difficulty
-        self.max_health = 100 + (50 * difficulty)
+        self.difficulty = difficulty
+        self.max_health = 100 + (20 * difficulty)
         self.health = self.max_health
         self.living = True
         self.time_destroyed = 0
@@ -60,7 +60,6 @@ class Boss(pygame.sprite.DirtySprite):
     def drawShip(self): # Determines shape and color of ship
         # Clear the surface with transparency
         self.image.fill((0, 0, 0, 0))  # Fill with transparent color
-
         # Central square
         square_rect = pygame.Rect(
             self.wingSizeX,  # Positioned in the center horizontally
@@ -69,7 +68,6 @@ class Boss(pygame.sprite.DirtySprite):
             self.centerSize
         )
         pygame.draw.rect(self.image, self.color, square_rect)
-
         # Left wing
         left_rect = pygame.Rect(
             0,  # Start at the far left
@@ -78,7 +76,6 @@ class Boss(pygame.sprite.DirtySprite):
             self.wingSizeY
         )
         pygame.draw.rect(self.image, self.color, left_rect)
-
         # Right wing
         right_rect = pygame.Rect(
             self.centerSize + self.wingSizeX,  # Positioned next to the square
@@ -94,22 +91,21 @@ class Boss(pygame.sprite.DirtySprite):
             # Directed shots
             if (self.curr_shot_type == 0):
                 self.angled_shot_speed = 5
-                self.fire_delay = .25
+                self.fire_delay = .25 - (.05 * self.difficulty)
                 curr_angle = math.degrees(math.atan2(player_pos_y - self.rect.centery, player_pos_x - self.rect.centerx))
                 if (current_time - self.last_shot_time >= self.fire_delay):
                     projectile = EnemyProjectileAngled(self.rect.centerx, self.rect.centery, curr_angle, self.angled_shot_speed)
                     proj_group.add(projectile)
                     self.last_shot_time = current_time
+                # Switch
                 if (current_time - self.switch_delay >= self.last_switch_time):
-                    # Switch
                     self.last_switch_time = current_time
                     self.prev_shot_type = self.curr_shot_type
                     self.curr_shot_type = random.randint(1, 2)
-                    print(self.curr_shot_type)
             # Dual spreads
             elif (self.curr_shot_type == 1):
                 self.angled_shot_speed = 3
-                self.fire_delay = .7
+                self.fire_delay = .7 - (.15 * self.difficulty)
                 if (current_time - self.last_shot_time >= self.fire_delay):
                     if(self.spread_type == 0):
                         projectile = EnemyProjectile(self.rect.centerx, self.rect.centery, self.angled_shot_speed)
@@ -130,17 +126,16 @@ class Boss(pygame.sprite.DirtySprite):
                         proj_group.add(angled_projectile_d)
                         self.spread_type = 0
                     self.last_shot_time = current_time
-                    # Switch
+                # Switch
                 if (current_time - self.switch_delay >= self.last_switch_time):
                     self.last_switch_time = current_time
                     self.prev_shot_type = self.curr_shot_type
                     self.curr_shot_type = random.randint(0, 2)
                     if(self.curr_shot_type == self.prev_shot_type):
                         self.curr_shot_type == 0
-                    print(self.curr_shot_type)
             # Bullet rain from wings
             elif (self.curr_shot_type == 2):
-                self.fire_delay = .2
+                self.fire_delay = .2 - (.05 * self.difficulty)
                 if (current_time - self.last_shot_time >= self.fire_delay):
                     projectile = EnemyProjectile(self.rect.centerx + 90, self.rect.centery, 4)
                     proj_group.add(projectile)
@@ -152,7 +147,6 @@ class Boss(pygame.sprite.DirtySprite):
                     self.last_switch_time = current_time
                     self.prev_shot_type = self.curr_shot_type
                     self.curr_shot_type = random.randint(0, 1)
-                    print(self.curr_shot_type)
             
     def decrease_health(self, damage = 1):
         self.health -= damage
