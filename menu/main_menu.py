@@ -342,7 +342,7 @@ def game_loop():
     # Assign and initialize objectives
     current_objectives = assign_bonus_objectives()
     for obj in current_objectives:
-        obj.initialize(player, current_level) # FIXME: current_level being passed isn't right or works
+        obj.initialize(player, win_lose_system) # FIXME: current_level being passed isn't right or works
 
     # Display objectives
     print("Bonus Objectives for this level:")

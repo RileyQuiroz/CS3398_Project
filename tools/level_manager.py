@@ -8,7 +8,8 @@ class LevelManager:
 
     def start_next_level(self):
         self.current_level += 1
-        print(f"Starting Level {self.current_level} with difficulty {self.difficulty}")
+        self.level_start_time = self.get_level_start_time()
+        print(f"Starting Level {self.current_level} with difficulty {self.difficulty} with start time of {self.level_start_time}")
 
     def get_current_level(self):
         return self.current_level

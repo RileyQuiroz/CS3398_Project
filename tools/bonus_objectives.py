@@ -45,10 +45,10 @@ class UnderTimeObjective(BonusObjective):
         super().__init__("Complete the level in under 45 seconds")
 
     def initialize(self, player, level):
-        level.start_time = time.time()
+        level.current_level = time.time()
 
     def check_completion(self, player, level):
-        elapsed_time = time.time() - level.start_time
+        elapsed_time = level.elapsed_time - level.start_time ## FIXME!!
         self.completed = elapsed_time <= 45
         return self.completed
 

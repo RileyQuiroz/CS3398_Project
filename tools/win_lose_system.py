@@ -7,7 +7,7 @@ class WinLoseSystem:
         self.score_system = score_system
         self.state = GameState.ONGOING
         self.player = player  # Player object for health checks, life checks, etc.
-        self.level_manager = LevelManager() # TODO: Maybe handle LevelManager differently later, and instead of score, use enemies
+        self.level_manager = LevelManager() # TODO: Maybe handle LevelManager differently later, and instead of score, use enemies/waves
         self.level_processed = set() # Flags for if level checks have been reached
 
     def check_win_condition(self):
