@@ -37,7 +37,7 @@ class NoDamageObjective(BonusObjective):
 
     def check_completion(self, player, level):
         self.completed = player.health == self.starting_health
-        print("check completion reached!")
+        print("check completion nodamageobjective reached!")
         return self.completed
 
 # FIXME: Crashes if chosen, because level doesn't have start_time currently,
@@ -51,7 +51,7 @@ class UnderTimeObjective(BonusObjective):
     def check_completion(self, player, level):
         elapsed_time = level.elapsed_time - level.start_time ## FIXME!!
         self.completed = elapsed_time <= 45
-        print("check completion reached!")
+        print("check completion undertimeobjective reached!")
         return self.completed
 
 # TODO: Player does NOT have shots_fired and shots_hit variable, will have to figure out a way to do this later
@@ -66,7 +66,7 @@ class AccuracyObjective(BonusObjective):
     def check_completion(self, player, level):
         accuracy = player.shots_hit / max(player.shots_fired, 1)  # Avoid division by zero
         self.completed = accuracy >= 0.8
-        print("check completion reached!")
+        print("check completion accuracyobjective reached!")
         return self.completed
 
 
@@ -79,7 +79,7 @@ class KillStreakObjective(BonusObjective):
 
     def check_completion(self, player, level):
         self.completed = player.kill_count >= 10
-        print("check completion reached!")
+        print("check completion killstreakobjective reached!")
         return self.completed
 
 

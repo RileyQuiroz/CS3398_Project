@@ -20,7 +20,11 @@ class WinLoseSystem:
         self.difficulty = 1  # TODO: Maybe handle difficulty differently
 
         for obj in current_objectives:
-            obj.check_completion(self.player, self.current_level)
+            if obj.check_completion(self.player, self.current_level-1):
+                print(f"Objective '{obj.description}' passed!")
+            else:
+                print(f"Objective '{obj.description}' failed.")
+
         print("start next level reached!")
         print(f"Starting Level {self.current_level} with difficulty {self.difficulty} with time of {elapsed_time}")
         return self.current_level
