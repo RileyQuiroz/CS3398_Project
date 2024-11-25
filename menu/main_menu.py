@@ -18,7 +18,11 @@ from tools.end_screen import EndScreen
 from tools.win_lose_system import WinLoseSystem
 from characters.player_char import CharacterPawn
 from characters.enemies.enemy_spawn_and_despawn import *
-from tools.collision_hanlder import check_projectile_enemy_collisions, check_player_projectile_collisions
+from tools.collision_hanlder import (
+    check_player_projectile_collisions,
+    check_projectile_enemy_collisions,
+    check_player_consumable_collisions 
+)
 from tools.Star_and_planet_bg_logic import Background
 from characters.player_char import Consumable, spawn_consumable
 
@@ -386,6 +390,14 @@ def game_loop():
         else:
             check_projectile_enemy_collisions(proj_group, enemy_group, damage=1)
         check_player_projectile_collisions(player, enemy_projectiles, 10, timer.elapsed_time)
+
+        # Always check for player-consumable collisions
+
+        check_player_consumable_collisions(player, consumables_group)
+
+        # Check for player-projectile collisions
+        check_player_projectile_collisions(player, enemy_projectiles, 10, timer.elapsed_time)
+
 
         proj_group.update(timer.stopped, proj_group, timer.elapsed_time)
         enemy_projectiles.update(timer.stopped, enemy_projectiles, timer.elapsed_time)

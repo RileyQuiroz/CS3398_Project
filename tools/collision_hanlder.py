@@ -84,3 +84,15 @@ def check_player_enemy_physical_collision(player, enemy, curr_time):
     elif(curr_time - player.last_enemy_collision >= 1):
         player.got_hit = False
 
+def check_player_consumable_collisions(player, consumables_group):
+    """
+    Check if the player collides with any consumables.
+    Consumes the item and applies its effect.
+    """
+    collided_consumables = pygame.sprite.spritecollide(player, consumables_group, True)
+    for consumable in collided_consumables:
+        player.consume(consumable.consumable_type)
+        print(f"Player consumed: {consumable.consumable_type}")
+
+
+
