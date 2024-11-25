@@ -130,10 +130,12 @@ class Boss(pygame.sprite.DirtySprite):
                 # Switch
                 if (current_time - self.switch_delay >= self.last_switch_time):
                     self.last_switch_time = current_time
+                    tempPrevShot = self.prev_shot_type
                     self.prev_shot_type = self.curr_shot_type
-                    self.curr_shot_type = random.randint(0, 2)
-                    if(self.curr_shot_type == self.prev_shot_type):
-                        self.curr_shot_type == 0
+                    if(tempPrevShot == 0):
+                        self.curr_shot_type = 2
+                    elif(tempPrevShot == 2):
+                        self.curr_shot_type = 0
             # Bullet rain from wings
             elif (self.curr_shot_type == 2):
                 self.fire_delay = .2 - (.05 * self.difficulty)
