@@ -259,7 +259,6 @@ def assign_bonus_objectives():
         NoDamageObjective(),
         UnderTimeObjective(),
         AccuracyObjective(),
-        KillStreakObjective(),
     ]
     return random.sample(objectives_pool, 2)
 
@@ -313,6 +312,7 @@ def game_loop():
 
     player = CharacterPawn(x=WIDTH // 2, y=HEIGHT - 100, projectiles_group=proj_group, screen_width=WIDTH, screen_height=HEIGHT)
     win_lose_system.player = player
+    win_lose_system.player_tracker.player = player
 
     last_spawn = 0
     last_spawn_wave = 0
@@ -337,7 +337,7 @@ def game_loop():
         
 
     #current_level = 1
-
+    level_progressed = False
 
     # Assign and initialize objectives
     current_objectives = assign_bonus_objectives()
@@ -348,6 +348,8 @@ def game_loop():
     print("Bonus Objectives for this level:")
     for obj in current_objectives:
         print(f"- {obj.description}")
+
+    hits_detected = 0
 
     objective_display = BonusObjectiveDisplay(current_objectives, font, screen)
 
@@ -387,8 +389,8 @@ def game_loop():
         if player.is_using_sw:
             check_beam_enemy_collisions(player, enemy_group, damage=8)
 
-
-
+        # For accuracy bonus objective
+        shots_fired = 0
 
         ##screen.fill(black_bg)
         background.update(timer)
@@ -413,11 +415,21 @@ def game_loop():
                 spawn_consumable(consumables_group, WIDTH, HEIGHT)
                 consumable_spawn_timer = ticks
 
-        if(current_level == 3):
-            check_projectile_boss_collisions(proj_group, enemy_group, damage=1)
+        if current_level == 3:
+            hit_detected = check_projectile_boss_collisions(proj_group, enemy_group, damage=1)
         else:
-            check_projectile_enemy_collisions(proj_group, enemy_group, damage=1)
+            hit_detected = check_projectile_enemy_collisions(proj_group, enemy_group, damage=1)
+
+
+        #print("hit detected: ", hit_detected)
+        if hit_detected == True:
+            hits_detected += 1 
+
+
+        # Call to check collisions with player projectiles
         check_player_projectile_collisions(player, enemy_projectiles, 10, timer.elapsed_time)
+
+
 
         proj_group.update(timer.stopped, proj_group, timer.elapsed_time)
         enemy_projectiles.update(timer.stopped, enemy_projectiles, timer.elapsed_time)
@@ -454,6 +466,15 @@ def game_loop():
         
         win_lose_system.update(timer.elapsed_time, current_objectives)
         current_game_state = win_lose_system.update(timer.elapsed_time, current_objectives)
+        win_lose_system.render_overlay(screen)
+
+        ##if win_lose_system.current_level == 2 and level_progressed == False:
+        ##    current_objectives = assign_bonus_objectives()
+        ##    level_progressed = True
+        ##    print("Bonus Objectives for this level:")
+        ##    for obj in current_objectives:
+        ##        print(f"- {obj.description}")
+
         if current_game_state != GameState.ONGOING:
             # Stop beam sound and reset states
             if hasattr(player, "beam_audio_playing") and player.beam_audio_playing:
@@ -555,6 +576,16 @@ def game_loop():
                     timer.toggle()
                 elif event.key == pygame.K_SPACE:
                     player.shoot(timer.stopped)
+                    shots_fired += 1
+
+                    # # Check if there were any collisions and record shots
+                    #if hit_detected == True:  # If a hit was detected, shots hit the target
+                    #    win_lose_system.record_shot(hit=True)
+                    #    print(" MAIN LOOP SHOT DETECTED AS TRUE: ", hit_detected)
+                    #elif hit_detected == False:  # No collisions, so the shots missed
+                    #    win_lose_system.record_shot(hit=False)
+                    #    print(" MAIN LOOP SHOT DETECTED AS false: ", hit_detected)
+
                 elif event.key == pygame.K_s:
                     message, start_time = user_save_and_load.saveHandling(score_system.get_score(), player, current_level, difficulty)
                     save_text_show = True
@@ -575,6 +606,19 @@ def game_loop():
         # Handle enemy destruction
         drawEnemyDestruction(dest_enemies, screen, ship_destroyed_sound, score_system)                
         despawnEnemy(to_despawn)
-        
+
+        # Check if there were any collisions and record shots
+        for _ in range(shots_fired):  # Loop through the number of shots fired
+            if hits_detected >= 0:  # If there have been any successful hits
+                win_lose_system.record_shot(hit=True)
+                hits_detected -= 1  # Decrement hits to keep track
+                #print(" MAIN LOOP SHOT DETECTED AS TRUE: Hits Left = ", hits_detected)
+            else:  # If no hits were detected
+                win_lose_system.record_shot(hit=False)
+                #print(" MAIN LOOP SHOT DETECTED AS FALSE: Hits Left = ", hits_detected)
+
+
+        shots_fired = 0
+
         pygame.display.flip()
         clock.tick(FPS)
