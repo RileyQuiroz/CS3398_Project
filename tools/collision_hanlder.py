@@ -1,5 +1,34 @@
 import pygame
 
+
+def check_beam_enemy_collisions(player, enemies, damage=1):
+    current_time = pygame.time.get_ticks()
+
+    # Add a cooldown for beam damage
+    if not hasattr(player, "beam_damage_cooldown"):
+        player.beam_damage_cooldown = 0  # Initialize cooldown
+
+    if current_time > player.beam_damage_cooldown:
+        # Define the shortened beam's collision area
+        beam_length = 300  # Set the visual and damage beam length
+        beam_rect = pygame.Rect(
+            player.x + player.width // 2 - 5,  # Beam's x position (centered on the player)
+            player.y - beam_length,           # Start y position of the beam
+            10,                               # Beam's width
+            beam_length                       # Beam's height
+        )
+
+        for enemy in enemies:
+            if enemy.rect.colliderect(beam_rect):  # Check collision within the beam's range
+                enemy.decrease_health(damage=damage)
+                print(f"[DEBUG] Beam hit enemy at {enemy.rect.topleft}, damage: {damage}")
+
+        # Set the cooldown to apply damage every 200ms
+        player.beam_damage_cooldown = current_time + 200
+
+
+
+
 def check_projectile_enemy_collisions(projectiles, enemies, damage=1):
     collisions = pygame.sprite.groupcollide(projectiles, enemies, True, False)
     for hit_projectile, hit_enemies in collisions.items():
@@ -54,3 +83,4 @@ def check_player_enemy_physical_collision(player, enemy, curr_time):
             print("Player defeated!")
     elif(curr_time - player.last_enemy_collision >= 1):
         player.got_hit = False
+

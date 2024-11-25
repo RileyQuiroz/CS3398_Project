@@ -27,6 +27,11 @@ CONSUMABLE_DATA = {
         "image": "assets/objects/weapon_rocket_launcher2.png",
         "width": 38,
         "height": 38
+    },
+    "super_weapon":{
+        "image": "assets/objects/weapon_super_weapon.png",
+        "width": 38,
+        "height": 38
     }
 }
 
@@ -52,14 +57,29 @@ class CharacterPawn:
         self.last_enemy_collision = 0
         self.got_hit = False
         self.shield = 0
-        # weapon
-        self.player_weapon = 0 # For use with save system, modify to your needs
-        # self.player_model = 0 # For use with save system, modify to your needs
-        # weapon list
-        #self.weapon_list=[("auto_turrent",10, 200, (0,255,0)), 
-        #                   ("rocket_launcher", 25, 500, (255, 0, 0))]
+        
+        # Initialize weapon to default
+        self.player_weapon = "default"  # Ensure the player starts with the default weapon
         self.current_weapon = 0
-        # self.last_shot_time = 0
+
+        # SUPER WEAPON
+        self.is_using_sw = False
+        self.sw_start_time = 0
+        self.sw_durration = 2000
+        self.sw_cooldown = 5000
+        self.last_sw_time = 0
+        self.is_charging = False
+        self.charge_start_time = 0
+        self.charge_duration = 2000  # 2 seconds to charge (adjust as needed)
+        self.laser_charge_sound = pygame.mixer.Sound("assets/sound_efx/charge_up_shot.mp3")
+        self.laser_charge_sound.set_volume(0.3)
+        self.laser_beam_sound = pygame.mixer.Sound("assets/sound_efx/beam_firing_loop.mp3")
+        self.laser_beam_sound.set_volume(0.3)
+        self.beam_audio_playing = False  # Ensure this attribute is initialized
+
+
+
+
 
     # Weapon system
     def swap_weapon(self):
@@ -88,9 +108,50 @@ class CharacterPawn:
     def shoot(self, stopped):
         current_time = pygame.time.get_ticks()
         keys = pygame.key.get_pressed()
-        
-        # Check if space is held down and the game is not stopped
-        if keys[pygame.K_SPACE] and not stopped:
+
+        if self.player_weapon == "super_weapon" and not stopped:
+            if keys[pygame.K_SPACE]:  # Start or maintain the beam
+                if not self.is_using_sw and not self.is_charging and current_time - self.last_sw_time > self.sw_cooldown:
+                    # Begin charging
+                    self.is_charging = True
+                    self.charge_start_time = current_time
+                    self.laser_charge_sound.play()  # Play the charging sound
+                    print("[DEBUG] Laser charging...")
+
+                if self.is_charging:
+                    # Check if charging is complete
+                    if current_time - self.charge_start_time >= self.charge_duration:
+                        self.is_charging = False
+                        self.is_using_sw = True  # Activate the beam
+                        self.sw_start_time = current_time
+                        self.laser_charge_sound.stop()
+                        self.is_charging = False  # Stop charging sound
+                        print("[DEBUG] Laser beam firing!")
+
+                if self.is_using_sw:
+                    # Play the beam firing sound
+                    if not hasattr(self, "beam_audio_playing") or not self.beam_audio_playing:
+                        print("[DEBUG] Starting beam firing sound")
+                        self.laser_beam_sound.play(-1)  # Play in a loop
+                        self.beam_audio_playing = True
+
+                    # Draw the beam
+                    self.draw_beam(screen=None)  # Replace `None` with the actual screen object if needed
+
+            else:  # Space bar released
+                if self.is_using_sw or self.is_charging:
+                    self.is_using_sw = False
+                    self.is_charging = False
+                    self.laser_charge_sound.stop()  # Stop charging sound
+                    if hasattr(self, "beam_audio_playing") and self.beam_audio_playing:
+                        print("[DEBUG] Stopping beam firing sound")
+                        self.laser_beam_sound.stop()  # Stop beam sound
+                        self.beam_audio_playing = False
+                    print("[DEBUG] Laser beam deactivated.")
+
+
+        # Logic for other weapons
+        if self.player_weapon in ["auto_turret", "rocket_launcher", "default"]:
             weapon_info = {
                 "auto_turret": {
                     "speed": 12,
@@ -106,18 +167,16 @@ class CharacterPawn:
                     "sound": "assets/sound_efx/shoot_default.mp3",
                     "cooldown": 250  # Standard cooldown for single shots
                 },
-                "rocket_launcher":{
+                "rocket_launcher": {
                     "speed": 5,
-                    "color":(255,0,0),
+                    "color": (255, 0, 0),
                     "size": (5, 20),
                     "sound": "assets/sound_efx/rocket_launcher2.mp3",
                     "cooldown": 500
                 }
             }
 
-            # Determine the weapon type
-            weapon = self.player_weapon if self.player_weapon in weapon_info else "default"
-            detail = weapon_info[weapon]
+            detail = weapon_info[self.player_weapon]
 
             # Check cooldown for firing
             if current_time - self.last_shot_time > detail["cooldown"]:
@@ -134,18 +193,51 @@ class CharacterPawn:
 
                 # Play the weapon-specific sound
                 shoot_audio = pygame.mixer.Sound(detail["sound"])
-                shoot_audio.play()
                 shoot_audio.set_volume(0.2)
+                shoot_audio.play()
+
+
 
     def draw(self, screen, curr_time):
         # Determine color based on health
         color = (255, 255, 0) if self.health < 50 else (0, 255, 0)
+        if self.is_alive:
+            self.draw_beam(screen)
         if(self.got_hit):
             color = (255,255,255)
         pygame.draw.rect(screen, color, self.rect)
         # Draw health bar
         self.draw_health_bar(screen)
         self.draw_shield_bar(screen)
+
+    def draw_beam(self, screen):
+        if self.is_using_sw and self.player_weapon == "super_weapon":
+            beam_color = (128, 0, 128) #beam color
+            beam_width = 10
+            beam_start = (self.x + self.width // 2, self.y)  # Start at the player's current position
+            beam_length = 300  # Set the desired beam length
+            beam_end_y = max(0, self.y - beam_length)  # Ensure it doesn't go above the screen
+            beam_end = (self.x + self.width // 2, beam_end_y)  # End point is shorter by beam_length
+
+            if screen:  # Ensure the screen is valid
+                pygame.draw.line(
+                    screen, beam_color,
+                    beam_start,
+                    beam_end,
+                    beam_width
+                )
+            print("[DEBUG] Drawing beam.")
+
+
+
+
+
+    def deactivate_super_weapon(self):
+        self.is_using_sw = False
+        if hasattr(self, "beam_coords"):
+            del self.beam_coords
+
+
 
     def draw_health_bar(self, screen):
         bar_width = 200
@@ -184,7 +276,12 @@ class CharacterPawn:
             self.health = min(100, self.health + amount)
     
     def consume(self, consumable):
-        if consumable == "repair_kit":
+        if consumable == "super_weapon":
+            self.player_weapon = "super_weapon"
+            self.is_using_sw = False  # Ensure the super weapon is not firing initially
+            self.is_charging = False  # Reset charging state
+            print("SUPER WEAPON PICKED UP")
+        elif consumable == "repair_kit":
             if self.health < 100:  # Only consume if health is not full
                 self.health = min(100, self.health + 100)
                 repair_audio = pygame.mixer.Sound("assets/sound_efx/repair_kit_pick_up.mp3")

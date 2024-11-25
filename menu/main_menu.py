@@ -255,6 +255,7 @@ def reset_game_state(player, score_system, timer, win_lose_system, proj_group, e
     timer.reset()
     player.heal(100)
     player.is_alive = True
+    player.player_weapon = "default"
     win_lose_system.reset()
     proj_group.empty()
     enemy_group.empty()  # Clear all enemies
@@ -263,6 +264,14 @@ def reset_game_state(player, score_system, timer, win_lose_system, proj_group, e
     obstacle_group = set_obstacles()
     player.x = WIDTH // 2
     player.y = HEIGHT - 100
+
+    #super weapon sounds (start and stop reset)
+    if hasattr(player, "beam_audio_playing") and player.beam_audio_playing:
+        player.laser_beam_sound.stop()
+        player.beam_audio_playing = False
+    player.is_using_sw = False
+    player.is_charging = False
+    print("[DEBUG] Game state reset. Beam and sounds stopped.")
 
 def game_loop():
     small_font = pygame.font.Font("assets/fonts/Future Edge.ttf", 32)
@@ -314,6 +323,44 @@ def game_loop():
         
 
     while running:
+        keys = pygame.key.get_pressed()
+
+        if player.player_weapon == "super_weapon":
+            if keys[pygame.K_SPACE]:  # Start charging if space is pressed
+                if not player.is_using_sw and not player.is_charging:
+                    player.is_charging = True
+                    player.charge_start_time = pygame.time.get_ticks()
+                    player.laser_charge_sound.play()  # Play the charging sound
+                    print("[DEBUG] Beam charging...")
+
+                elif player.is_charging:  # Check if charging is complete
+                    current_time = pygame.time.get_ticks()
+                    if current_time - player.charge_start_time >= player.charge_duration:
+                        player.is_charging = False
+                        player.is_using_sw = True
+                        player.laser_charge_sound.stop()  # Stop charging sound
+                        if not hasattr(player, "beam_audio_playing") or not player.beam_audio_playing:
+                            player.laser_beam_sound.play(-1)  # Play beam sound in a loop
+                            player.beam_audio_playing = True
+                        print("[DEBUG] Beam activated!")
+
+            else:  # Deactivate the beam when space is released
+                if player.is_using_sw or player.is_charging:
+                    player.is_using_sw = False
+                    player.is_charging = False
+                    player.laser_charge_sound.stop()  # Stop charging sound
+                    if hasattr(player, "beam_audio_playing") and player.beam_audio_playing:
+                        player.laser_beam_sound.stop()  # Stop beam sound
+                        player.beam_audio_playing = False
+                    print("[DEBUG] Beam deactivated")
+
+        # Handle beam damage
+        if player.is_using_sw:
+            check_beam_enemy_collisions(player, enemy_group, damage=8)
+
+
+
+
         ##screen.fill(black_bg)
         background.update(timer)
         background.draw()
@@ -374,9 +421,16 @@ def game_loop():
         score_display.display_score(score_system.get_score())
         
         current_game_state = win_lose_system.update()
-
-        ## Check win/loss condition and then go to end screen
         if current_game_state != GameState.ONGOING:
+            # Stop beam sound and reset states
+            if hasattr(player, "beam_audio_playing") and player.beam_audio_playing:
+                player.laser_beam_sound.stop()
+                player.beam_audio_playing = False
+            player.is_using_sw = False
+            player.is_charging = False
+            print("[DEBUG] Game over. Beam and sounds stopped.")
+
+            ## Check win/loss condition and then go to end screen
             if(current_level != 3):
                 end_screen = EndScreen(screen, player)
                 end_screen_display = True
@@ -456,7 +510,7 @@ def game_loop():
                             break
                 elif event.key == pygame.K_c:
                     for consumable in consumables_group:
-                        if consumable.consumable_type in ["auto_turret", "plasma_gun", "rocket_launcher"]:
+                        if consumable.consumable_type in ["auto_turret", "plasma_gun", "rocket_launcher", "super_weapon" ]:
                             player.consume(consumable.consumable_type)
                             consumables_group.remove(consumable)  # Remove the consumed item
                             print(f"Weapon switched to: {player.player_weapon}")
