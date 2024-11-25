@@ -74,7 +74,7 @@ def drawEnemyDestruction(dest_enemies, screen, ship_destroyed_sound, score_syste
                 center_size = 75
                 wing_size_x = 75
                 wing_size_y = 20
-                boss_color = (255,140,0)
+                boss_color = (255, 140, 70)
                 square_rect = pygame.Rect(enemy_center[0] - center_size // 2, enemy_center[1] - center_size // 2, center_size, center_size)
                 pygame.draw.rect(screen, boss_color, square_rect)
                 left_rect = pygame.Rect(enemy_center[0] - center_size // 2 - wing_size_x, enemy_center[1] - wing_size_y // 2, wing_size_x, wing_size_y)
@@ -90,11 +90,11 @@ def drawEnemyDestruction(dest_enemies, screen, ship_destroyed_sound, score_syste
             elif explosion_durration <= 2400:
                 wing_center = (enemy_center[0] - 75, enemy_center[1])
                 pygame.draw.circle(screen, (200, 180, 0), wing_center, size/2)
-                if explosion_durration <= 1215:
+                if explosion_durration <= 1216:
                     ship_destroyed_sound.play()
             elif explosion_durration <= 3600:
                 pygame.draw.circle(screen, (200, 180, 0), enemy_center, size*1.3)
-                if explosion_durration <= 2415:
+                if explosion_durration <= 2417:
                     ship_destroyed_sound.play()
         elif isBoss != 1 and explosion_durration <= 250:
             pygame.draw.circle(screen, (200, 180, 0), enemy_center, size)
