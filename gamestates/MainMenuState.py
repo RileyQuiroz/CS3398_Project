@@ -1,5 +1,7 @@
 import pygame
-from gamestates.Game import Colors, Sounds
+
+from tools.colors import Colors
+from tools.sounds import Sounds
 from gamestates.GameState import GameState
 
 class MainMenuState(GameState):
