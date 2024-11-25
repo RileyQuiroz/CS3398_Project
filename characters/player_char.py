@@ -20,14 +20,14 @@ CONSUMABLE_DATA = {
     },
     "auto_turret": {
         "image": "assets/objects/weapon_auto_turret.png",
-        "width": 35,
-        "height": 35
+        "width": 37,
+        "height": 37
     },
-    # "rocket_launcher": {
-    #     "image": "assets/objects/weapon_rocket_launcher.png",
-    #     "width": 45,
-    #     "height": 45
-    # }
+    "rocket_launcher": {
+        "image": "assets/objects/weapon_rocket_launcher2.png",
+        "width": 38,
+        "height": 38
+    }
 }
 
 class CharacterPawn:
@@ -105,6 +105,13 @@ class CharacterPawn:
                     "size": (5, 10),
                     "sound": "assets/sound_efx/shoot_default.mp3",
                     "cooldown": 250  # Standard cooldown for single shots
+                },
+                "rocket_launcher":{
+                    "speed": 5,
+                    "color":(255,0,0),
+                    "size": (5, 20),
+                    "sound": "assets/sound_efx/rocket_launcher2.mp3",
+                    "cooldown": 500
                 }
             }
 
