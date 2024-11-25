@@ -9,7 +9,7 @@ class Boss(pygame.sprite.DirtySprite):
         super().__init__()
         self.difficulty = difficulty
         self.max_health = 100 + (15 * difficulty)
-        self.health = 1 #self.max_health SET TO 1 FOR TESTING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        self.health = self.max_health #self.max_health SET TO 1 FOR TESTING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         self.living = True
         self.time_destroyed = 0
         self.color = (255, 0, 0) # Default red color, will change when we have sprites
@@ -152,10 +152,11 @@ class Boss(pygame.sprite.DirtySprite):
                     self.curr_shot_type = random.randint(0, 1)
             
     def decrease_health(self, damage = 1):
-        self.health -= damage
-        if(self.health < 1):
-            self.living = False
-            self.time_destroyed = pygame.time.get_ticks()
+        if(self.at_y_level):
+            self.health -= damage
+            if(self.health < 1):
+                self.living = False
+                self.time_destroyed = pygame.time.get_ticks()
             
     def change_color(self):
         if(self.health == self.max_health / 2):
