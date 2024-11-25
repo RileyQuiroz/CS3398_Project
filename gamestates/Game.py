@@ -132,7 +132,6 @@ class Game:
         self.enemy_group.empty()  # Clear all enemies
         self.obstacle_group.empty()
         self.enemy_projectiles.empty()
-        self.timer.start()
         self.set_obstacles() # Temporary
         self.player.x = self.WIDTH // 2
         self.player.y = self.HEIGHT - 100

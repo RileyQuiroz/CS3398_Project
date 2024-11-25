@@ -5,11 +5,11 @@ from tools.timer import Timer
 from tools.score_counter import Score
 from tools.score_display import ScoreDisplay
 from tools.collision_hanlder import *
-from savesystem.leaderboard import Leaderboard
-from savesystem import user_save_and_load
 from tools.game_states import GameState as WinLoseState
 from tools.end_screen import EndScreen
 from tools.win_lose_system import WinLoseSystem
+from savesystem.leaderboard import Leaderboard
+from savesystem import user_save_and_load
 from characters.player_char import CharacterPawn
 from characters.enemies.enemy_spawn_and_despawn import spawnEnemy, despawnEnemy, startRetreat, destroyEnemy
 from tools.collision_hanlder import check_projectile_enemy_collisions, check_player_projectile_collisions
@@ -54,8 +54,10 @@ class PlayState(GameState):
 
     def enter(self, game):
         if game.previous_state != 'Pause':
+            game.reset()
             spawnEnemy(game.enemy_group, game.timer.elapsed_time, 2) # Spawned in for testing
-            game.timer.start()
+
+        game.timer.start()
 
     def update(self, game):
         self.background.update(game.timer)
@@ -199,6 +201,8 @@ class PlayState(GameState):
         self.consumables_group.draw(game.screen)
     
     def leave(self, game):
+        game.timer.stop()
+
         if game.current_state != 'Pause':
             game.timer.reset()
             game.proj_group.empty()
