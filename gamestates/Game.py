@@ -15,26 +15,7 @@ from characters.enemies.enemy_spawn_and_despawn import spawnEnemy, despawnEnemy,
 from tools.collision_hanlder import check_projectile_enemy_collisions, check_player_projectile_collisions
 from tools.Star_and_planet_bg_logic import Background
 from characters.player_char import Consumable
-#import obstacles
 from obstacles import *
-
-class Colors:
-    NEON_CYAN = (0, 255, 255)
-    NEON_PURPLE = (155, 0, 255)
-    WHITE = (255, 255, 255)
-    BLACK = (0, 0, 0)
-
-class Sounds:
-    # Load hover sound
-    hover = pygame.mixer.Sound("assets/sound_efx/hover_sound.wav")  # Replace with your sound file
-
-    # Enemy sounds
-    ship_destroyed = pygame.mixer.Sound("assets/sound_efx/enemy_down.wav")
-    ship_destroyed .set_volume(.35)
-    enemy_shot = pygame.mixer.Sound("assets/sound_efx/enemy_shot.wav")
-    enemy_shot.set_volume(.2)
-    enemy_hurt = pygame.mixer.Sound("assets/sound_efx/enemy_hurt.wav")
-    enemy_hurt.set_volume(.15)
 
 class Game:
     # Define screen dimensions
@@ -44,6 +25,7 @@ class Game:
     # Define fonts
     MAIN_FONT = pygame.font.Font("assets/fonts/Future Edge.ttf", 74)
     SMALLER_FONT = pygame.font.Font("assets/fonts/Future Edge.ttf", 34)
+    SMALL_FONT = pygame.font.Font("assets/fonts/Future Edge.ttf", 32)
 
     # Define frame rate
     FPS = 60
@@ -95,10 +77,26 @@ class Game:
 
         self.win_lose_system.player = self.player
 
+        #IMPORTANT: TEMP VARIABLEs FOR SAVE SYSTEM, USE/MODIFY FOR WHATEVER YOU NEED
+        self.current_level = 0
+        self.difficulty = 0
+
         # Initialize game states
         self.states = {
 
         }
+
+        self.previous_state = ''
+        self.current_state = 'MainMenu'
+
+    # Change between game states
+    def change_state(self, next_state):
+        if self.states[next_state]:
+            self.previous_state = self.current_state
+            self.current_state = next_state
+
+            self.states[self.previous_state].leave()
+            self.states[self.current_state].enter()
 
     # Define menu options
     def draw_text(self, text, font, color, x, y):
@@ -134,7 +132,10 @@ class Game:
         self.enemy_group.empty()  # Clear all enemies
         self.obstacle_group.empty()
         self.enemy_projectiles.empty()
-        self.timer.start()
         self.set_obstacles() # Temporary
         self.player.x = self.WIDTH // 2
         self.player.y = self.HEIGHT - 100
+
+    # Update the current game state
+    def update(self, dt):
+        self.states[self.current_state].update(dt)
