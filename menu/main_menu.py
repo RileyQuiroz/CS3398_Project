@@ -276,6 +276,7 @@ def game_loop():
     to_despawn = pygame.sprite.Group()
     dest_enemies = []
     max_enemies = 3
+    last_boss_location = [] # used for boss defeat sequence
 
     obstacle_group = set_obstacles()
 
@@ -364,9 +365,9 @@ def game_loop():
             check_player_enemy_physical_collision(player, enemy, timer.elapsed_time)
             if not enemy.living:
                 destroyEnemy(dest_enemies, enemy, ship_destroyed_sound)
-                score_system.increase(10)
                 if(enemy.size == 100): # Only boss has size 100
-                    score_system.increase(990) # Get more points for destroying boss
+                    timer.toggle()
+                score_system.increase(10)
         enemy_group.draw(screen)
 
         draw_text(f"{timer.elapsed_time:.2f}", small_font, NEON_CYAN, screen, 100, 100)
@@ -376,29 +377,54 @@ def game_loop():
 
         ## Check win/loss condition and then go to end screen
         if current_game_state != GameState.ONGOING:
-            end_screen = EndScreen(screen, player)
-            end_screen_display = True
-            while end_screen_display:
-                end_screen.display(current_game_state)
-                for event in pygame.event.get():
-                    if event.type == pygame.QUIT:
-                        pygame.quit()
-                        sys.exit()
-                    elif event.type == pygame.MOUSEBUTTONDOWN:
-                        if event.button == 1:  # Left mouse button
-                            pos = event.pos
-                            selected_option = end_screen.check_option_click(pos)
-                            if selected_option == "Restart":
-                                end_screen_display = False
-                                reset_game_state(player, score_system, timer, win_lose_system, proj_group, enemy_group, enemy_projectiles)
-                                game_loop()
-                            elif selected_option == "Main Menu":
-                                end_screen_display = False
-                                reset_game_state(player, score_system, timer, win_lose_system, proj_group, enemy_group, enemy_projectiles)
-                                main_menu()
-                            elif selected_option == "Quit":
-                                pygame.quit()
-                                exit()
+            if(current_level != 3):
+                end_screen = EndScreen(screen, player)
+                end_screen_display = True
+                while end_screen_display:
+                    end_screen.display(current_game_state)
+                    for event in pygame.event.get():
+                        if event.type == pygame.QUIT:
+                            pygame.quit()
+                            sys.exit()
+                        elif event.type == pygame.MOUSEBUTTONDOWN:
+                            if event.button == 1:  # Left mouse button
+                                pos = event.pos
+                                selected_option = end_screen.check_option_click(pos)
+                                if selected_option == "Restart":
+                                    end_screen_display = False
+                                    reset_game_state(player, score_system, timer, win_lose_system, proj_group, enemy_group, enemy_projectiles)
+                                    game_loop()
+                                elif selected_option == "Main Menu":
+                                    end_screen_display = False
+                                    reset_game_state(player, score_system, timer, win_lose_system, proj_group, enemy_group, enemy_projectiles)
+                                    main_menu()
+                                elif selected_option == "Quit":
+                                    pygame.quit()
+                                    exit()
+            elif(current_level == 3 and len(dest_enemies) == 0): # For boss destruction
+                end_screen = EndScreen(screen, player)
+                end_screen_display = True
+                while end_screen_display:
+                    end_screen.display(current_game_state)
+                    for event in pygame.event.get():
+                        if event.type == pygame.QUIT:
+                            pygame.quit()
+                            sys.exit()
+                        elif event.type == pygame.MOUSEBUTTONDOWN:
+                            if event.button == 1:  # Left mouse button
+                                pos = event.pos
+                                selected_option = end_screen.check_option_click(pos)
+                                if selected_option == "Restart":
+                                    end_screen_display = False
+                                    reset_game_state(player, score_system, timer, win_lose_system, proj_group, enemy_group, enemy_projectiles)
+                                    game_loop()
+                                elif selected_option == "Main Menu":
+                                    end_screen_display = False
+                                    reset_game_state(player, score_system, timer, win_lose_system, proj_group, enemy_group, enemy_projectiles)
+                                    main_menu()
+                                elif selected_option == "Quit":
+                                    pygame.quit()
+                                    exit()
         # AUTO TURRET STUFF
         keys = pygame.key.get_pressed()
         if player.player_weapon == "auto_turret" and keys[pygame.K_SPACE]:
@@ -459,12 +485,9 @@ def game_loop():
             else:
                 save_text_show = False
 
-        for enemy_center, time_destroyed, size in dest_enemies[:]:
-            if pygame.time.get_ticks() - time_destroyed <= 250:
-                pygame.draw.circle(screen, (200, 180, 0), enemy_center, size)
-            else:
-                dest_enemies.remove((enemy_center, time_destroyed, size))
-
+        # Handle enemy destruction
+        drawEnemyDestruction(dest_enemies, screen, ship_destroyed_sound, score_system)                
         despawnEnemy(to_despawn)
+        
         pygame.display.flip()
         clock.tick(FPS)
