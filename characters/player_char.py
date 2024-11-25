@@ -212,10 +212,12 @@ class CharacterPawn:
 
     def draw_beam(self, screen):
         if self.is_using_sw and self.player_weapon == "super_weapon":
-            beam_color = (255, 255, 0)  # Yellow beam color
+            beam_color = (128, 0, 128) #beam color
             beam_width = 10
             beam_start = (self.x + self.width // 2, self.y)  # Start at the player's current position
-            beam_end = (self.x + self.width // 2, 0)  # Extend to the top of the screen
+            beam_length = 300  # Set the desired beam length
+            beam_end_y = max(0, self.y - beam_length)  # Ensure it doesn't go above the screen
+            beam_end = (self.x + self.width // 2, beam_end_y)  # End point is shorter by beam_length
 
             if screen:  # Ensure the screen is valid
                 pygame.draw.line(
