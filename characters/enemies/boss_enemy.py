@@ -15,7 +15,7 @@ class Boss(pygame.sprite.DirtySprite):
         self.color = (255, 0, 0) # Default red color, will change when we have sprites
         self.spawn_destination_y = y
         self.size = 100 # Used for destruction explosion
-        self.velocity = 2
+        self.velocity = 1
         self.heading_home = False
         self.fire_delay = 1.1  # Time between shots
         self.switch_delay = 5
@@ -25,6 +25,7 @@ class Boss(pygame.sprite.DirtySprite):
         self.last_switch_time = current_time
         self.spread_type = 0 # Used for spread shot logic
         self.angled_shot_speed = 3
+        self.at_y_level = False
         
         self.centerSize = 75
         self.wingSizeX = 75
@@ -36,7 +37,7 @@ class Boss(pygame.sprite.DirtySprite):
         self.drawShip()
         
         # Positioning box
-        self.rect = self.image.get_rect(center=(x, y))
+        self.rect = self.image.get_rect(center=(x, -500))
         # Hit boxes
         self.central_rect = pygame.Rect(
             self.rect.x + self.wingSizeX,
@@ -87,7 +88,7 @@ class Boss(pygame.sprite.DirtySprite):
            
     def fire_shot(self, proj_group, paused, curr, player_pos_x, player_pos_y):
         current_time = curr
-        if (self.living == True and paused == False and self.heading_home == False):
+        if (self.living == True and paused == False and self.at_y_level == True):
             # Directed shots
             if (self.curr_shot_type == 0):
                 self.angled_shot_speed = 5
@@ -129,10 +130,12 @@ class Boss(pygame.sprite.DirtySprite):
                 # Switch
                 if (current_time - self.switch_delay >= self.last_switch_time):
                     self.last_switch_time = current_time
+                    tempPrevShot = self.prev_shot_type
                     self.prev_shot_type = self.curr_shot_type
-                    self.curr_shot_type = random.randint(0, 2)
-                    if(self.curr_shot_type == self.prev_shot_type):
-                        self.curr_shot_type == 0
+                    if(tempPrevShot == 0):
+                        self.curr_shot_type = 2
+                    elif(tempPrevShot == 2):
+                        self.curr_shot_type = 0
             # Bullet rain from wings
             elif (self.curr_shot_type == 2):
                 self.fire_delay = .2 - (.05 * self.difficulty)
@@ -149,10 +152,11 @@ class Boss(pygame.sprite.DirtySprite):
                     self.curr_shot_type = random.randint(0, 1)
             
     def decrease_health(self, damage = 1):
-        self.health -= damage
-        if(self.health < 1):
-            self.living = False
-            self.time_destroyed = pygame.time.get_ticks()
+        if(self.at_y_level):
+            self.health -= damage
+            if(self.health < 1):
+                self.living = False
+                self.time_destroyed = pygame.time.get_ticks()
             
     def change_color(self):
         if(self.health == self.max_health / 2):
@@ -163,9 +167,16 @@ class Boss(pygame.sprite.DirtySprite):
             self.drawShip()
     
     def update(self, paused, curr_time): # Updates position, will move left and right between specific values, and moves down upon spawning
-        if (self.rect.centery < self.spawn_destination_y and self.heading_home == False and paused == False):
+        if (self.rect.centery < self.spawn_destination_y and paused == False):
             self.rect.y += self.velocity 
             self.rect.centery += self.velocity
+            self.central_rect.y = self.rect.y + (self.rect.height - self.wingSizeY) // 2
+            self.left_wing_rect.y = self.rect.y + (self.rect.height - self.wingSizeY) // 2
+            self.right_wing_rect.y = self.rect.y + (self.rect.height - self.wingSizeY) // 2
+            if(self.rect.centery >= self.spawn_destination_y):
+                self.at_y_level = True
+                self.velocity = 2
+                self.last_switch_time = curr_time
         elif (self.living == True and paused == False):
             if (self.rect.centerx >= 600 or self.rect.centerx <= 200):
                 self.velocity *= -1
