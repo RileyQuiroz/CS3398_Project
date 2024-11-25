@@ -12,18 +12,33 @@ class WinLoseSystem:
         self.level_start_time = 0.0
         self.level_processed = set()  # Flags for levels where win conditions were processed
 
+        self.player_tracker = PlayerTracker(player)  # Add player tracking
+
+        # Overlay state
+        self.overlay_timer = 0
+        self.overlay_visible = False
+        self.overlay_text = ""
+
     # --- Level Management ---
     def start_next_level(self, elapsed_time, current_objectives):
         """Advance to the next level and reset necessary parameters."""
+        
+        if self.current_level == 2:
+            for obj in current_objectives:
+                if obj.check_completion(self.player, self, elapsed_time):
+                    print(f"Objective '{obj.description}' passed!")
+                else:
+                    print(f"Objective '{obj.description}' failed.")
+
+
         self.current_level += 1
         self.level_start_time = elapsed_time  # Record the time the level starts
         self.difficulty = 1  # TODO: Maybe handle difficulty differently
 
-        for obj in current_objectives:
-            if obj.check_completion(self.player, self.current_level-1):
-                print(f"Objective '{obj.description}' passed!")
-            else:
-                print(f"Objective '{obj.description}' failed.")
+        # Initialize overlay
+        self.overlay_visible = True
+        self.overlay_timer = time.time()
+        self.overlay_text = f"Level {self.current_level}!"
 
         print("start next level reached!")
         print(f"Starting Level {self.current_level} with difficulty {self.difficulty} with time of {elapsed_time}")
@@ -37,18 +52,32 @@ class WinLoseSystem:
         """Manually reset the timer, if needed."""
         self.level_start_time = elapsed_time
 
+    def render_overlay(self, screen):
+        """Render the overlay if visible."""
+        if self.overlay_visible:
+            font = pygame.font.Font(None, 74)
+            text = font.render(self.overlay_text, True, (0, 255, 255))
+            text_rect = text.get_rect(center=(400, 300))  # Adjust for screen size
+
+            # Semi-transparent background
+            overlay = pygame.Surface((800, 600))  # Adjust for your screen size
+            overlay.set_alpha(128)
+            overlay.fill((0, 0, 0))
+            screen.blit(overlay, (0, 0))
+            screen.blit(text, text_rect)
+
     # --- Win and Lose Conditions ---
     def check_win_condition(self, elapsed_time, current_objectives):
         """Determine if the player has met the win condition for the current level."""
-        if self.current_level == 1 and self.score_system.score >= 50 and 1 not in self.level_processed:
+        if self.current_level == 1 and self.score_system.score >= 10 and 1 not in self.level_processed:
             print("Level 1 win condition met! Proceeding to level 2.")
             self.level_processed.add(1)
             self.start_next_level(elapsed_time, current_objectives)
-        elif self.current_level == 2 and self.score_system.score >= 100 and 2 not in self.level_processed:
+        elif self.current_level == 2 and self.score_system.score >= 30 and 2 not in self.level_processed:
             print("Level 2 win condition met! Proceeding to level 3.")
             self.level_processed.add(2)
             self.start_next_level(elapsed_time, current_objectives)
-        elif self.current_level == 3 and self.score_system.score >= 150 and 3 not in self.level_processed:
+        elif self.current_level == 3 and self.score_system.score >= 50 and 3 not in self.level_processed:
             print("Final level win condition met! You win!")
             self.trigger_win()
             self.state = GameState.WIN  # Update state to WIN
@@ -77,6 +106,10 @@ class WinLoseSystem:
         """Update game state based on win and lose conditions."""
         self.check_win_condition(elapsed_time, current_objectives)
         self.check_lose_condition()
+        # Automatically hide overlay after time expires
+        if self.overlay_visible and time.time() - self.overlay_timer > 2:
+            self.overlay_visible = False
+
         return self.state
 
     def get_game_state(self):
@@ -91,3 +124,25 @@ class WinLoseSystem:
         self.player.health = 100
         self.player.is_alive = True
         self.score_system.reset()
+    
+    def record_shot(self, hit=False):
+        """Record shot data for tracking accuracy."""
+        self.player_tracker.record_shot(hit)
+
+    def get_accuracy(self):
+        """Get the player's accuracy."""
+        return self.player_tracker.get_accuracy()
+
+class PlayerTracker:
+    def __init__(self, player):
+        self.player = player
+        self.shots_fired = 0
+        self.shots_hit = 0
+
+    def record_shot(self, hit=False):
+        self.shots_fired += 1
+        if hit:
+            self.shots_hit += 1
+
+    def get_accuracy(self):
+        return self.shots_hit / max(self.shots_fired, 1)  # Avoid division by zero

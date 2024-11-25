@@ -19,7 +19,7 @@ class BonusObjective:
         """
         pass  # To be overridden in subclasses
 
-    def check_completion(self, player, level):
+    def check_completion(self, player, level, elapsed_time):
         """
         Check if the objective is completed.
         :param player: The player object.
@@ -30,44 +30,43 @@ class BonusObjective:
 
 class NoDamageObjective(BonusObjective):
     def __init__(self):
-        super().__init__("Take no damage in the current level")
+        super().__init__("Take no damage in the first two levels")
 
     def initialize(self, player, level):
         self.starting_health = player.health
 
-    def check_completion(self, player, level):
+    def check_completion(self, player, level, elapsed_time):
         self.completed = player.health == self.starting_health
-        print("check completion nodamageobjective reached!")
         return self.completed
 
-# FIXME: Crashes if chosen, because level doesn't have start_time currently,
 class UnderTimeObjective(BonusObjective):
     def __init__(self):
-        super().__init__("Complete the level in under 45 seconds")
+        super().__init__("Complete the first two levels in under 45 seconds")
 
     def initialize(self, player, level):
-        level.current_level = time.time()
+        pass
 
-    def check_completion(self, player, level):
-        elapsed_time = level.elapsed_time - level.start_time ## FIXME!!
-        self.completed = elapsed_time <= 45
-        print("check completion undertimeobjective reached!")
+    def check_completion(self, player, level, elapsed_time):
+        #elapsed_time = level.elapsed_time - level.start_time ## FIXME!!
+        self.completed = elapsed_time - level.level_start_time <= 45
         return self.completed
 
 # TODO: Player does NOT have shots_fired and shots_hit variable, will have to figure out a way to do this later
 class AccuracyObjective(BonusObjective):
     def __init__(self):
-        super().__init__("Achieve 80%+ accuracy")
+        super().__init__("Achieve 80%+ accuracy in the first two levels")
 
     def initialize(self, player, level):
-        player.shots_fired = 0
-        player.shots_hit = 0
+        # No direct changes to the player object needed
+        pass
 
-    def check_completion(self, player, level):
-        accuracy = player.shots_hit / max(player.shots_fired, 1)  # Avoid division by zero
+    def check_completion(self, player, level, elapsed_time):
+        accuracy = level.get_accuracy()
         self.completed = accuracy >= 0.8
-        print("check completion accuracyobjective reached!")
+        print("shots fired: ", level.player_tracker.shots_fired)
+        print("shots hit: ", level.player_tracker.shots_hit)
         return self.completed
+
 
 
 class KillStreakObjective(BonusObjective):
@@ -77,7 +76,7 @@ class KillStreakObjective(BonusObjective):
     def initialize(self, player, level):
         player.kill_count = 0
 
-    def check_completion(self, player, level):
+    def check_completion(self, player, level, elapsed_time):
         self.completed = player.kill_count >= 10
         print("check completion killstreakobjective reached!")
         return self.completed
