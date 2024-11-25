@@ -30,16 +30,21 @@ def check_beam_enemy_collisions(player, enemies, damage=1):
 
 
 
-def check_projectile_enemy_collisions(projectiles, enemies, damage=1):
+def check_projectile_enemy_collisions(projectiles, enemies):
+    """
+    Check for collisions between projectiles and enemies.
+    Apply the damage of each individual projectile to the enemy.
+    """
     collisions = pygame.sprite.groupcollide(projectiles, enemies, True, False)
     hit_detected = False
     for hit_projectile, hit_enemies in collisions.items():
         for enemy in hit_enemies:
-            enemy.decrease_health(damage=damage)  # Apply specified damage
+            enemy.decrease_health(damage=hit_projectile.damage)  # Use the damage of the specific projectile
             hit_detected = True
-            print(f"Projectile hit enemy at {enemy.rect.topleft}, damage: {damage}")
+            print(f"[DEBUG] Projectile hit enemy at {enemy.rect.topleft}, Damage: {hit_projectile.damage}")
     
     return hit_detected
+
             
 def check_projectile_boss_collisions(projectiles, enemies): # For boss only
     for projectile in projectiles:

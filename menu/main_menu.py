@@ -422,7 +422,7 @@ def game_loop():
         if(current_level == 3):
             check_projectile_boss_collisions(proj_group, enemy_group)
         else:
-            hit_detected = check_projectile_enemy_collisions(proj_group, enemy_group, damage=1)
+            hit_detected = check_projectile_enemy_collisions(proj_group, enemy_group)
 
 
         #print("hit detected: ", hit_detected)
