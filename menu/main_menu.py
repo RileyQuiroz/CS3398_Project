@@ -366,7 +366,6 @@ def game_loop():
                 destroyEnemy(dest_enemies, enemy, ship_destroyed_sound)
                 score_system.increase(10)
                 if(enemy.size == 100): # Only boss has size 100
-                    score_system.increase(990) # Get more points for destroying boss
                     timer.toggle()
         enemy_group.draw(screen)
 
@@ -486,16 +485,28 @@ def game_loop():
                 save_text_show = False
 
         for enemy_center, time_destroyed, size, isBoss in dest_enemies[:]:
-            if isBoss == 1 and pygame.time.get_ticks() - time_destroyed <= 200:
-                pygame.draw.circle(screen, (200, 160, 0), enemy_center, size)
-            elif isBoss == 1 and pygame.time.get_ticks() - time_destroyed <= 400:
-                pygame.draw.circle(screen, (200, 190, 0), enemy_center, size)
-            elif isBoss == 1 and pygame.time.get_ticks() - time_destroyed <= 600:
-                pygame.draw.circle(screen, (200, 220, 0), enemy_center, size)
-            elif pygame.time.get_ticks() - time_destroyed <= 250:
+            explosion_durration = pygame.time.get_ticks() - time_destroyed
+            if isBoss == 1 and explosion_durration <= 1200:
+                wing_center = (enemy_center[0] + 75, enemy_center[1])
+                pygame.draw.circle(screen, (200, 180, 0), wing_center, size/2)
+                if explosion_durration == 0:
+                    ship_destroyed_sound.play()
+            elif isBoss == 1 and explosion_durration <= 2400:
+                wing_center = (enemy_center[0] - 75, enemy_center[1])
+                pygame.draw.circle(screen, (200, 180, 0), wing_center, size/2)
+                if explosion_durration <= 1215:
+                    ship_destroyed_sound.play()
+            elif isBoss == 1 and explosion_durration <= 3600:
+                pygame.draw.circle(screen, (200, 180, 0), enemy_center, size*1.5)
+                if explosion_durration <= 2430:
+                    ship_destroyed_sound.play()
+            elif isBoss != 1 and explosion_durration <= 250:
                 pygame.draw.circle(screen, (200, 180, 0), enemy_center, size)
             else:
+                if(isBoss == 1):
+                    score_system.increase(990) # Get more points for destroying boss
                 dest_enemies.remove((enemy_center, time_destroyed, size, isBoss))
+                
 
         despawnEnemy(to_despawn)
         pygame.display.flip()
