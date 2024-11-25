@@ -57,7 +57,10 @@ def despawnEnemy(retreating):
 
 # destroys an enemy            
 def destroyEnemy(destEnemies, enemy, destroySound):
-    destEnemies.append((enemy.rect.center, pygame.time.get_ticks(), enemy.size))
+    isBoss = 0
+    if(enemy.size == 100):
+        isBoss = 1
+    destEnemies.append((enemy.rect.center, pygame.time.get_ticks(), enemy.size, isBoss))
     enemy.kill()
     destroySound.play()
 
