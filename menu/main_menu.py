@@ -295,9 +295,9 @@ def game_loop():
     ticks_last_frame = pygame.time.get_ticks()
     
     #IMPORTANT: TEMP VARIABLEs FOR SAVE SYSTEM, USE/MODIFY FOR WHATEVER YOU NEED
-    current_level = 0
+    current_level = 3 # 0-2 are normal levels, 3 is boss
     lvlThreeSwitch = 0 # Used only for level 3 spawning of type c and b
-    difficulty = 0
+    difficulty = 0 # 0-easy, 1-medium, 2-hard
     
     max_enemies = 3 + difficulty # Assumes 3 difficulties, easy(0), medium(1), hard(2)
 
@@ -307,6 +307,10 @@ def game_loop():
     consumable_spawn_rate = 5000 # seconds between spawns CHANGE IF NEEDED
     #consumables_group.add(Consumable(200,100, "repair_kit"))
     #consumables_group.add(Consumable(120,120, "shield_pack"))
+    
+    if(current_level == 3):
+        spawnBoss(enemy_group, 0, difficulty)
+        
 
     while running:
         ##screen.fill(black_bg)
@@ -329,7 +333,10 @@ def game_loop():
                 spawn_consumable(consumables_group, WIDTH, HEIGHT)
                 consumable_spawn_timer = ticks
 
-        check_projectile_enemy_collisions(proj_group, enemy_group, damage=1)
+        if(current_level == 3):
+            check_projectile_boss_collisions(proj_group, enemy_group, damage=1)
+        else:
+            check_projectile_enemy_collisions(proj_group, enemy_group, damage=1)
         check_player_projectile_collisions(player, enemy_projectiles, 10, timer.elapsed_time)
 
         proj_group.update(timer.stopped, proj_group, timer.elapsed_time)
@@ -353,11 +360,13 @@ def game_loop():
             startRetreat(enemy, to_despawn) # Enemy B retreat call
             enemy.change_color() # Change color if hurt
             enemy.update(timer.stopped, timer.elapsed_time)
-            enemy.fire_shot(enemy_projectiles, paused=timer.stopped, curr=timer.elapsed_time)
+            enemy.fire_shot(enemy_projectiles, timer.stopped, timer.elapsed_time, player.x, player.y)
             check_player_enemy_physical_collision(player, enemy, timer.elapsed_time)
             if not enemy.living:
                 destroyEnemy(dest_enemies, enemy, ship_destroyed_sound)
                 score_system.increase(10)
+                if(enemy.size == 100): # Only boss has size 100
+                    score_system.increase(990) # Get more points for destroying boss
         enemy_group.draw(screen)
 
         draw_text(f"{timer.elapsed_time:.2f}", small_font, NEON_CYAN, screen, 100, 100)
