@@ -280,6 +280,8 @@ class CharacterPawn:
             self.player_weapon = "super_weapon"
             self.is_using_sw = False  # Ensure the super weapon is not firing initially
             self.is_charging = False  # Reset charging state
+            super_weapon_pickup_audio = pygame.mixer.Sound("assets/sound_efx/sw_pickup_audio.mp3")
+            super_weapon_pickup_audio.play()
             print("SUPER WEAPON PICKED UP")
         elif consumable == "repair_kit":
             if self.health < 100:  # Only consume if health is not full
@@ -303,6 +305,8 @@ class CharacterPawn:
         elif consumable in CONSUMABLE_DATA:
             self.player_weapon = consumable
             print(f"Picked up {consumable}!")
+            weapon_pick_up_audio = pygame.mixer.Sound("assets/sound_efx/weapon_pickup_sound.mp3")
+            weapon_pick_up_audio.play()
 
 class Consumable(pygame.sprite.Sprite):
     def __init__(self, x, y, consumable_type):
