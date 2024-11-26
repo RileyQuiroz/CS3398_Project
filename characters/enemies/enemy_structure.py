@@ -2,6 +2,7 @@ import pygame
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, health = 1, x = 0, y = 0):
         super().__init__()
+        self.max_health = health
         self.health = health
         self.living = True
         self.time_destroyed = 0

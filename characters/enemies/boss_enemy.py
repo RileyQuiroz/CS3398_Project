@@ -33,7 +33,9 @@ class Boss(pygame.sprite.DirtySprite):
         
         width = self.centerSize + 2 * self.wingSizeX  # Total width
         height = self.centerSize # Total height
-        self.image = pygame.Surface((width, height), pygame.SRCALPHA)
+        #self.image = pygame.Surface((width, height), pygame.SRCALPHA)
+        image = pygame.image.load("assets/enemies/dreadnaught.png").convert_alpha()
+        self.image = pygame.transform.scale_by(image, (2.5, 2.5))
         self.drawShip()
         
         # Positioning box
@@ -60,32 +62,33 @@ class Boss(pygame.sprite.DirtySprite):
     
     # DRAW THE BOSS
     def drawShip(self): # Determines shape and color of ship
-        # Clear the surface with transparency
-        self.image.fill((0, 0, 0, 0))  # Fill with transparent color
-        # Central square
-        square_rect = pygame.Rect(
-            self.wingSizeX,  # Positioned in the center horizontally
-            (self.image.get_height() - self.centerSize) // 2,  # Vertically centered
-            self.centerSize,
-            self.centerSize
-        )
-        pygame.draw.rect(self.image, self.color, square_rect)
-        # Left wing
-        left_rect = pygame.Rect(
-            0,  # Start at the far left
-            (self.image.get_height() - self.wingSizeY) // 2,  # Vertically centered
-            self.wingSizeX,
-            self.wingSizeY
-        )
-        pygame.draw.rect(self.image, self.color, left_rect)
-        # Right wing
-        right_rect = pygame.Rect(
-            self.centerSize + self.wingSizeX,  # Positioned next to the square
-            (self.image.get_height() - self.wingSizeY) // 2,  # Vertically centered
-            self.wingSizeX,
-            self.wingSizeY
-        )
-        pygame.draw.rect(self.image, self.color, right_rect)
+        pass
+        # # Clear the surface with transparency
+        # self.image.fill((0, 0, 0, 0))  # Fill with transparent color
+        # # Central square
+        # square_rect = pygame.Rect(
+        #     self.wingSizeX,  # Positioned in the center horizontally
+        #     (self.image.get_height() - self.centerSize) // 2,  # Vertically centered
+        #     self.centerSize,
+        #     self.centerSize
+        # )
+        # pygame.draw.rect(self.image, self.color, square_rect)
+        # # Left wing
+        # left_rect = pygame.Rect(
+        #     0,  # Start at the far left
+        #     (self.image.get_height() - self.wingSizeY) // 2,  # Vertically centered
+        #     self.wingSizeX,
+        #     self.wingSizeY
+        # )
+        # pygame.draw.rect(self.image, self.color, left_rect)
+        # # Right wing
+        # right_rect = pygame.Rect(
+        #     self.centerSize + self.wingSizeX,  # Positioned next to the square
+        #     (self.image.get_height() - self.wingSizeY) // 2,  # Vertically centered
+        #     self.wingSizeX,
+        #     self.wingSizeY
+        # )
+        # pygame.draw.rect(self.image, self.color, right_rect)
     
     # BOSS WEAPON LOGIC       
     def fire_shot(self, proj_group, paused, curr, player_pos_x, player_pos_y):

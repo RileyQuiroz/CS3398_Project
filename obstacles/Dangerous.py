@@ -3,8 +3,8 @@ from obstacles.Obstacle import Obstacle
 # The Dangerous class represents an obstacle that deals
 # damage to the player upon collision
 class Dangerous(Obstacle):
-    def __init__(self, position, sprite_path):
-        super().__init__(position, sprite_path)
+    def __init__(self, position, scale, sprite_path):
+        super().__init__(position, scale, sprite_path)
 
         self.color = (175, 75, 75)
 
