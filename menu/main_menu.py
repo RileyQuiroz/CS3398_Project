@@ -293,7 +293,7 @@ def reset_game_state(player, score_system, timer, win_lose_system, proj_group, e
 def game_loop():
      # Play in-game background music
     pygame.mixer.music.load("assets/sound_efx/game_bg_music.mp3")  # Replace with your in-game music file
-    pygame.mixer.music.set_volume(0.5)  # Adjust volume as needed
+    pygame.mixer.music.set_volume(0.3)  # Adjust volume as needed
     pygame.mixer.music.play(-1)  # Play the music indefinitely (-1 for looping)
 
     small_font = pygame.font.Font("assets/fonts/Future Edge.ttf", 32)
