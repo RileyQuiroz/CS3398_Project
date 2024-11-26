@@ -18,9 +18,14 @@ from tools.end_screen import EndScreen
 from tools.win_lose_system import WinLoseSystem
 from characters.player_char import CharacterPawn
 from characters.enemies.enemy_spawn_and_despawn import *
-from tools.collision_hanlder import check_projectile_enemy_collisions, check_player_projectile_collisions
+from tools.collision_hanlder import (
+    check_player_projectile_collisions,
+    check_projectile_enemy_collisions,
+    check_player_consumable_collisions 
+)
 from tools.Star_and_planet_bg_logic import Background
 from characters.player_char import Consumable, spawn_consumable
+from tools.bonus_objectives import BonusObjective, NoDamageObjective, AccuracyObjective, UnderTimeObjective, KillStreakObjective, BonusObjectiveDisplay
 
 
 # Initialize pygame and mixer for sound
@@ -250,11 +255,24 @@ def display_defeat_message(screen, font):
     obstacle_group = set_obstacles()
     pygame.display.flip()  # Update the display
 
+def assign_bonus_objectives():
+    """
+    Randomly select two bonus objectives from the pool.
+    """
+    objectives_pool = [
+        NoDamageObjective(),
+        UnderTimeObjective(),
+        AccuracyObjective(),
+    ]
+    return random.sample(objectives_pool, 2)
+
+
 def reset_game_state(player, score_system, timer, win_lose_system, proj_group, enemy_group, enemy_projectiles):
     score_system.reset()
     timer.reset()
     player.heal(100)
     player.is_alive = True
+    player.player_weapon = "default"
     win_lose_system.reset()
     proj_group.empty()
     enemy_group.empty()  # Clear all enemies
@@ -263,6 +281,14 @@ def reset_game_state(player, score_system, timer, win_lose_system, proj_group, e
     obstacle_group = set_obstacles()
     player.x = WIDTH // 2
     player.y = HEIGHT - 100
+
+    #super weapon sounds (start and stop reset)
+    if hasattr(player, "beam_audio_playing") and player.beam_audio_playing:
+        player.laser_beam_sound.stop()
+        player.beam_audio_playing = False
+    player.is_using_sw = False
+    player.is_charging = False
+    print("[DEBUG] Game state reset. Beam and sounds stopped.")
 
 def game_loop():
     small_font = pygame.font.Font("assets/fonts/Future Edge.ttf", 32)
@@ -276,6 +302,7 @@ def game_loop():
     to_despawn = pygame.sprite.Group()
     dest_enemies = []
     max_enemies = 3
+    last_boss_location = [] # used for boss defeat sequence
 
     obstacle_group = set_obstacles()
 
@@ -289,6 +316,7 @@ def game_loop():
 
     player = CharacterPawn(x=WIDTH // 2, y=HEIGHT - 100, projectiles_group=proj_group, screen_width=WIDTH, screen_height=HEIGHT)
     win_lose_system.player = player
+    win_lose_system.player_tracker.player = player
 
     last_spawn = 0
     last_spawn_wave = 0
@@ -312,7 +340,64 @@ def game_loop():
         spawnBoss(enemy_group, 0, difficulty)
         
 
+    #current_level = 1
+    level_progressed = False
+
+    # Assign and initialize objectives
+    current_objectives = assign_bonus_objectives()
+    for obj in current_objectives:
+        obj.initialize(player, win_lose_system) # FIXME: current_level being passed isn't right or works
+
+    # Display objectives
+    print("Bonus Objectives for this level:")
+    for obj in current_objectives:
+        print(f"- {obj.description}")
+
+    hits_detected = 0
+
+    objective_display = BonusObjectiveDisplay(current_objectives, font, screen)
+
     while running:
+        keys = pygame.key.get_pressed()
+        hit_detected =False
+        hits_detected = 0
+
+        if player.player_weapon == "super_weapon":
+            if keys[pygame.K_SPACE]:  # Start charging if space is pressed
+                if not player.is_using_sw and not player.is_charging:
+                    player.is_charging = True
+                    player.charge_start_time = pygame.time.get_ticks()
+                    player.laser_charge_sound.play()  # Play the charging sound
+                    print("[DEBUG] Beam charging...")
+
+                elif player.is_charging:  # Check if charging is complete
+                    current_time = pygame.time.get_ticks()
+                    if current_time - player.charge_start_time >= player.charge_duration:
+                        player.is_charging = False
+                        player.is_using_sw = True
+                        player.laser_charge_sound.stop()  # Stop charging sound
+                        if not hasattr(player, "beam_audio_playing") or not player.beam_audio_playing:
+                            player.laser_beam_sound.play(-1)  # Play beam sound in a loop
+                            player.beam_audio_playing = True
+                        print("[DEBUG] Beam activated!")
+
+            else:  # Deactivate the beam when space is released
+                if player.is_using_sw or player.is_charging:
+                    player.is_using_sw = False
+                    player.is_charging = False
+                    player.laser_charge_sound.stop()  # Stop charging sound
+                    if hasattr(player, "beam_audio_playing") and player.beam_audio_playing:
+                        player.laser_beam_sound.stop()  # Stop beam sound
+                        player.beam_audio_playing = False
+                    print("[DEBUG] Beam deactivated")
+
+        # Handle beam damage
+        if player.is_using_sw:
+            check_beam_enemy_collisions(player, enemy_group, damage=8)
+
+        # For accuracy bonus objective
+        shots_fired = 0
+
         ##screen.fill(black_bg)
         background.update(timer)
         background.draw()
@@ -326,6 +411,9 @@ def game_loop():
 
         timer.update(delta_time)
 
+        # FIXME TODO: Testing, might not work: *OBJECTIVE DISPLAY*
+        objective_display.draw()
+
         #SPAWN THE CONSUMABLES
         max_consumables = 10
         if not timer.stopped and ticks - consumable_spawn_timer > consumable_spawn_rate:
@@ -334,10 +422,26 @@ def game_loop():
                 consumable_spawn_timer = ticks
 
         if(current_level == 3):
-            check_projectile_boss_collisions(proj_group, enemy_group, damage=1)
+            check_projectile_boss_collisions(proj_group, enemy_group)
         else:
-            check_projectile_enemy_collisions(proj_group, enemy_group, damage=1)
+            hit_detected = check_projectile_enemy_collisions(proj_group, enemy_group)
+
+
+        #print("hit detected: ", hit_detected)
+        if hit_detected == True:
+            hits_detected += 1 
+
+
+        # Call to check collisions with player projectiles
         check_player_projectile_collisions(player, enemy_projectiles, 10, timer.elapsed_time)
+
+        # Always check for player-consumable collisions
+
+        check_player_consumable_collisions(player, consumables_group)
+
+        # Check for player-projectile collisions
+        check_player_projectile_collisions(player, enemy_projectiles, 10, timer.elapsed_time)
+
 
         proj_group.update(timer.stopped, proj_group, timer.elapsed_time)
         enemy_projectiles.update(timer.stopped, enemy_projectiles, timer.elapsed_time)
@@ -364,41 +468,83 @@ def game_loop():
             check_player_enemy_physical_collision(player, enemy, timer.elapsed_time)
             if not enemy.living:
                 destroyEnemy(dest_enemies, enemy, ship_destroyed_sound)
-                score_system.increase(10)
                 if(enemy.size == 100): # Only boss has size 100
-                    score_system.increase(990) # Get more points for destroying boss
+                    timer.toggle()
+                score_system.increase(10)
         enemy_group.draw(screen)
 
         draw_text(f"{timer.elapsed_time:.2f}", small_font, NEON_CYAN, screen, 100, 100)
         score_display.display_score(score_system.get_score())
         
-        current_game_state = win_lose_system.update()
+        win_lose_system.update(timer.elapsed_time, current_objectives)
+        current_game_state = win_lose_system.update(timer.elapsed_time, current_objectives)
+        win_lose_system.render_overlay(screen)
 
-        ## Check win/loss condition and then go to end screen
+        ##if win_lose_system.current_level == 2 and level_progressed == False:
+        ##    current_objectives = assign_bonus_objectives()
+        ##    level_progressed = True
+        ##    print("Bonus Objectives for this level:")
+        ##    for obj in current_objectives:
+        ##        print(f"- {obj.description}")
+
         if current_game_state != GameState.ONGOING:
-            end_screen = EndScreen(screen, player)
-            end_screen_display = True
-            while end_screen_display:
-                end_screen.display(current_game_state)
-                for event in pygame.event.get():
-                    if event.type == pygame.QUIT:
-                        pygame.quit()
-                        sys.exit()
-                    elif event.type == pygame.MOUSEBUTTONDOWN:
-                        if event.button == 1:  # Left mouse button
-                            pos = event.pos
-                            selected_option = end_screen.check_option_click(pos)
-                            if selected_option == "Restart":
-                                end_screen_display = False
-                                reset_game_state(player, score_system, timer, win_lose_system, proj_group, enemy_group, enemy_projectiles)
-                                game_loop()
-                            elif selected_option == "Main Menu":
-                                end_screen_display = False
-                                reset_game_state(player, score_system, timer, win_lose_system, proj_group, enemy_group, enemy_projectiles)
-                                main_menu()
-                            elif selected_option == "Quit":
-                                pygame.quit()
-                                exit()
+            # Stop beam sound and reset states
+            if hasattr(player, "beam_audio_playing") and player.beam_audio_playing:
+                player.laser_beam_sound.stop()
+                player.beam_audio_playing = False
+            player.is_using_sw = False
+            player.is_charging = False
+            print("[DEBUG] Game over. Beam and sounds stopped.")
+
+            ## Check win/loss condition and then go to end screen
+            if(current_level != 3):
+                end_screen = EndScreen(screen, player)
+                end_screen_display = True
+                while end_screen_display:
+                    end_screen.display(current_game_state)
+                    for event in pygame.event.get():
+                        if event.type == pygame.QUIT:
+                            pygame.quit()
+                            sys.exit()
+                        elif event.type == pygame.MOUSEBUTTONDOWN:
+                            if event.button == 1:  # Left mouse button
+                                pos = event.pos
+                                selected_option = end_screen.check_option_click(pos)
+                                if selected_option == "Restart":
+                                    end_screen_display = False
+                                    reset_game_state(player, score_system, timer, win_lose_system, proj_group, enemy_group, enemy_projectiles)
+                                    game_loop()
+                                elif selected_option == "Main Menu":
+                                    end_screen_display = False
+                                    reset_game_state(player, score_system, timer, win_lose_system, proj_group, enemy_group, enemy_projectiles)
+                                    main_menu()
+                                elif selected_option == "Quit":
+                                    pygame.quit()
+                                    exit()
+            elif(current_level == 3 and len(dest_enemies) == 0): # For boss destruction
+                end_screen = EndScreen(screen, player)
+                end_screen_display = True
+                while end_screen_display:
+                    end_screen.display(current_game_state)
+                    for event in pygame.event.get():
+                        if event.type == pygame.QUIT:
+                            pygame.quit()
+                            sys.exit()
+                        elif event.type == pygame.MOUSEBUTTONDOWN:
+                            if event.button == 1:  # Left mouse button
+                                pos = event.pos
+                                selected_option = end_screen.check_option_click(pos)
+                                if selected_option == "Restart":
+                                    end_screen_display = False
+                                    reset_game_state(player, score_system, timer, win_lose_system, proj_group, enemy_group, enemy_projectiles)
+                                    game_loop()
+                                elif selected_option == "Main Menu":
+                                    end_screen_display = False
+                                    reset_game_state(player, score_system, timer, win_lose_system, proj_group, enemy_group, enemy_projectiles)
+                                    main_menu()
+                                elif selected_option == "Quit":
+                                    pygame.quit()
+                                    exit()
         # AUTO TURRET STUFF
         keys = pygame.key.get_pressed()
         if player.player_weapon == "auto_turret" and keys[pygame.K_SPACE]:
@@ -430,7 +576,7 @@ def game_loop():
                             break
                 elif event.key == pygame.K_c:
                     for consumable in consumables_group:
-                        if consumable.consumable_type in ["auto_turret", "plasma_gun", "rocket_launcher"]:
+                        if consumable.consumable_type in ["auto_turret", "plasma_gun", "rocket_launcher", "super_weapon" ]:
                             player.consume(consumable.consumable_type)
                             consumables_group.remove(consumable)  # Remove the consumed item
                             print(f"Weapon switched to: {player.player_weapon}")
@@ -442,6 +588,16 @@ def game_loop():
                     timer.toggle()
                 elif event.key == pygame.K_SPACE:
                     player.shoot(timer.stopped)
+                    shots_fired += 1
+
+                    # # Check if there were any collisions and record shots
+                    #if hit_detected == True:  # If a hit was detected, shots hit the target
+                    #    win_lose_system.record_shot(hit=True)
+                    #    print(" MAIN LOOP SHOT DETECTED AS TRUE: ", hit_detected)
+                    #elif hit_detected == False:  # No collisions, so the shots missed
+                    #    win_lose_system.record_shot(hit=False)
+                    #    print(" MAIN LOOP SHOT DETECTED AS false: ", hit_detected)
+
                 elif event.key == pygame.K_s:
                     message, start_time = user_save_and_load.saveHandling(score_system.get_score(), player, current_level, difficulty)
                     save_text_show = True
@@ -459,12 +615,22 @@ def game_loop():
             else:
                 save_text_show = False
 
-        for enemy_center, time_destroyed, size in dest_enemies[:]:
-            if pygame.time.get_ticks() - time_destroyed <= 250:
-                pygame.draw.circle(screen, (200, 180, 0), enemy_center, size)
-            else:
-                dest_enemies.remove((enemy_center, time_destroyed, size))
-
+        # Handle enemy destruction
+        drawEnemyDestruction(dest_enemies, screen, ship_destroyed_sound, score_system)                
         despawnEnemy(to_despawn)
+
+        # Check if there were any collisions and record shots
+        for _ in range(shots_fired):  # Loop through the number of shots fired
+            if hits_detected >= 0:  # If there have been any successful hits
+                win_lose_system.record_shot(hit=True)
+                hits_detected -= 1  # Decrement hits to keep track
+                #print(" MAIN LOOP SHOT DETECTED AS TRUE: Hits Left = ", hits_detected)
+            else:  # If no hits were detected
+                win_lose_system.record_shot(hit=False)
+                #print(" MAIN LOOP SHOT DETECTED AS FALSE: Hits Left = ", hits_detected)
+
+
+        shots_fired = 0
+
         pygame.display.flip()
         clock.tick(FPS)
