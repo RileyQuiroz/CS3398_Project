@@ -159,6 +159,7 @@ class CharacterPawn:
                         self.laser_beam_sound.stop()  # Stop beam sound
                         self.beam_audio_playing = False
                     print("[DEBUG] Laser beam deactivated.")
+                    self.laser_beam_sound.stop()
 
 
         # Logic for other weapons
@@ -298,6 +299,15 @@ class CharacterPawn:
             self.health = min(100, self.health + amount)
     
     def consume(self, consumable):
+        if self.player_weapon == "super_weapon":
+            self.is_using_sw = False
+            self.is_charging = False
+            if self.beam_audio_playing:
+                self.laser_beam_sound.stop()
+                self.beam_audio_playing = False
+            self.laser_charge_sound.stop()
+
+
         if consumable == "super_weapon":
             self.player_weapon = "super_weapon"
             self.is_using_sw = False  # Ensure the super weapon is not firing initially
