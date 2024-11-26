@@ -23,6 +23,8 @@ from gamestates.GameState import GameState
 
 class PlayState(GameState):
     def __init__(self, game):
+        super().__init__(game)
+
         #init background
         self.background = Background(game.screen)
 
@@ -53,7 +55,7 @@ class PlayState(GameState):
         #consumables_group.add(Consumable(120,120, "shield_pack"))
 
     def enter(self, game):
-        if game.previous_state != 'Pause':
+        if game.previous_state != 'pause':
             game.reset()
             spawnEnemy(game.enemy_group, game.timer.elapsed_time, 2) # Spawned in for testing
 
@@ -62,25 +64,25 @@ class PlayState(GameState):
     def update(self, game):
         self.background.update(game.timer)
 
-        self.ticks = pygame.time.get_ticks()
-        self.delta_time = (self.ticks - self.ticks_last_frame) / 1000.0
-        self.ticks_last_frame = self.ticks
+        if self.running:
+            self.ticks = pygame.time.get_ticks()
+            self.delta_time = (self.ticks - self.ticks_last_frame) / 1000.0
+            self.ticks_last_frame = self.ticks
 
-        game.timer.update(self.delta_time)
+            game.timer.update(self.delta_time)
 
         if not game.timer.stopped and self.ticks - self.consumable_spawn_timer > self.consumable_spawn_rate:
             if len(self.consumables_group) < self.max_consumables:
                 spawn_consumable(self.consumables_group, game.WIDTH, game.HEIGHT)
                 self.consumable_spawn_timer = self.ticks
 
-        check_projectile_enemy_collisions(self.proj_group, self.enemy_group, damage=1)
+        check_projectile_enemy_collisions(game.proj_group, game.enemy_group)
         check_player_projectile_collisions(game.player, game.enemy_projectiles, 10, game.timer.elapsed_time)
 
-        self.proj_group.update(game.timer.stopped, self.proj_group, game.timer.elapsed_time)
-        game.enemy_projectiles.update(game.timer.stopped, self.enemy_projectiles, game.timer.elapsed_time)
+        game.proj_group.update(game.timer.stopped, game.proj_group, game.timer.elapsed_time)
+        game.enemy_projectiles.update(game.timer.stopped, game.enemy_projectiles, game.timer.elapsed_time)
 
         game.player.handle_input(game.timer.stopped)
-        game.player.draw(game.screen, game.timer.elapsed_time)
         game.proj_group.draw(game.screen)
         game.enemy_projectiles.draw(game.screen)
 
@@ -88,7 +90,7 @@ class PlayState(GameState):
             obstacle.update(game.player, self.delta_time)
             
         # Enemy Spawning
-        if not game.timer.stopped and len(game.enemy_group) < game.max_enemies and game.timer.elapsed_time - self.last_spawn >= 4:
+        if not game.timer.stopped and len(game.enemy_group) < self.max_enemies and game.timer.elapsed_time - self.last_spawn >= 4:
             spawnEnemy(game.enemy_group, game.timer.elapsed_time, 0)
             last_spawn = game.timer.elapsed_time
         if not game.timer.stopped and game.timer.elapsed_time - self.last_spawn_wave >= 30: #Spawn wave is not blocked by max enemies, set to 30s for demoing(ideally would be longer)
@@ -102,7 +104,7 @@ class PlayState(GameState):
             startRetreat(enemy, self.to_despawn) # Enemy B retreat call
             enemy.change_color() # Change color if hurt
             enemy.update(game.timer.stopped, game.timer.elapsed_time)
-            enemy.fire_shot(game.enemy_projectiles, paused=game.timer.stopped, curr=game.timer.elapsed_time)
+            enemy.fire_shot(game.enemy_projectiles, paused=game.timer.stopped, curr=game.timer.elapsed_time, empty1=game.player.x, empty2=game.player.y)
             check_player_enemy_physical_collision(game.player, enemy, game.timer.elapsed_time)
             if not enemy.living:
                 destroyEnemy(self.dest_enemies, enemy, Sounds.ship_destroyed)
@@ -110,16 +112,16 @@ class PlayState(GameState):
 
         game.enemy_group.draw(game.screen)
 
-        game.draw_text(f"{self.timer.elapsed_time:.2f}", game.SMALL_FONT, Colors.NEON_CYAN, 100, 100)
+        game.draw_text(f"{game.timer.elapsed_time:.2f}", game.SMALL_FONT, Colors.NEON_CYAN, 100, 100)
         game.score_display.display_score(game.score_system.get_score())
 
         # Check if the current level is still ongoing
-        current_game_state = game.win_lose_system.update()
+        current_game_state = game.win_lose_system.update(game.timer.elapsed_time, game.current_objectives)
 
         # If the current level is no longer ongoing, update the game state
         if current_game_state != WinLoseState.ONGOING:
             # end_screen = EndScreen(game.screen, game.player)
-            next_state = "Win" if WinLoseState.WIN else "GameOver"
+            next_state = 'win' if current_game_state == WinLoseState.WIN else 'game_over'
             game.change_state(next_state)
 
         # AUTO TURRET STUFF
@@ -160,10 +162,13 @@ class PlayState(GameState):
                             print(f"Weapon switched to: {game.player.player_weapon}")
                             break
                 if event.key == pygame.K_ESCAPE:
-                    running = False
-                    game.timer.stop()
+                    self.running = False
+                    game.change_state('pause')
+                    # game.timer.stop()
                 elif event.key == pygame.K_p:
-                    game.timer.toggle()
+                    self.running = False
+                    game.change_state('pause')
+                    #game.timer.toggle()
                 elif event.key == pygame.K_SPACE:
                     game.player.shoot(game.timer.stopped)
                 elif event.key == pygame.K_s:
@@ -183,31 +188,35 @@ class PlayState(GameState):
             else:
                 self.save_text_show = False
 
-        for enemy_center, time_destroyed, size in self.dest_enemies[:]:
-            if pygame.time.get_ticks() - time_destroyed <= 250:
-                pygame.draw.circle(game.screen, (200, 180, 0), enemy_center, size)
-            else:
-                self.dest_enemies.remove((enemy_center, time_destroyed, size))
+        #for enemy_center, time_destroyed, size in self.dest_enemies[:]:
+        #    if pygame.time.get_ticks() - time_destroyed <= 250:
+        #        pygame.draw.circle(game.screen, (200, 180, 0), enemy_center, size)
+        #    else:
+        #        self.dest_enemies.remove((enemy_center, time_destroyed, size))
 
         despawnEnemy(self.to_despawn)
-        pygame.display.flip()
         game.clock.tick(game.FPS)
-
+    
     def draw(self, game):
+        self.background.draw()
         game.player.draw(game.screen, game.timer.elapsed_time)
+        game.enemy_group.draw(game.screen)
         game.proj_group.draw(game.screen)
         game.enemy_projectiles.draw(game.screen)
-        game.obstacle_group.draw(game.screen)
+        
+        for obstacle in game.obstacle_group:
+            obstacle.draw(game.screen)
+     
         self.consumables_group.draw(game.screen)
-    
+
     def leave(self, game):
         game.timer.stop()
 
-        if game.current_state != 'Pause':
+        if game.current_state != 'pause':
             game.timer.reset()
             game.proj_group.empty()
             game.enemy_group.empty()
             game.enemy_projectiles.empty()
-            game.obstacle_group.empty()
+            game.set_obstacles()
             self.consumables_group.empty()
             self.consumable_spawn_timer = 0

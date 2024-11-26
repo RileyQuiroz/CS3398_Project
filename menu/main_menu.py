@@ -7,7 +7,7 @@ from tools.score_display import ScoreDisplay
 from tools.collision_hanlder import *
 from savesystem.leaderboard import Leaderboard
 from savesystem import user_save_and_load
-from obstacles.Mover import Mover
+from obstacles.Mover import Mover 
 from obstacles.Rotator import Rotator
 from obstacles.ZigZag import ZigZag
 from obstacles.Dangerous import Dangerous
@@ -95,12 +95,12 @@ BOULDER_PATH = "assets/objects/spr_boulder_0.png"
 
 def set_obstacles():
     return [
-        Mover((200, 200), (10, 10), BOULDER_PATH),
-        Rotator((200, 400), BOULDER_PATH),
-        ZigZag((0, 300), (50, 0), BOULDER_PATH),
-        Dangerous((500, 550), BOULDER_PATH),
-        Destructible((550, 300), 5, BOULDER_PATH),
-        Friend((100, 200), 5, score_system, BOULDER_PATH)
+        Mover((200, 200), (10, 10), 0.75, "assets/objects/spr_boulder_0.png"),
+        Rotator((200, 400), 2.5, "assets/objects/rotator_obstacle.png"),
+        ZigZag((0, 300), (50, 0), 2.5, "assets/objects/obstacle_type_1.png"),
+        Dangerous((500, 550), 2.5, "assets/objects/dangerous_obstacle.png"),
+        Destructible((550, 300), 5, score_system, 2.5, "assets/objects/obstacle_type_2.png"),
+        Friend((100, 200), 5, score_system, 2.5, "assets/objects/friendly_obstacle.png")
     ]
 
 obstacle_group = set_obstacles()
@@ -291,6 +291,11 @@ def reset_game_state(player, score_system, timer, win_lose_system, proj_group, e
     print("[DEBUG] Game state reset. Beam and sounds stopped.")
 
 def game_loop():
+     # Play in-game background music
+    pygame.mixer.music.load("assets/sound_efx/game_bg_music.mp3")  # Replace with your in-game music file
+    pygame.mixer.music.set_volume(0.3)  # Adjust volume as needed
+    pygame.mixer.music.play(-1)  # Play the music indefinitely (-1 for looping)
+
     small_font = pygame.font.Font("assets/fonts/Future Edge.ttf", 32)
     #init background
     background = Background(screen)
@@ -323,7 +328,7 @@ def game_loop():
     ticks_last_frame = pygame.time.get_ticks()
     
     #IMPORTANT: TEMP VARIABLEs FOR SAVE SYSTEM, USE/MODIFY FOR WHATEVER YOU NEED
-    current_level = 3 # 0-2 are normal levels, 3 is boss
+    current_level = 1 # 0-2 are normal levels, 3 is boss
     lvlThreeSwitch = 0 # Used only for level 3 spawning of type c and b
     difficulty = 0 # 0-easy, 1-medium, 2-hard
     
@@ -411,8 +416,7 @@ def game_loop():
 
         timer.update(delta_time)
 
-        # FIXME TODO: Testing, might not work: *OBJECTIVE DISPLAY*
-        objective_display.draw()
+        
 
         #SPAWN THE CONSUMABLES
         max_consumables = 10
@@ -462,17 +466,33 @@ def game_loop():
         # Update enemy conditions
         for enemy in enemy_group:
             startRetreat(enemy, to_despawn) # Enemy B retreat call
-            enemy.change_color() # Change color if hurt
+            # enemy.change_color() # Change color if hurt
             enemy.update(timer.stopped, timer.elapsed_time)
             enemy.fire_shot(enemy_projectiles, timer.stopped, timer.elapsed_time, player.x, player.y)
             check_player_enemy_physical_collision(player, enemy, timer.elapsed_time)
+
+            enemy_health_bar = pygame.rect.Rect(
+                enemy.rect.x,
+                enemy.rect.y - 5,
+                enemy.rect.width / enemy.max_health * enemy.health,
+                3
+            )
+
+            pygame.draw.rect(screen, (100, 255, 100), enemy_health_bar)
+
             if not enemy.living:
                 destroyEnemy(dest_enemies, enemy, ship_destroyed_sound)
                 if(enemy.size == 100): # Only boss has size 100
                     timer.toggle()
                 score_system.increase(10)
+            
         enemy_group.draw(screen)
+        if(current_level == 3):
+            for enemy in enemy_group:
+                enemy.boss_ui(screen)            
 
+        # FIXME TODO: Testing, might not work: *OBJECTIVE DISPLAY*
+        objective_display.draw()
         draw_text(f"{timer.elapsed_time:.2f}", small_font, NEON_CYAN, screen, 100, 100)
         score_display.display_score(score_system.get_score())
         
@@ -488,6 +508,7 @@ def game_loop():
         ##        print(f"- {obj.description}")
 
         if current_game_state != GameState.ONGOING:
+            pygame.mixer.music.stop()
             # Stop beam sound and reset states
             if hasattr(player, "beam_audio_playing") and player.beam_audio_playing:
                 player.laser_beam_sound.stop()
@@ -583,6 +604,7 @@ def game_loop():
                             break
                 if event.key == pygame.K_ESCAPE:
                     running = False
+                    pygame.mixer.music.stop()
                     timer.stop()
                 elif event.key == pygame.K_p:
                     timer.toggle()

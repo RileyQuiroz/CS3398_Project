@@ -9,8 +9,10 @@ class EnemyTypeC(Enemy):
         self.velocity = 1
         self.left_bound = left_bound
         self.right_bound = right_bound  
-        self.image = pygame.Surface((self.size, self.size))
-        self.image.fill(self.color)
+
+        image = pygame.image.load("assets/enemies/enemy_type_c.png").convert_alpha()
+        self.image = pygame.transform.scale_by(image, (2.5, 2.5))
+
         self.rect = self.image.get_rect(center=(self.pos_x, self.pos_y))
         self.fire_delay = 2.5  # Time between shots
         self.last_shot_time = current_time  # Time since the last shot
