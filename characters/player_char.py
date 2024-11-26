@@ -51,12 +51,17 @@ class CharacterPawn:
         # Stats
         self.health = health
         self.is_alive = True
+
         # Cooldown to prevent spamming bullets
         self.last_shot_time = pygame.time.get_ticks()
         self.shot_cooldown = 200  # in milliseconds
         self.last_enemy_collision = 0
         self.got_hit = False
         self.shield = 0
+
+        #LOAD PLAYER IMAGE
+        self.image = pygame.image.load("assets/ships/ship_4.png")
+        self.image = pygame.transform.scale(self.image, (50, 50))
         
         # Initialize weapon to default
         self.player_weapon = "default"  # Ensure the player starts with the default weapon
@@ -76,6 +81,12 @@ class CharacterPawn:
         self.laser_beam_sound = pygame.mixer.Sound("assets/sound_efx/beam_firing_loop.mp3")
         self.laser_beam_sound.set_volume(0.3)
         self.beam_audio_playing = False  # Ensure this attribute is initialized
+        # Load the player image
+        self.image = pygame.image.load("ship_4.png").convert_alpha()
+        self.image = pygame.transform.scale(self.image, (48, 48))  # Adjust size if necessary
+
+        # Update collision rect to align with the image
+        self.rect = self.image.get_rect(topleft=(self.x, self.y))
 
 
 
@@ -184,9 +195,13 @@ class CharacterPawn:
             # Check cooldown for firing
             if current_time - self.last_shot_time > detail["cooldown"]:
                 # Create projectile with weapon-specific properties
+                bullet_X = self.rect.centerx
+                bullet_y = self.rect.top
                 bullet = Projectile(
-                    self.x + self.width // 2,
-                    self.y,
+                    # self.x,
+                    # self.y,
+                    bullet_X,
+                    bullet_y,
                     speed=detail["speed"],
                     color=detail["color"],
                     size=detail["size"],
@@ -204,12 +219,13 @@ class CharacterPawn:
 
     def draw(self, screen, curr_time):
         # Determine color based on health
-        color = (255, 255, 0) if self.health < 50 else (0, 255, 0)
-        if self.is_alive:
-            self.draw_beam(screen)
-        if(self.got_hit):
-            color = (255,255,255)
-        pygame.draw.rect(screen, color, self.rect)
+        # color = (255, 255, 0) if self.health < 50 else (0, 255, 0)
+        # if self.is_alive:
+        #     self.draw_beam(screen)
+        # if(self.got_hit):
+        #     color = (255,255,255)
+        # pygame.draw.rect(screen, color, self.rect)
+        screen.blit(self.image, self.rect.topleft)
         # Draw health bar
         self.draw_health_bar(screen)
         self.draw_shield_bar(screen)
