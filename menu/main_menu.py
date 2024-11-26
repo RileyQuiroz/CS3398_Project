@@ -7,7 +7,7 @@ from tools.score_display import ScoreDisplay
 from tools.collision_hanlder import *
 from savesystem.leaderboard import Leaderboard
 from savesystem import user_save_and_load
-from obstacles.Mover import Mover
+from obstacles.Mover import Mover 
 from obstacles.Rotator import Rotator
 from obstacles.ZigZag import ZigZag
 from obstacles.Dangerous import Dangerous
@@ -291,6 +291,11 @@ def reset_game_state(player, score_system, timer, win_lose_system, proj_group, e
     print("[DEBUG] Game state reset. Beam and sounds stopped.")
 
 def game_loop():
+     # Play in-game background music
+    pygame.mixer.music.load("assets/sound_efx/game_bg_music.mp3")  # Replace with your in-game music file
+    pygame.mixer.music.set_volume(0.3)  # Adjust volume as needed
+    pygame.mixer.music.play(-1)  # Play the music indefinitely (-1 for looping)
+
     small_font = pygame.font.Font("assets/fonts/Future Edge.ttf", 32)
     #init background
     background = Background(screen)
@@ -323,7 +328,7 @@ def game_loop():
     ticks_last_frame = pygame.time.get_ticks()
     
     #IMPORTANT: TEMP VARIABLEs FOR SAVE SYSTEM, USE/MODIFY FOR WHATEVER YOU NEED
-    current_level = 3 # 0-2 are normal levels, 3 is boss
+    current_level = 1 # 0-2 are normal levels, 3 is boss
     lvlThreeSwitch = 0 # Used only for level 3 spawning of type c and b
     difficulty = 0 # 0-easy, 1-medium, 2-hard
     
@@ -503,6 +508,7 @@ def game_loop():
         ##        print(f"- {obj.description}")
 
         if current_game_state != GameState.ONGOING:
+            pygame.mixer.music.stop()
             # Stop beam sound and reset states
             if hasattr(player, "beam_audio_playing") and player.beam_audio_playing:
                 player.laser_beam_sound.stop()
@@ -598,6 +604,7 @@ def game_loop():
                             break
                 if event.key == pygame.K_ESCAPE:
                     running = False
+                    pygame.mixer.music.stop()
                     timer.stop()
                 elif event.key == pygame.K_p:
                     timer.toggle()

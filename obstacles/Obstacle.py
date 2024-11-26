@@ -53,7 +53,8 @@ class Obstacle:
         pass
 
     def draw(self, surface):
-        surface.blit(self.sprite, self.position)
+        # surface.blit(self.sprite, self.position)
+        pygame.draw.rect(surface, self.color, self.rect)
 
     def update(self, player, dt):
         self.rect.x = self.position[0]
