@@ -170,7 +170,7 @@ class CharacterPawn:
                     "size": (5, 15),
                     "damage": 1,
                     "sound": "assets/sound_efx/auto_turret2.mp3",
-                    "cooldown": 100  # Faster cooldown for machine gun effect
+                    "cooldown": 200  # Faster cooldown for machine gun effect
                 },
                 "default": {
                     "speed": 10,
