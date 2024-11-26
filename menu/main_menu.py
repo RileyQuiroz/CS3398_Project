@@ -411,8 +411,7 @@ def game_loop():
 
         timer.update(delta_time)
 
-        # FIXME TODO: Testing, might not work: *OBJECTIVE DISPLAY*
-        objective_display.draw()
+        
 
         #SPAWN THE CONSUMABLES
         max_consumables = 10
@@ -472,7 +471,12 @@ def game_loop():
                     timer.toggle()
                 score_system.increase(10)
         enemy_group.draw(screen)
+        if(current_level == 3):
+            for enemy in enemy_group:
+                enemy.boss_ui(screen)            
 
+        # FIXME TODO: Testing, might not work: *OBJECTIVE DISPLAY*
+        objective_display.draw()
         draw_text(f"{timer.elapsed_time:.2f}", small_font, NEON_CYAN, screen, 100, 100)
         score_display.display_score(score_system.get_score())
         
