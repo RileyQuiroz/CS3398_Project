@@ -26,7 +26,7 @@ class EnemyTypeB(Enemy):
         self.arc_stopped = False
         self.arcs_complete = 0
         
-    def fire_shot(self, proj_group, paused, curr): # Fires a spread of bullets
+    def fire_shot(self, proj_group, paused, curr, empty1, empty2): # Fires a spread of bullets
         current_time = curr
         # Check if enough time has passed since the last shot
         if (current_time - self.last_shot_time >= self.fire_delay and self.living == True and paused == False and self.heading_home == False):
