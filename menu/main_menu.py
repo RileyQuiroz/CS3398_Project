@@ -95,12 +95,12 @@ BOULDER_PATH = "assets/objects/spr_boulder_0.png"
 
 def set_obstacles():
     return [
-        Mover((200, 200), (10, 10), BOULDER_PATH),
-        Rotator((200, 400), BOULDER_PATH),
-        ZigZag((0, 300), (50, 0), BOULDER_PATH),
-        Dangerous((500, 550), BOULDER_PATH),
-        Destructible((550, 300), 5, BOULDER_PATH),
-        Friend((100, 200), 5, score_system, BOULDER_PATH)
+        Mover((200, 200), (10, 10), 0.75, "assets/objects/spr_boulder_0.png"),
+        Rotator((200, 400), 2.5, "assets/objects/rotator_obstacle.png"),
+        ZigZag((0, 300), (50, 0), 2.5, "assets/objects/obstacle_type_1.png"),
+        Dangerous((500, 550), 2.5, "assets/objects/dangerous_obstacle.png"),
+        Destructible((550, 300), 5, score_system, 2.5, "assets/objects/obstacle_type_2.png"),
+        Friend((100, 200), 5, score_system, 2.5, "assets/objects/friendly_obstacle.png")
     ]
 
 obstacle_group = set_obstacles()
@@ -515,15 +515,26 @@ def game_loop():
         # Update enemy conditions
         for enemy in enemy_group:
             startRetreat(enemy, to_despawn) # Enemy B retreat call
-            enemy.change_color() # Change color if hurt
+            # enemy.change_color() # Change color if hurt
             enemy.update(timer.stopped, timer.elapsed_time)
             enemy.fire_shot(enemy_projectiles, timer.stopped, timer.elapsed_time, player.x, player.y)
             check_player_enemy_physical_collision(player, enemy, timer.elapsed_time)
+
+            enemy_health_bar = pygame.rect.Rect(
+                enemy.rect.x,
+                enemy.rect.y - 5,
+                enemy.rect.width / enemy.max_health * enemy.health,
+                3
+            )
+
+            pygame.draw.rect(screen, (100, 255, 100), enemy_health_bar)
+
             if not enemy.living:
                 destroyEnemy(dest_enemies, enemy, ship_destroyed_sound)
                 if(enemy.size == 100): # Only boss has size 100
                     timer.toggle()
                 score_system.increase(10)
+            
         enemy_group.draw(screen)
         if(current_level == 3):
             for enemy in enemy_group:

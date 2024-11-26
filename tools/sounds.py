@@ -1,5 +1,7 @@
 import pygame
 
+pygame.mixer.init()
+
 class Sounds:
     # Load hover sound
     hover = pygame.mixer.Sound("assets/sound_efx/hover_sound.wav")  # Replace with your sound file

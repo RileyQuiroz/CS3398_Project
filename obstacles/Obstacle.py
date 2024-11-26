@@ -4,12 +4,16 @@ import pygame
 # The Obstacle class represents an in-game object that can
 # impede the player in some way
 class Obstacle:
-    def __init__(self, position, sprite_path):
+    def __init__(self, position, scale, sprite_path):
         self.position = position
         self.velocity = (0, 0)
         self.color = (100, 100, 100)
-        self.sprite = pygame.image.load(sprite_path).convert_alpha()
-        self.rect = pygame.Rect(self.position[0], self.position[1], 45, 45)
+
+        image = pygame.image.load(sprite_path).convert_alpha()
+        self.sprite = pygame.transform.scale_by(image, (scale, scale))
+
+        rect = self.sprite.get_rect()
+        self.rect = pygame.Rect(self.position[0], self.position[1], rect.width, rect.height)
         self.is_colliding = False
 
     def check_for_player_collision(self, player):

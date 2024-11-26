@@ -5,9 +5,9 @@ from obstacles.Rotator import Rotator
 # The ZigZag class represents an Obstacle that moves
 # in a zig-zag pattern along a specified trajectory
 class ZigZag(Mover, Rotator):
-    def __init__(self, position, velocity, sprite_path):
-        Rotator.__init__(self, position, sprite_path)
-        Mover.__init__(self, position, velocity, sprite_path)
+    def __init__(self, position, velocity, scale, sprite_path):
+        Rotator.__init__(self, position, scale, sprite_path)
+        Mover.__init__(self, position, velocity, scale, sprite_path)
 
         self.color = (255, 255, 255)
 
