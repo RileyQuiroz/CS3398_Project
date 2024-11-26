@@ -3,8 +3,10 @@ import pygame
 
 # The Obstacle class represents an in-game object that can
 # impede the player in some way
-class Obstacle:
+class Obstacle():
     def __init__(self, position, sprite_path):
+        super().__init__()
+
         self.position = position
         self.velocity = (0, 0)
         self.color = (100, 100, 100)
@@ -49,7 +51,6 @@ class Obstacle:
         pass
 
     def draw(self, surface):
-        # surface.blit(self.sprite, self.position)
         pygame.draw.rect(surface, self.color, self.rect)
 
     def update(self, player, dt):
