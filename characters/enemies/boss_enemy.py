@@ -157,6 +157,20 @@ class Boss(pygame.sprite.DirtySprite):
             if(self.health < 1):
                 self.living = False
                 self.time_destroyed = pygame.time.get_ticks()
+    
+    def boss_health_bar(self, screen):
+        if self.at_y_level:
+            bar_width = 400
+            bar_height = 20
+            fill = (self.health / self.max_health) * bar_width
+            # Transparent bar background
+            background_surface = pygame.Surface((bar_width, bar_height), pygame.SRCALPHA)
+            background_color = (70, 70, 70, 90)
+            background_surface.fill(background_color)
+            screen.blit(background_surface, (200, 10))
+            # Health remaining
+            health_fill = pygame.Rect(200, 10, fill, bar_height)
+            pygame.draw.rect(screen, (0, 255, 0), health_fill)  # Green fill for current health
             
     def change_color(self):
         if(self.health == self.max_health / 2):

@@ -369,6 +369,9 @@ def game_loop():
                     timer.toggle()
                 score_system.increase(10)
         enemy_group.draw(screen)
+        if(current_level == 3):
+            for enemy in enemy_group:
+                enemy.boss_health_bar(screen)            
 
         draw_text(f"{timer.elapsed_time:.2f}", small_font, NEON_CYAN, screen, 100, 100)
         score_display.display_score(score_system.get_score())
