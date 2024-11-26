@@ -1,6 +1,6 @@
-import pygame
 import sys
 import random
+import pygame
 from tools.timer import Timer
 from tools.score_counter import Score
 from tools.score_display import ScoreDisplay
@@ -14,8 +14,18 @@ from characters.player_char import CharacterPawn
 from characters.enemies.enemy_spawn_and_despawn import spawnEnemy, despawnEnemy, startRetreat, destroyEnemy
 from tools.collision_hanlder import check_projectile_enemy_collisions, check_player_projectile_collisions
 from tools.Star_and_planet_bg_logic import Background
+from tools.bonus_objectives import BonusObjective, NoDamageObjective, AccuracyObjective, UnderTimeObjective, KillStreakObjective, BonusObjectiveDisplay
+
 from characters.player_char import Consumable
 from obstacles import *
+
+from gamestates.MainMenuState import MainMenuState
+from gamestates.PlayState import PlayState
+from gamestates.PauseState import PauseState
+from gamestates.WinState import WinState
+from gamestates.GameOverState import GameOverState
+
+pygame.init()
 
 class Game:
     # Define screen dimensions
@@ -33,16 +43,13 @@ class Game:
     BOULDER_PATH = "assets/objects/spr_boulder_0.png"
 
     def __init__(self):
-        pygame.init()
-        pygame.mixer.init()
-
         # Initialize screen
         self.screen = pygame.display.set_mode((self.WIDTH, self.HEIGHT))
         pygame.display.set_caption("BULLETHELL")
 
         # Initialize start menu background
         bg_image = pygame.image.load("assets/backgrounds/space_background4.png")
-        self.background = pygame.transform.scale(self.background, (self.WIDTH, self.HEIGHT))
+        self.background = pygame.transform.scale(bg_image, (self.WIDTH, self.HEIGHT))
 
         # Initialize leaderboard
         self.leaderboard = Leaderboard("time_scoreboard.json")
@@ -54,16 +61,15 @@ class Game:
 
         # Initialize score system
         self.score_system = Score()
-        self.score_display = ScoreDisplay()
+        self.score_display = ScoreDisplay(self.screen)
 
         # Initialize win-lose system
-        self.win_lose_system = WinLoseSystem()
+        self.win_lose_system = WinLoseSystem(self.score_system)
 
         # Initialize groups
         self.proj_group = pygame.sprite.Group()
         self.enemy_group = pygame.sprite.Group()
         self.enemy_projectiles = pygame.sprite.Group()
-        self.obstacle_group = pygame.sprite.Group()
         self.set_obstacles()
 
         # Initialize player
@@ -77,17 +83,30 @@ class Game:
 
         self.win_lose_system.player = self.player
 
-        #IMPORTANT: TEMP VARIABLEs FOR SAVE SYSTEM, USE/MODIFY FOR WHATEVER YOU NEED
-        self.current_level = 0
-        self.difficulty = 0
+        # Assign and initialize objectives
+        self.current_objectives = self.assign_bonus_objectives()
+        for obj in self.current_objectives:
+            obj.initialize(self.player, self.win_lose_system) # FIXME: current_level being passed isn't right or works
+
+        # Display objectives
+        print("Bonus Objectives for this level:")
+        for obj in self.current_objectives:
+            print(f"- {obj.description}")
+            #IMPORTANT: TEMP VARIABLEs FOR SAVE SYSTEM, USE/MODIFY FOR WHATEVER YOU NEED
+            self.current_level = 0
+            self.difficulty = 0
 
         # Initialize game states
         self.states = {
-
+            'main_menu': MainMenuState(self),
+            'play': PlayState(self),
+            'pause': PauseState(self),
+            'win': WinState(self),
+            'game_over': GameOverState(self)
         }
 
         self.previous_state = ''
-        self.current_state = 'MainMenu'
+        self.current_state = 'main_menu'
 
     # Change between game states
     def change_state(self, next_state):
@@ -95,8 +114,8 @@ class Game:
             self.previous_state = self.current_state
             self.current_state = next_state
 
-            self.states[self.previous_state].leave()
-            self.states[self.current_state].enter()
+            self.states[self.previous_state].leave(self)
+            self.states[self.current_state].enter(self)
 
     # Define menu options
     def draw_text(self, text, font, color, x, y):
@@ -113,14 +132,26 @@ class Game:
         return text_rect
 
     def set_obstacles(self): 
-        BOULDER_PATH = "assets/objects/spr_boulder_0.png"
-        
-        self.obstacle_group.add(Mover((200, 200), (10, 10), BOULDER_PATH))
-        self.obstacle_group.add(Rotator((200, 400), BOULDER_PATH))
-        self.obstacle_group.add(ZigZag((0, 300), (50, 0), BOULDER_PATH))
-        self.obstacle_group.add(Dangerous((500, 550), BOULDER_PATH))
-        self.obstacle_group.add(Destructible((550, 300), 5, BOULDER_PATH))
-        self.obstacle_group.add(Friend((100, 200), 5, self.score_system, BOULDER_PATH))
+        self.obstacle_group = [
+            Mover((200, 200), (10, 10), self.BOULDER_PATH),
+            Rotator((200, 400), self.BOULDER_PATH),
+            ZigZag((0, 300), (50, 0), self.BOULDER_PATH),
+            Dangerous((500, 550), self.BOULDER_PATH),
+            Destructible((550, 300), 5, self.BOULDER_PATH),
+            Friend((100, 200), 5, self.score_system, self.BOULDER_PATH)
+        ]
+
+    def assign_bonus_objectives(self):
+        """
+        Randomly select two bonus objectives from the pool.
+        """
+        objectives_pool = [
+            NoDamageObjective(),
+            UnderTimeObjective(),
+            AccuracyObjective(),
+        ]
+        return random.sample(objectives_pool, 2)
+
 
     def reset(self):
         self.score_system.reset()
@@ -130,12 +161,16 @@ class Game:
         self.win_lose_system.reset()
         self.proj_group.empty()
         self.enemy_group.empty()  # Clear all enemies
-        self.obstacle_group.empty()
         self.enemy_projectiles.empty()
         self.set_obstacles() # Temporary
         self.player.x = self.WIDTH // 2
         self.player.y = self.HEIGHT - 100
 
     # Update the current game state
-    def update(self, dt):
-        self.states[self.current_state].update(dt)
+    def update(self):
+        self.states[self.current_state].update(self)
+
+    # Draw the current game state to the screen
+    def draw(self):
+        self.states[self.current_state].draw(self)
+        pygame.display.flip()
