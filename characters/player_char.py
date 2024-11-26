@@ -157,6 +157,7 @@ class CharacterPawn:
                     "speed": 12,
                     "color": (0, 255, 255),
                     "size": (5, 15),
+                    "damage": 1,
                     "sound": "assets/sound_efx/shoot_default.mp3",
                     "cooldown": 100  # Faster cooldown for machine gun effect
                 },
@@ -164,6 +165,7 @@ class CharacterPawn:
                     "speed": 10,
                     "color": (255, 0, 0),
                     "size": (5, 10),
+                    "damage": 1,
                     "sound": "assets/sound_efx/shoot_default.mp3",
                     "cooldown": 250  # Standard cooldown for single shots
                 },
@@ -171,6 +173,7 @@ class CharacterPawn:
                     "speed": 5,
                     "color": (255, 0, 0),
                     "size": (5, 20),
+                    "damage": 5,
                     "sound": "assets/sound_efx/rocket_launcher2.mp3",
                     "cooldown": 500
                 }
@@ -186,7 +189,8 @@ class CharacterPawn:
                     self.y,
                     speed=detail["speed"],
                     color=detail["color"],
-                    size=detail["size"]
+                    size=detail["size"],
+                    damage=detail["damage"]
                 )
                 self.projectiles_group.add(bullet)
                 self.last_shot_time = current_time
@@ -280,6 +284,8 @@ class CharacterPawn:
             self.player_weapon = "super_weapon"
             self.is_using_sw = False  # Ensure the super weapon is not firing initially
             self.is_charging = False  # Reset charging state
+            super_weapon_pickup_audio = pygame.mixer.Sound("assets/sound_efx/sw_pickup_audio.mp3")
+            super_weapon_pickup_audio.play()
             print("SUPER WEAPON PICKED UP")
         elif consumable == "repair_kit":
             if self.health < 100:  # Only consume if health is not full
@@ -303,6 +309,8 @@ class CharacterPawn:
         elif consumable in CONSUMABLE_DATA:
             self.player_weapon = consumable
             print(f"Picked up {consumable}!")
+            weapon_pick_up_audio = pygame.mixer.Sound("assets/sound_efx/weapon_pickup_sound.mp3")
+            weapon_pick_up_audio.play()
 
 class Consumable(pygame.sprite.Sprite):
     def __init__(self, x, y, consumable_type):

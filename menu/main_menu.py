@@ -18,7 +18,11 @@ from tools.end_screen import EndScreen
 from tools.win_lose_system import WinLoseSystem
 from characters.player_char import CharacterPawn
 from characters.enemies.enemy_spawn_and_despawn import *
-from tools.collision_hanlder import check_projectile_enemy_collisions, check_player_projectile_collisions
+from tools.collision_hanlder import (
+    check_player_projectile_collisions,
+    check_projectile_enemy_collisions,
+    check_player_consumable_collisions 
+)
 from tools.Star_and_planet_bg_logic import Background
 from characters.player_char import Consumable, spawn_consumable
 from tools.bonus_objectives import BonusObjective, NoDamageObjective, AccuracyObjective, UnderTimeObjective, KillStreakObjective, BonusObjectiveDisplay
@@ -319,7 +323,7 @@ def game_loop():
     ticks_last_frame = pygame.time.get_ticks()
     
     #IMPORTANT: TEMP VARIABLEs FOR SAVE SYSTEM, USE/MODIFY FOR WHATEVER YOU NEED
-    current_level = 1 # 0-2 are normal levels, 3 is boss
+    current_level = 3 # 0-2 are normal levels, 3 is boss
     lvlThreeSwitch = 0 # Used only for level 3 spawning of type c and b
     difficulty = 0 # 0-easy, 1-medium, 2-hard
     
@@ -355,6 +359,8 @@ def game_loop():
 
     while running:
         keys = pygame.key.get_pressed()
+        hit_detected =False
+        hits_detected = 0
 
         if player.player_weapon == "super_weapon":
             if keys[pygame.K_SPACE]:  # Start charging if space is pressed
@@ -415,10 +421,10 @@ def game_loop():
                 spawn_consumable(consumables_group, WIDTH, HEIGHT)
                 consumable_spawn_timer = ticks
 
-        if current_level == 3:
-            hit_detected = check_projectile_boss_collisions(proj_group, enemy_group, damage=1)
+        if(current_level == 3):
+            check_projectile_boss_collisions(proj_group, enemy_group)
         else:
-            hit_detected = check_projectile_enemy_collisions(proj_group, enemy_group, damage=1)
+            hit_detected = check_projectile_enemy_collisions(proj_group, enemy_group)
 
 
         #print("hit detected: ", hit_detected)
@@ -429,6 +435,12 @@ def game_loop():
         # Call to check collisions with player projectiles
         check_player_projectile_collisions(player, enemy_projectiles, 10, timer.elapsed_time)
 
+        # Always check for player-consumable collisions
+
+        check_player_consumable_collisions(player, consumables_group)
+
+        # Check for player-projectile collisions
+        check_player_projectile_collisions(player, enemy_projectiles, 10, timer.elapsed_time)
 
 
         proj_group.update(timer.stopped, proj_group, timer.elapsed_time)
