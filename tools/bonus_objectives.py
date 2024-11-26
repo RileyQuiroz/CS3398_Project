@@ -83,7 +83,7 @@ class KillStreakObjective(BonusObjective):
 
 
 class BonusObjectiveDisplay:
-    def __init__(self, objectives, font, screen, position=(500, 10), spacing=30):
+    def __init__(self, objectives, font, screen, position=(270, 50), spacing=40):
         """
         Initialize the display for bonus objectives.
         
@@ -94,7 +94,7 @@ class BonusObjectiveDisplay:
         :param spacing: Vertical spacing between objectives.
         """
         self.objectives = objectives
-        self.font = pygame.font.Font("assets/fonts/Future Edge.ttf", 16)
+        self.font = pygame.font.Font("assets/fonts/Future Edge.ttf", 12)
         self.screen = screen
         self.position = position
         self.spacing = spacing
@@ -107,5 +107,6 @@ class BonusObjectiveDisplay:
         for objective in self.objectives:
             color = (0, 255, 0) if objective.completed else (0, 255, 255)  # Green if completed, white otherwise, Maybe change colors
             text_surface = self.font.render(objective.description, True, color)
-            self.screen.blit(text_surface, (x, y))
+            text_width = text_surface.get_width()
+            self.screen.blit(text_surface, (((self.screen.get_width() - text_width) // 2 ) + x, y))
             y += self.spacing
