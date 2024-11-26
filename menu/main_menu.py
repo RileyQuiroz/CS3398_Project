@@ -323,7 +323,7 @@ def game_loop():
     ticks_last_frame = pygame.time.get_ticks()
     
     #IMPORTANT: TEMP VARIABLEs FOR SAVE SYSTEM, USE/MODIFY FOR WHATEVER YOU NEED
-    current_level = 3 # 0-2 are normal levels, 3 is boss
+    current_level = 2 # 0-2 are normal levels, 3 is boss
     lvlThreeSwitch = 0 # Used only for level 3 spawning of type c and b
     difficulty = 0 # 0-easy, 1-medium, 2-hard
     
@@ -459,7 +459,6 @@ def game_loop():
         #last_spawn, last_spawn_wave = oldSpawner(timer.elapsed_time, timer.stopped, enemy_group, max_enemies, last_spawn, last_spawn_wave)           
 
         # Update enemy conditions
-        enemy_max_health = 3
         for enemy in enemy_group:
             startRetreat(enemy, to_despawn) # Enemy B retreat call
             # enemy.change_color() # Change color if hurt
@@ -470,7 +469,7 @@ def game_loop():
             enemy_health_bar = pygame.rect.Rect(
                 enemy.rect.x,
                 enemy.rect.y - 5,
-                enemy.rect.width / enemy_max_health * enemy.health,
+                enemy.rect.width / enemy.max_health * enemy.health,
                 3
             )
 
