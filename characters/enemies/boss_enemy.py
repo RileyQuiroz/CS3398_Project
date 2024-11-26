@@ -162,7 +162,7 @@ class Boss(pygame.sprite.DirtySprite):
                 self.time_destroyed = pygame.time.get_ticks()
     
     # DISPLAY BOSS HEALTH
-    def boss_health_bar(self, screen):
+    def boss_ui(self, screen):
         if self.at_y_level:
             bar_width = 400
             bar_height = 20
@@ -183,6 +183,13 @@ class Boss(pygame.sprite.DirtySprite):
             text_surface = font.render("Boss Health", True, (255,255,255))
             text_rect = text_surface.get_rect()
             text_rect.center = (400, 17)
+            screen.blit(text_surface, text_rect)
+        else:
+            # Entrance Text
+            font = pygame.font.Font("assets/fonts/Future Edge.ttf", 40)
+            text_surface = font.render("Boss incoming!", True, (0,230,230))
+            text_rect = text_surface.get_rect()
+            text_rect.center = (400, 150)
             screen.blit(text_surface, text_rect)
     
     # CHANGE COLOR BASED ON HEALTH        

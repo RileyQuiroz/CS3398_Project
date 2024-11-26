@@ -473,7 +473,7 @@ def game_loop():
         enemy_group.draw(screen)
         if(current_level == 3):
             for enemy in enemy_group:
-                enemy.boss_health_bar(screen)            
+                enemy.boss_ui(screen)            
 
         # FIXME TODO: Testing, might not work: *OBJECTIVE DISPLAY*
         objective_display.draw()
