@@ -58,6 +58,7 @@ class Boss(pygame.sprite.DirtySprite):
             self.wingSizeY
         )        
     
+    # DRAW THE BOSS
     def drawShip(self): # Determines shape and color of ship
         # Clear the surface with transparency
         self.image.fill((0, 0, 0, 0))  # Fill with transparent color
@@ -85,7 +86,8 @@ class Boss(pygame.sprite.DirtySprite):
             self.wingSizeY
         )
         pygame.draw.rect(self.image, self.color, right_rect)
-           
+    
+    # BOSS WEAPON LOGIC       
     def fire_shot(self, proj_group, paused, curr, player_pos_x, player_pos_y):
         current_time = curr
         if (self.living == True and paused == False and self.at_y_level == True):
@@ -150,22 +152,56 @@ class Boss(pygame.sprite.DirtySprite):
                     self.last_switch_time = current_time
                     self.prev_shot_type = self.curr_shot_type
                     self.curr_shot_type = random.randint(0, 1)
-            
+    
+    # TAKE DAMAGE        
     def decrease_health(self, damage = 1):
         if(self.at_y_level):
             self.health -= damage
             if(self.health < 1):
                 self.living = False
                 self.time_destroyed = pygame.time.get_ticks()
-            
+    
+    # DISPLAY BOSS HEALTH
+    def boss_ui(self, screen):
+        if self.at_y_level:
+            bar_width = 400
+            bar_height = 20
+            fill = (self.health / self.max_health) * bar_width
+            # Health bar border
+            border = pygame.Rect(195, 5, bar_width+10, bar_height+10)
+            pygame.draw.rect(screen, (200, 200, 0), border)
+            # Transparent bar background
+            background_surface = pygame.Surface((bar_width, bar_height), pygame.SRCALPHA)
+            background_color = (70, 70, 70, 90)
+            background_surface.fill(background_color)
+            screen.blit(background_surface, (200, 10))
+            # Health remaining
+            health_fill = pygame.Rect(200, 10, fill, bar_height)
+            pygame.draw.rect(screen, self.color, health_fill)
+            # Health bar text
+            font = pygame.font.Font("assets/fonts/Future Edge.ttf", 12)
+            text_surface = font.render("Boss Health", True, (255,255,255))
+            text_rect = text_surface.get_rect()
+            text_rect.center = (400, 17)
+            screen.blit(text_surface, text_rect)
+        else:
+            # Entrance Text
+            font = pygame.font.Font("assets/fonts/Future Edge.ttf", 40)
+            text_surface = font.render("Boss incoming!", True, (0,230,230))
+            text_rect = text_surface.get_rect()
+            text_rect.center = (400, 150)
+            screen.blit(text_surface, text_rect)
+    
+    # CHANGE COLOR BASED ON HEALTH        
     def change_color(self):
-        if(self.health == self.max_health / 2):
-            self.color = (255,100,0)
-            self.drawShip()
         if(self.health == self.max_health / 5):
             self.color = (255,140,0)
             self.drawShip()
+        elif(self.health == self.max_health / 2):
+            self.color = (255,100,0)
+            self.drawShip()
     
+    # BOSS MOVEMENT LOGIC
     def update(self, paused, curr_time): # Updates position, will move left and right between specific values, and moves down upon spawning
         if (self.rect.centery < self.spawn_destination_y and paused == False):
             self.rect.y += self.velocity 
