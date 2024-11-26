@@ -82,7 +82,7 @@ class CharacterPawn:
         self.laser_beam_sound.set_volume(0.3)
         self.beam_audio_playing = False  # Ensure this attribute is initialized
         # Load the player image
-        self.image = pygame.image.load("ship_4.png").convert_alpha()
+        self.image = pygame.image.load("assets/ships/ship_4.png").convert_alpha()
         self.image = pygame.transform.scale(self.image, (48, 48))  # Adjust size if necessary
 
         # Update collision rect to align with the image
