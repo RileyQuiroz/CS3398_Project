@@ -165,11 +165,11 @@ class CharacterPawn:
         if self.player_weapon in ["auto_turret", "rocket_launcher", "default"]:
             weapon_info = {
                 "auto_turret": {
-                    "speed": 12,
+                    "speed": 5,
                     "color": (0, 255, 255),
                     "size": (5, 15),
                     "damage": 1,
-                    "sound": "assets/sound_efx/shoot_default.mp3",
+                    "sound": "assets/sound_efx/auto_turret2.mp3",
                     "cooldown": 100  # Faster cooldown for machine gun effect
                 },
                 "default": {
