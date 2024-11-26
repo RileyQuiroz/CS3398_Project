@@ -47,6 +47,7 @@ def check_projectile_enemy_collisions(projectiles, enemies):
 
             
 def check_projectile_boss_collisions(projectiles, enemies): # For boss only
+    hit_detected = False
     for projectile in projectiles:
         for enemy in enemies:
             if enemy.central_rect.colliderect(projectile.rect):
@@ -61,6 +62,7 @@ def check_projectile_boss_collisions(projectiles, enemies): # For boss only
                 enemy.decrease_health(damage=projectile.damage)
                 projectile.kill()
                 print(f"Boss health: {enemy.health}")
+    return hit_detected
 
 def check_player_projectile_collisions(player, enemy_projectiles, damage, curr_time):
     """
