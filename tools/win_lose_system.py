@@ -7,7 +7,7 @@ class WinLoseSystem:
         self.score_system = score_system
         self.player = player  # Player object for health, life checks, etc.
         self.state = GameState.ONGOING
-        self.current_level = 1
+        self.current_level = 0
         self.difficulty = 1.0  # Adjustable per level
         self.level_start_time = 0.0
         self.level_processed = set()  # Flags for levels where win conditions were processed
@@ -66,20 +66,26 @@ class WinLoseSystem:
             screen.blit(text, text_rect)
 
     # --- Win and Lose Conditions ---
-    def check_win_condition(self, elapsed_time, current_objectives):
+    def check_win_condition(self, elapsed_time, current_objectives,wave_done):
         """Determine if the player has met the win condition for the current level."""
-        if self.current_level == 1 and self.score_system.score >= 10 and 1 not in self.level_processed:
-            print("Level 1 win condition met! Proceeding to level 2.")
-            self.level_processed.add(1)
-            self.start_next_level(elapsed_time, current_objectives)
-        elif self.current_level == 2 and self.score_system.score >= 30 and 2 not in self.level_processed:
-            print("Level 2 win condition met! Proceeding to level 3.")
-            self.level_processed.add(2)
-            self.start_next_level(elapsed_time, current_objectives)
-        elif self.current_level == 3 and self.score_system.score >= 50 and 3 not in self.level_processed:
-            print("Final level win condition met! You win!")
-            self.trigger_win()
-            self.state = GameState.WIN  # Update state to WIN
+        if wave_done == True:
+            if self.current_level == 0 and 0 not in self.level_processed:
+                print("Level 1 win condition met! Proceeding to level 2.")
+                self.level_processed.add(0)
+                self.start_next_level(elapsed_time, current_objectives)
+            elif self.current_level == 1 and 1 not in self.level_processed:
+                print("Level 2 win condition met! Proceeding to level 3.")
+                self.level_processed.add(1)
+                self.start_next_level(elapsed_time, current_objectives)
+            elif self.current_level == 2 and 2 not in self.level_processed:
+                print("Level 3 win condition met! Proceeding to level 4: Boss.")
+                self.level_processed.add(2)
+                self.start_next_level(elapsed_time, current_objectives)
+            elif self.current_level == 3 and 3 not in self.level_processed:
+                print("Final level win condition met! You win!")
+                self.level_processed.add(3)
+                self.trigger_win()
+                self.state = GameState.WIN  # Update state to WIN
         return self.state
 
     def check_lose_condition(self):
@@ -101,9 +107,9 @@ class WinLoseSystem:
         pygame.mixer.Sound("assets/sound_efx/game_over.mp3").play()
 
     # --- Game State Management ---
-    def update(self, elapsed_time, current_objectives):
+    def update(self, elapsed_time, current_objectives, wave_done):
         """Update game state based on win and lose conditions."""
-        self.check_win_condition(elapsed_time, current_objectives)
+        self.check_win_condition(elapsed_time, current_objectives, wave_done)
         self.check_lose_condition()
         # Automatically hide overlay after time expires
         if self.overlay_visible and time.time() - self.overlay_timer > 2:
