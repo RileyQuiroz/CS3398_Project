@@ -406,6 +406,7 @@ def game_loop(difficulty_option):
     difficulty = difficulty_option # 0-easy, 1-medium, 2-hard
     
     max_enemies = 3 + difficulty # Assumes 3 difficulties, easy(0), medium(1), hard(2)
+    spawn_tickets = 6 + difficulty # 6 base enemies per wave, 1 extra for medium, 2 extra for hard
 
     ##CONSUMABLE CREATION
     consumables_group = pygame.sprite.Group()
@@ -534,7 +535,7 @@ def game_loop(difficulty_option):
             obstacle.draw(screen)
             
         # Enemy Spawning
-        last_spawn, last_spawn_wave, lvlThreeSwitch = levelSpawner(timer.elapsed_time, timer.stopped, enemy_group, max_enemies, last_spawn, last_spawn_wave, win_lose_system.current_level, lvlThreeSwitch, difficulty)
+        last_spawn, last_spawn_wave, lvlThreeSwitch, spawn_tickets = levelSpawner(timer.elapsed_time, timer.stopped, enemy_group, max_enemies, last_spawn, last_spawn_wave, win_lose_system.current_level, lvlThreeSwitch, difficulty, spawn_tickets)
         #last_spawn, last_spawn_wave = oldSpawner(timer.elapsed_time, timer.stopped, enemy_group, max_enemies, last_spawn, last_spawn_wave)           
 
         if(win_lose_system.current_level == 3) and boss_spawned == False:
@@ -587,15 +588,13 @@ def game_loop(difficulty_option):
         score_display.display_score(score_system.get_score())
         
         wave_done = False
-        print("current level: ", win_lose_system.current_level)
-        print("current difficulty: ", difficulty)
-        #print(timer.elapsed_time)
-        #print(win_lose_system.level_processed)
-        if len(enemy_group) == 0 and win_lose_system.current_level not in win_lose_system.level_processed and timer.elapsed_time >= 5:
+        
+        if len(enemy_group) == 0 and win_lose_system.current_level not in win_lose_system.level_processed and timer.elapsed_time >= 5 and spawn_tickets <= 0:
             if timer.elapsed_time - win_lose_system.level_start_time >= level_cooldown:
                 if win_lose_system.current_level != 3:
                     win_lose_system.update(timer.elapsed_time, current_objectives, wave_done=True)
                     wave_done = False
+                    spawn_tickets = 6 + difficulty
                     #if win_lose_system.current_level == 2:
                     #    level_cooldown = 10
                 elif win_lose_system.current_level == 3:
