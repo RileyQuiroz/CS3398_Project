@@ -37,7 +37,7 @@ class WinLoseSystem:
         # Initialize overlay
         self.overlay_visible = True
         self.overlay_timer = time.time()
-        self.overlay_text = f"Level {self.current_level}!"
+        self.overlay_text = f"Level {self.current_level + 1}!"
 
         print("start next level reached!")
         print(f"Starting Level {self.current_level} with difficulty {self.difficulty} with time of {elapsed_time}")
