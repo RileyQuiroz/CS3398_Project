@@ -413,22 +413,6 @@ def game_loop(difficulty_option):
     consumable_spawn_rate = 5000 # seconds between spawns CHANGE IF NEEDED
     #consumables_group.add(Consumable(200,100, "repair_kit"))
     #consumables_group.add(Consumable(120,120, "shield_pack"))
-    
-    if(win_lose_system.current_level == 3):
-        # Create the new background for the boss level
-        boss_background = EvilBackground(screen)
-
-        # Perform the transition from the old background to the new boss background
-        boss_transition_scene(screen, background, boss_background)
-
-        # Switch to the boss background
-        background = boss_background
-        level_progressed = True
-
-        # Spawn the boss
-        spawnBoss(enemy_group, 0, difficulty)
-
-        
 
     #current_level = 1
     level_progressed = False
@@ -554,6 +538,17 @@ def game_loop(difficulty_option):
         #last_spawn, last_spawn_wave = oldSpawner(timer.elapsed_time, timer.stopped, enemy_group, max_enemies, last_spawn, last_spawn_wave)           
 
         if(win_lose_system.current_level == 3) and boss_spawned == False:
+
+            # Create the new background for the boss level
+            boss_background = EvilBackground(screen)
+
+            # Perform the transition from the old background to the new boss background
+            boss_transition_scene(screen, background, boss_background)
+
+            # Switch to the boss background
+            background = boss_background
+            level_progressed = True
+            
             spawnBoss(enemy_group, 0, difficulty)
             boss_spawned = True
 
