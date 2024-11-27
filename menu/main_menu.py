@@ -126,6 +126,8 @@ def main_menu():
         'back': False  # Hover state for the 'Back' option in other menus
     }
 
+    difficulty_option = 0
+
     while True:
         screen.blit(background, (0, 0))  # Draw the background
         #background.update()
@@ -199,12 +201,50 @@ def main_menu():
             else:
                 hovered['back'] = False
 
+        # Handle the settings menu
         elif current_menu == 'settings':
             # Display a simple "Settings" title and "Back" option
             draw_text('Settings', font, WHITE, screen, WIDTH // 2, HEIGHT // 2 - 250)
-            draw_text_left_aligned('Difficulty', smaller_font, WHITE, screen, 50, HEIGHT // 2 - 50)
+            draw_text_left_aligned('Difficulty', smaller_font, WHITE, screen, 50, HEIGHT // 1 - 400)
+            
             back_color = NEON_PURPLE if hovered['back'] else WHITE
             back_rect = draw_text('Back', font, back_color, screen, WIDTH // 2, HEIGHT // 2 + 150)
+
+            
+
+             # Define positions for difficulty options
+            difficulty_positions = [
+                {"label": "Easy", "value": 0, "pos": (WIDTH // 2 - 300, HEIGHT // 2 -50)},
+                {"label": "Normal", "value": 1, "pos": (WIDTH // 2, HEIGHT // 2 - 50)},
+                {"label": "Hard", "value": 2, "pos": (WIDTH // 2 + 300, HEIGHT // 2 - 50)},
+            ]
+
+            for option in difficulty_positions:
+                if option["label"] not in hovered:
+                    hovered[option["label"]] = False
+
+            # Draw difficulty options and check for hover
+            for option in difficulty_positions:
+                # Highlight the selected difficulty or hover color
+                if difficulty_option == option["value"]:
+                    color = NEON_PURPLE
+                elif hovered[option["label"]]:
+                    color = NEON_PURPLE  # Hover color
+                else:
+                    color = WHITE
+
+                rect = draw_text(option["label"], smaller_font, color, screen, *option["pos"])
+
+                # Check for hover and clicks
+                if rect.collidepoint(mouse_pos):
+                    if not hovered[option["label"]]:
+                        hover_sound.play()
+                        hovered[option["label"]] = True
+                    if pygame.mouse.get_pressed()[0]:  # Click to select difficulty
+                        difficulty_option = option["value"]
+                else:
+                    hovered[option["label"]] = False
+
 
             if back_rect.collidepoint(mouse_pos):
                 if not hovered['back']:
@@ -227,7 +267,7 @@ def main_menu():
                         obstacle_group = set_obstacles()
                         timer.reset()  # Reset timer when starting a new game
                         timer.start()  # Start the timer
-                        game_loop()  # Switch to the game loop
+                        game_loop(difficulty_option)  # Switch to the game loop
                     elif records_rect.collidepoint(event.pos):
                         current_menu = 'records'  # Switch to Records menu
                     elif settings_rect.collidepoint(event.pos):
@@ -289,7 +329,7 @@ def reset_game_state(player, score_system, timer, win_lose_system, proj_group, e
     player.is_charging = False
     print("[DEBUG] Game state reset. Beam and sounds stopped.")
 
-def game_loop():
+def game_loop(difficulty_option):
      # Play in-game background music
     pygame.mixer.music.load("assets/sound_efx/game_bg_music.mp3")  # Replace with your in-game music file
     pygame.mixer.music.set_volume(0.3)  # Adjust volume as needed
@@ -329,7 +369,7 @@ def game_loop():
     #IMPORTANT: TEMP VARIABLEs FOR SAVE SYSTEM, USE/MODIFY FOR WHATEVER YOU NEED
     win_lose_system.current_level = 0 # 0-2 are normal levels, 3 is boss
     lvlThreeSwitch = 0 # Used only for level 3 spawning of type c and b
-    difficulty = 0 # 0-easy, 1-medium, 2-hard
+    difficulty = difficulty_option # 0-easy, 1-medium, 2-hard
     
     max_enemies = 3 + difficulty # Assumes 3 difficulties, easy(0), medium(1), hard(2)
 
@@ -566,7 +606,7 @@ def game_loop():
                                 if selected_option == "Restart":
                                     end_screen_display = False
                                     reset_game_state(player, score_system, timer, win_lose_system, proj_group, enemy_group, enemy_projectiles)
-                                    game_loop()
+                                    game_loop(difficulty_option)
                                 elif selected_option == "Main Menu":
                                     end_screen_display = False
                                     reset_game_state(player, score_system, timer, win_lose_system, proj_group, enemy_group, enemy_projectiles)
@@ -590,7 +630,7 @@ def game_loop():
                                 if selected_option == "Restart":
                                     end_screen_display = False
                                     reset_game_state(player, score_system, timer, win_lose_system, proj_group, enemy_group, enemy_projectiles)
-                                    game_loop()
+                                    game_loop(difficulty_option)
                                 elif selected_option == "Main Menu":
                                     end_screen_display = False
                                     reset_game_state(player, score_system, timer, win_lose_system, proj_group, enemy_group, enemy_projectiles)
