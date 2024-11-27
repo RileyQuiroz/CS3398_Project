@@ -595,11 +595,14 @@ def game_loop(difficulty_option):
                     win_lose_system.update(timer.elapsed_time, current_objectives, wave_done=True)
                     wave_done = False
                     spawn_tickets = 6 + difficulty
+                    if win_lose_system.current_level == 3:
+                        spawn_tickets = 0
                     #if win_lose_system.current_level == 2:
                     #    level_cooldown = 10
                 elif win_lose_system.current_level == 3:
                     win_lose_system.update(timer.elapsed_time, current_objectives, wave_done=True)
                     boss_defeated_time = time.time()
+                    spawn_tickets = 0
                     wave_done = False
         else:
             win_lose_system.update(timer.elapsed_time, current_objectives, wave_done=False)
@@ -683,7 +686,8 @@ def game_loop(difficulty_option):
         keys = pygame.key.get_pressed()
         if player.player_weapon == "auto_turret" and keys[pygame.K_SPACE]:
          player.shoot(timer.stopped)
-
+        print("current game state: ", current_game_state)
+        print("spawn tickets: ", spawn_tickets)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
