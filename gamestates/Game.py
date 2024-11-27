@@ -84,12 +84,13 @@ class Game:
             obj.initialize(self.player, self.win_lose_system) # FIXME: current_level being passed isn't right or works
 
         # Display objectives
-        print("Bonus Objectives for this level:")
-        for obj in self.current_objectives:
-            print(f"- {obj.description}")
+        #print("Bonus Objectives for this level:")
+        #for obj in self.current_objectives:
+        #    print(f"- {obj.description}")
             #IMPORTANT: TEMP VARIABLEs FOR SAVE SYSTEM, USE/MODIFY FOR WHATEVER YOU NEED
-            self.current_level = 0
-            self.difficulty = 0
+        self.current_level = 0
+        self.lvlThreeSwitch = 0
+        self.difficulty = 0
 
         # Initialize game states
         self.states = {
@@ -162,6 +163,17 @@ class Game:
         self.set_obstacles() # Temporary
         self.player.x = self.WIDTH // 2
         self.player.y = self.HEIGHT - 100
+
+        #super weapon sounds (start and stop reset)
+        if hasattr(self.player, "beam_audio_playing") and self.player.beam_audio_playing:
+            self.player.laser_beam_sound.stop()
+            self.player.beam_audio_playing = False
+
+        self.player.is_using_sw = False
+        self.player.is_charging = False
+
+        print("[DEBUG] Game state reset. Beam and sounds stopped.")
+
 
     # Update the current game state
     def update(self):
