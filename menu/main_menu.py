@@ -308,7 +308,7 @@ def boss_transition_scene(screen, old_background, new_background):
 
     # Display the "Boss Incoming" message
     screen.fill((0, 0, 0))  # Black screen
-    draw_text("WARNING: Boss Incoming!", font, (255, 0, 0), screen, 400, 300)  # Red text
+    draw_text("", font, (255, 0, 0), screen, 400, 300)  # Red text
     pygame.display.flip()
     pygame.time.delay(2000)  # Show message for 2 seconds
 
