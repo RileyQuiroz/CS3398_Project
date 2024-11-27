@@ -93,6 +93,7 @@ class MainMenuState(GameState):
                 #    if self.back_rect.collidepoint(event.pos):
                 #        game.change_state('main_menu') # Switch back to Main menu
 
+    def draw(self, game):
         self.start_game_rect = game.draw_text('Start Game', game.MAIN_FONT, self.start_color, game.WIDTH // 2, game.HEIGHT // 2 - 150)
         self.records_rect = game.draw_text('Records', game.MAIN_FONT, self.records_color, game.WIDTH // 2, game.HEIGHT // 2 - 50)
         self.settings_rect = game.draw_text('Settings', game.MAIN_FONT, self.settings_color, game.WIDTH // 2, game.HEIGHT // 2 + 50)
