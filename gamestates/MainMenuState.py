@@ -28,15 +28,7 @@ class MainMenuState(GameState):
         }
 
     def update(self, game):
-        game.screen.blit(game.background, (0, 0))
-
         mouse_pos = pygame.mouse.get_pos()
-
-        # Check if mouse is hovering over the options and set color accordingly
-        self.start_color = Colors.NEON_PURPLE if self.hovered['start_game'] else Colors.WHITE
-        self.records_color = Colors.NEON_PURPLE if self.hovered['records'] else Colors.WHITE
-        self.settings_color = Colors.NEON_PURPLE if self.hovered['settings'] else Colors.WHITE
-        self.quit_color = Colors.NEON_PURPLE if self.hovered['quit'] else Colors.WHITE
 
         # Hover and sound logic for the main menu
         if self.start_game_rect.collidepoint(mouse_pos):
@@ -93,6 +85,14 @@ class MainMenuState(GameState):
                 #    if self.back_rect.collidepoint(event.pos):
                 #        game.change_state('main_menu') # Switch back to Main menu
 
+        # Check if mouse is hovering over the options and set color accordingly
+        self.start_color = Colors.NEON_PURPLE if self.hovered['start_game'] else Colors.WHITE
+        self.records_color = Colors.NEON_PURPLE if self.hovered['records'] else Colors.WHITE
+        self.settings_color = Colors.NEON_PURPLE if self.hovered['settings'] else Colors.WHITE
+        self.quit_color = Colors.NEON_PURPLE if self.hovered['quit'] else Colors.WHITE
+
+    def draw(self, game):
+        game.screen.blit(game.background, (0, 0))
         self.start_game_rect = game.draw_text('Start Game', game.MAIN_FONT, self.start_color, game.WIDTH // 2, game.HEIGHT // 2 - 150)
         self.records_rect = game.draw_text('Records', game.MAIN_FONT, self.records_color, game.WIDTH // 2, game.HEIGHT // 2 - 50)
         self.settings_rect = game.draw_text('Settings', game.MAIN_FONT, self.settings_color, game.WIDTH // 2, game.HEIGHT // 2 + 50)

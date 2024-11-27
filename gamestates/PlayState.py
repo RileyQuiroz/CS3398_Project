@@ -11,7 +11,7 @@ from tools.win_lose_system import WinLoseSystem
 from savesystem.leaderboard import Leaderboard
 from savesystem import user_save_and_load
 from characters.player_char import CharacterPawn
-from characters.enemies.enemy_spawn_and_despawn import spawnEnemy, despawnEnemy, startRetreat, destroyEnemy
+from characters.enemies.enemy_spawn_and_despawn import *
 from tools.collision_hanlder import check_projectile_enemy_collisions, check_player_projectile_collisions
 from tools.Star_and_planet_bg_logic import Background
 from characters.player_char import Consumable, spawn_consumable
@@ -57,7 +57,7 @@ class PlayState(GameState):
     def enter(self, game):
         if game.previous_state != 'pause':
             game.reset()
-            spawnEnemy(game.enemy_group, game.timer.elapsed_time, 2) # Spawned in for testing
+            #spawnEnemy(game.enemy_group, game.timer.elapsed_time, 2) # Spawned in for testing
 
         game.timer.start()
 
@@ -90,14 +90,17 @@ class PlayState(GameState):
             obstacle.update(game.player, self.delta_time)
             
         # Enemy Spawning
-        if not game.timer.stopped and len(game.enemy_group) < self.max_enemies and game.timer.elapsed_time - self.last_spawn >= 4:
-            spawnEnemy(game.enemy_group, game.timer.elapsed_time, 0)
-            last_spawn = game.timer.elapsed_time
-        if not game.timer.stopped and game.timer.elapsed_time - self.last_spawn_wave >= 30: #Spawn wave is not blocked by max enemies, set to 30s for demoing(ideally would be longer)
-            spawnEnemy(game.enemy_group, game.timer.elapsed_time, 1)
-            spawnEnemy(game.enemy_group, game.timer.elapsed_time, 0)
-            spawnEnemy(game.enemy_group, game.timer.elapsed_time, 0)
-            last_spawn_wave = game.timer.elapsed_time            
+        self.last_spawn, self.last_spawn_wave, self.lvlThreeSwitch = levelSpawner(
+            game.timer.elapsed_time,
+            game.timer.stopped,
+            game.enemy_group,
+            self.max_enemies,
+            self.last_spawn,
+            self.last_spawn_wave,
+            game.current_level,
+            game.lvlThreeSwitch,
+            game.difficulty
+        )
 
         # Update enemy conditions
         for enemy in game.enemy_group:
@@ -109,8 +112,6 @@ class PlayState(GameState):
             if not enemy.living:
                 destroyEnemy(self.dest_enemies, enemy, Sounds.ship_destroyed)
                 game.score_system.increase(10)
-
-        game.enemy_group.draw(game.screen)
 
         game.draw_text(f"{game.timer.elapsed_time:.2f}", game.SMALL_FONT, Colors.NEON_CYAN, 100, 100)
         game.score_display.display_score(game.score_system.get_score())
@@ -188,12 +189,6 @@ class PlayState(GameState):
             else:
                 self.save_text_show = False
 
-        #for enemy_center, time_destroyed, size in self.dest_enemies[:]:
-        #    if pygame.time.get_ticks() - time_destroyed <= 250:
-        #        pygame.draw.circle(game.screen, (200, 180, 0), enemy_center, size)
-        #    else:
-        #        self.dest_enemies.remove((enemy_center, time_destroyed, size))
-
         despawnEnemy(self.to_despawn)
         game.clock.tick(game.FPS)
     
@@ -208,6 +203,16 @@ class PlayState(GameState):
             obstacle.draw(game.screen)
      
         self.consumables_group.draw(game.screen)
+
+        for dest_enemy in self.dest_enemies:
+            enemy_center = dest_enemy[0]
+            time_destroyed = dest_enemy[1]
+            size = dest_enemy[2]
+
+            if pygame.time.get_ticks() - time_destroyed <= 250:
+                pygame.draw.circle(game.screen, (200, 180, 0), enemy_center, size)
+            else:
+                self.dest_enemies.remove(dest_enemy)
 
     def leave(self, game):
         game.timer.stop()
