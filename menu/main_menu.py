@@ -1,6 +1,7 @@
 import pygame
 import sys
 import random
+import time
 from tools.timer import Timer
 from tools.score_counter import Score
 from tools.score_display import ScoreDisplay
@@ -125,12 +126,13 @@ def main_menu():
         'back': False  # Hover state for the 'Back' option in other menus
     }
 
+    difficulty_option = 0 # Pass difficulty from settings to game_loop
+
     while True:
         screen.blit(background, (0, 0))  # Draw the background
         #background.update()
         #background.draw()
         mouse_pos = pygame.mouse.get_pos()
-
         # Handle the main menu
         if current_menu == 'main':
             # Check if mouse is hovering over the options and set color accordingly
@@ -203,9 +205,46 @@ def main_menu():
         elif current_menu == 'settings':
             # Display a simple "Settings" title and "Back" option
             draw_text('Settings', font, WHITE, screen, WIDTH // 2, HEIGHT // 2 - 250)
-            draw_text_left_aligned('Difficulty', smaller_font, WHITE, screen, 50, HEIGHT // 2 - 50)
+            draw_text_left_aligned('Difficulty', smaller_font, WHITE, screen, 50, HEIGHT // 1 - 400)
+            
             back_color = NEON_PURPLE if hovered['back'] else WHITE
             back_rect = draw_text('Back', font, back_color, screen, WIDTH // 2, HEIGHT // 2 + 150)
+
+            
+
+             # Define positions for difficulty options
+            difficulty_positions = [
+                {"label": "Easy", "value": 0, "pos": (WIDTH // 2 - 300, HEIGHT // 2 -50)},
+                {"label": "Normal", "value": 1, "pos": (WIDTH // 2, HEIGHT // 2 - 50)},
+                {"label": "Hard", "value": 2, "pos": (WIDTH // 2 + 300, HEIGHT // 2 - 50)},
+            ]
+
+            for option in difficulty_positions:
+                if option["label"] not in hovered:
+                    hovered[option["label"]] = False
+
+            # Draw difficulty options and check for hover
+            for option in difficulty_positions:
+                # Highlight the selected difficulty or hover color
+                if difficulty_option == option["value"]:
+                    color = NEON_PURPLE
+                elif hovered[option["label"]]:
+                    color = NEON_PURPLE  # Hover color
+                else:
+                    color = WHITE
+
+                rect = draw_text(option["label"], smaller_font, color, screen, *option["pos"])
+
+                # Check for hover and clicks
+                if rect.collidepoint(mouse_pos):
+                    if not hovered[option["label"]]:
+                        hover_sound.play()
+                        hovered[option["label"]] = True
+                    if pygame.mouse.get_pressed()[0]:  # Click to select difficulty
+                        difficulty_option = option["value"]
+                else:
+                    hovered[option["label"]] = False
+
 
             if back_rect.collidepoint(mouse_pos):
                 if not hovered['back']:
@@ -228,7 +267,7 @@ def main_menu():
                         obstacle_group = set_obstacles()
                         timer.reset()  # Reset timer when starting a new game
                         timer.start()  # Start the timer
-                        game_loop()  # Switch to the game loop
+                        game_loop(difficulty_option)  # Switch to the game loop
                     elif records_rect.collidepoint(event.pos):
                         current_menu = 'records'  # Switch to Records menu
                     elif settings_rect.collidepoint(event.pos):
@@ -290,7 +329,7 @@ def reset_game_state(player, score_system, timer, win_lose_system, proj_group, e
     player.is_charging = False
     print("[DEBUG] Game state reset. Beam and sounds stopped.")
 
-def game_loop():
+def game_loop(difficulty_option):
      # Play in-game background music
     pygame.mixer.music.load("assets/sound_efx/game_bg_music.mp3")  # Replace with your in-game music file
     pygame.mixer.music.set_volume(0.3)  # Adjust volume as needed
@@ -328,9 +367,9 @@ def game_loop():
     ticks_last_frame = pygame.time.get_ticks()
     
     #IMPORTANT: TEMP VARIABLEs FOR SAVE SYSTEM, USE/MODIFY FOR WHATEVER YOU NEED
-    current_level = 1 # 0-2 are normal levels, 3 is boss
+    win_lose_system.current_level = 0 # 0-2 are normal levels, 3 is boss
     lvlThreeSwitch = 0 # Used only for level 3 spawning of type c and b
-    difficulty = 0 # 0-easy, 1-medium, 2-hard
+    difficulty = difficulty_option # 0-easy, 1-medium, 2-hard
     
     max_enemies = 3 + difficulty # Assumes 3 difficulties, easy(0), medium(1), hard(2)
 
@@ -341,12 +380,16 @@ def game_loop():
     #consumables_group.add(Consumable(200,100, "repair_kit"))
     #consumables_group.add(Consumable(120,120, "shield_pack"))
     
-    if(current_level == 3):
+    if(win_lose_system.current_level == 3):
         spawnBoss(enemy_group, 0, difficulty)
         
 
     #current_level = 1
     level_progressed = False
+    
+    boss_spawned = False
+    #enemies_killed = 0 TODO: Maybe make this a way to progress waves
+    boss_defeated_time = 0
 
     # Assign and initialize objectives
     current_objectives = assign_bonus_objectives()
@@ -359,6 +402,7 @@ def game_loop():
         print(f"- {obj.description}")
 
     hits_detected = 0
+    level_cooldown = 5 # Cooldown until level can be progressed, to let levelspawner have time to spawn enemies for current level
 
     objective_display = BonusObjectiveDisplay(current_objectives, font, screen)
 
@@ -425,7 +469,7 @@ def game_loop():
                 spawn_consumable(consumables_group, WIDTH, HEIGHT)
                 consumable_spawn_timer = ticks
 
-        if(current_level == 3):
+        if(win_lose_system.current_level == 3):
             check_projectile_boss_collisions(proj_group, enemy_group)
         else:
             hit_detected = check_projectile_enemy_collisions(proj_group, enemy_group)
@@ -460,8 +504,12 @@ def game_loop():
             obstacle.draw(screen)
             
         # Enemy Spawning
-        last_spawn, last_spawn_wave, lvlThreeSwitch = levelSpawner(timer.elapsed_time, timer.stopped, enemy_group, max_enemies, last_spawn, last_spawn_wave, current_level, lvlThreeSwitch, difficulty)
+        last_spawn, last_spawn_wave, lvlThreeSwitch = levelSpawner(timer.elapsed_time, timer.stopped, enemy_group, max_enemies, last_spawn, last_spawn_wave, win_lose_system.current_level, lvlThreeSwitch, difficulty)
         #last_spawn, last_spawn_wave = oldSpawner(timer.elapsed_time, timer.stopped, enemy_group, max_enemies, last_spawn, last_spawn_wave)           
+
+        if(win_lose_system.current_level == 3) and boss_spawned == False:
+            spawnBoss(enemy_group, 0, difficulty)
+            boss_spawned = True
 
         # Update enemy conditions
         for enemy in enemy_group:
@@ -487,7 +535,7 @@ def game_loop():
                 score_system.increase(10)
             
         enemy_group.draw(screen)
-        if(current_level == 3):
+        if(win_lose_system.current_level == 3):
             for enemy in enemy_group:
                 enemy.boss_ui(screen)            
 
@@ -496,8 +544,32 @@ def game_loop():
         draw_text(f"{timer.elapsed_time:.2f}", small_font, NEON_CYAN, screen, 100, 100)
         score_display.display_score(score_system.get_score())
         
-        win_lose_system.update(timer.elapsed_time, current_objectives)
-        current_game_state = win_lose_system.update(timer.elapsed_time, current_objectives)
+        wave_done = False
+        print("current level: ", win_lose_system.current_level)
+        print("current difficulty: ", difficulty)
+        #print(timer.elapsed_time)
+        #print(win_lose_system.level_processed)
+        if len(enemy_group) == 0 and win_lose_system.current_level not in win_lose_system.level_processed and timer.elapsed_time >= 5:
+            if timer.elapsed_time - win_lose_system.level_start_time >= level_cooldown:
+                if win_lose_system.current_level != 3:
+                    win_lose_system.update(timer.elapsed_time, current_objectives, wave_done=True)
+                    wave_done = False
+                    #if win_lose_system.current_level == 2:
+                    #    level_cooldown = 10
+                elif win_lose_system.current_level == 3:
+                    win_lose_system.update(timer.elapsed_time, current_objectives, wave_done=True)
+                    boss_defeated_time = time.time()
+                    wave_done = False
+        else:
+            win_lose_system.update(timer.elapsed_time, current_objectives, wave_done=False)
+
+        
+        
+        current_game_state = win_lose_system.update(timer.elapsed_time, current_objectives, wave_done=False)
+        
+
+
+
         win_lose_system.render_overlay(screen)
 
         ##if win_lose_system.current_level == 2 and level_progressed == False:
@@ -506,8 +578,8 @@ def game_loop():
         ##    print("Bonus Objectives for this level:")
         ##    for obj in current_objectives:
         ##        print(f"- {obj.description}")
-
-        if current_game_state != GameState.ONGOING:
+        #print(boss_defeated_time)
+        if current_game_state != GameState.ONGOING: # TODO: maybe add this: time.time() - boss_defeated_time >= 5
             pygame.mixer.music.stop()
             # Stop beam sound and reset states
             if hasattr(player, "beam_audio_playing") and player.beam_audio_playing:
@@ -518,7 +590,7 @@ def game_loop():
             print("[DEBUG] Game over. Beam and sounds stopped.")
 
             ## Check win/loss condition and then go to end screen
-            if(current_level != 3):
+            if(win_lose_system.current_level >= 0): # TODO: I don't know what this check is/was for
                 end_screen = EndScreen(screen, player)
                 end_screen_display = True
                 while end_screen_display:
@@ -534,7 +606,7 @@ def game_loop():
                                 if selected_option == "Restart":
                                     end_screen_display = False
                                     reset_game_state(player, score_system, timer, win_lose_system, proj_group, enemy_group, enemy_projectiles)
-                                    game_loop()
+                                    game_loop(difficulty_option)
                                 elif selected_option == "Main Menu":
                                     end_screen_display = False
                                     reset_game_state(player, score_system, timer, win_lose_system, proj_group, enemy_group, enemy_projectiles)
@@ -542,7 +614,7 @@ def game_loop():
                                 elif selected_option == "Quit":
                                     pygame.quit()
                                     exit()
-            elif(current_level == 3 and len(dest_enemies) == 0): # For boss destruction
+            elif(win_lose_system.current_level == 3 and len(dest_enemies) == 0): # For boss destruction
                 end_screen = EndScreen(screen, player)
                 end_screen_display = True
                 while end_screen_display:
@@ -621,11 +693,11 @@ def game_loop():
                     #    print(" MAIN LOOP SHOT DETECTED AS false: ", hit_detected)
 
                 elif event.key == pygame.K_s:
-                    message, start_time = user_save_and_load.saveHandling(score_system.get_score(), player, current_level, difficulty)
+                    message, start_time = user_save_and_load.saveHandling(score_system.get_score(), player, win_lose_system.current_level, difficulty)
                     save_text_show = True
                 elif event.key == pygame.K_l:
                     reset_game_state(player, score_system, timer, win_lose_system, proj_group, enemy_group, enemy_projectiles)
-                    message, start_time, player.health, score_system.score, player.player_weapon, current_level, difficulty, player.shield, player.player_model, timer.elapsed_time = user_save_and_load.loadHandling(score_system.get_score(), timer.elapsed_time, player, current_level, difficulty)
+                    message, start_time, player.health, score_system.score, player.player_weapon, win_lose_system.current_level, difficulty, player.shield, player.player_model, timer.elapsed_time = user_save_and_load.loadHandling(score_system.get_score(), timer.elapsed_time, player, win_lose_system.current_level, difficulty)
                     last_spawn = 0
                     last_spawn_wave = 0
                     save_text_show = True
