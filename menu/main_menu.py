@@ -23,7 +23,7 @@ from tools.collision_hanlder import (
     check_projectile_enemy_collisions,
     check_player_consumable_collisions 
 )
-from tools.Star_and_planet_bg_logic import Background
+from tools.Star_and_planet_bg_logic import Background, EvilBackground
 from characters.player_char import Consumable, spawn_consumable
 from tools.bonus_objectives import BonusObjective, NoDamageObjective, AccuracyObjective, UnderTimeObjective, KillStreakObjective, BonusObjectiveDisplay
 
@@ -290,11 +290,48 @@ def reset_game_state(player, score_system, timer, win_lose_system, proj_group, e
     player.is_charging = False
     print("[DEBUG] Game state reset. Beam and sounds stopped.")
 
+
+
+def boss_transition_scene(screen, old_background, new_background):
+    fade_speed = 5  # Adjust to control fade speed
+    font = pygame.font.Font("assets/fonts/Future Edge.ttf", 48)
+
+    # Fade out the old background
+    for alpha in range(0, 255, fade_speed):
+        overlay = pygame.Surface((800, 600))  # Screen dimensions
+        overlay.fill((0, 0, 0))  # Black overlay
+        overlay.set_alpha(alpha)
+        old_background.draw()  # Draw the current background
+        screen.blit(overlay, (0, 0))  # Apply fade effect
+        pygame.display.flip()
+        pygame.time.delay(10)  # Adjust delay for smoother fade
+
+    # Display the "Boss Incoming" message
+    screen.fill((0, 0, 0))  # Black screen
+    draw_text("", font, (255, 0, 0), screen, 400, 300)  # Red text
+    pygame.display.flip()
+    pygame.time.delay(2000)  # Show message for 2 seconds
+
+    # Fade in the new background
+    for alpha in range(255, 0, -fade_speed):
+        overlay = pygame.Surface((800, 600))
+        overlay.fill((0, 0, 0))
+        overlay.set_alpha(alpha)
+        new_background.draw()  # Draw the new background
+        screen.blit(overlay, (0, 0))
+        pygame.display.flip()
+        pygame.time.delay(10)  # Adjust delay for smoother fade
+
+
+
 def game_loop():
+
      # Play in-game background music
     pygame.mixer.music.load("assets/sound_efx/game_bg_music.mp3")  # Replace with your in-game music file
     pygame.mixer.music.set_volume(0.3)  # Adjust volume as needed
     pygame.mixer.music.play(-1)  # Play the music indefinitely (-1 for looping)
+
+    level_progressed = False
 
     small_font = pygame.font.Font("assets/fonts/Future Edge.ttf", 32)
     #init background
@@ -328,7 +365,7 @@ def game_loop():
     ticks_last_frame = pygame.time.get_ticks()
     
     #IMPORTANT: TEMP VARIABLEs FOR SAVE SYSTEM, USE/MODIFY FOR WHATEVER YOU NEED
-    current_level = 1 # 0-2 are normal levels, 3 is boss
+    current_level = 3 # 0-2 are normal levels, 3 is boss
     lvlThreeSwitch = 0 # Used only for level 3 spawning of type c and b
     difficulty = 0 # 0-easy, 1-medium, 2-hard
     
@@ -341,8 +378,20 @@ def game_loop():
     #consumables_group.add(Consumable(200,100, "repair_kit"))
     #consumables_group.add(Consumable(120,120, "shield_pack"))
     
-    if(current_level == 3):
+    if current_level == 3 and not level_progressed:
+        # Create the new background for the boss level
+        boss_background = EvilBackground(screen)
+
+        # Perform the transition from the old background to the new boss background
+        boss_transition_scene(screen, background, boss_background)
+
+        # Switch to the boss background
+        background = boss_background
+        level_progressed = True
+
+        # Spawn the boss
         spawnBoss(enemy_group, 0, difficulty)
+
         
 
     #current_level = 1
@@ -489,7 +538,8 @@ def game_loop():
         enemy_group.draw(screen)
         if(current_level == 3):
             for enemy in enemy_group:
-                enemy.boss_ui(screen)            
+                enemy.boss_ui(screen)
+                        
 
         # FIXME TODO: Testing, might not work: *OBJECTIVE DISPLAY*
         objective_display.draw()
