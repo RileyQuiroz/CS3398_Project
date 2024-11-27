@@ -18,12 +18,7 @@ from tools.bonus_objectives import BonusObjective, NoDamageObjective, AccuracyOb
 
 from characters.player_char import Consumable
 from obstacles import *
-
-from gamestates.MainMenuState import MainMenuState
-from gamestates.PlayState import PlayState
-from gamestates.PauseState import PauseState
-from gamestates.WinState import WinState
-from gamestates.GameOverState import GameOverState
+from gamestates import *
 
 pygame.init()
 
@@ -102,7 +97,9 @@ class Game:
             'play': PlayState(self),
             'pause': PauseState(self),
             'win': WinState(self),
-            'game_over': GameOverState(self)
+            'game_over': GameOverState(self),
+            'records': RecordsState(self),
+            'settings': SettingsState(self)
         }
 
         self.previous_state = ''
@@ -133,12 +130,12 @@ class Game:
 
     def set_obstacles(self): 
         self.obstacle_group = [
-            Mover((200, 200), (10, 10), self.BOULDER_PATH),
-            Rotator((200, 400), self.BOULDER_PATH),
-            ZigZag((0, 300), (50, 0), self.BOULDER_PATH),
-            Dangerous((500, 550), self.BOULDER_PATH),
-            Destructible((550, 300), 5, self.BOULDER_PATH),
-            Friend((100, 200), 5, self.score_system, self.BOULDER_PATH)
+            Mover((200, 200), (10, 10), 0.75, "assets/objects/spr_boulder_0.png"),
+            Rotator((200, 400), 2.5, "assets/objects/rotator_obstacle.png"),
+            ZigZag((0, 300), (50, 0), 2.5, "assets/objects/obstacle_type_1.png"),
+            Dangerous((500, 550), 2.5, "assets/objects/dangerous_obstacle.png"),
+            Destructible((550, 300), 5, self.score_system, 2.5, "assets/objects/obstacle_type_2.png"),
+            Friend((100, 200), 5, self.score_system, 2.5, "assets/objects/friendly_obstacle.png")
         ]
 
     def assign_bonus_objectives(self):
