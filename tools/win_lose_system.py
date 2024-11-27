@@ -30,7 +30,6 @@ class WinLoseSystem:
                 else:
                     print(f"Objective '{obj.description}' failed.")
 
-
         self.current_level += 1
         self.level_start_time = elapsed_time  # Record the time the level starts
         self.difficulty = 1  # TODO: Maybe handle difficulty differently
