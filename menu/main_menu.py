@@ -763,8 +763,8 @@ def game_loop(difficulty_option):
         keys = pygame.key.get_pressed()
         if player.player_weapon == "auto_turret" and keys[pygame.K_SPACE]:
          player.shoot(timer.stopped)
-        print("current game state: ", current_game_state)
-        print("spawn tickets: ", spawn_tickets)
+        #print("current game state: ", current_game_state)
+        #print("spawn tickets: ", spawn_tickets)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
