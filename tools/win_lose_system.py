@@ -60,7 +60,7 @@ class WinLoseSystem:
             text_rect = text.get_rect(center=(400, 300))  # Adjust for screen size
 
             # Semi-transparent background
-            if self.current_level != 2:
+            if self.current_level != 3:
                 overlay = pygame.Surface((800, 600))  # Adjust for your screen size
                 overlay.set_alpha(128)
                 overlay.fill((0, 0, 0))

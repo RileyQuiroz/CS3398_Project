@@ -464,7 +464,7 @@ def game_loop(difficulty_option):
     difficulty = difficulty_option # 0-easy, 1-medium, 2-hard
     
     max_enemies = 3 + difficulty # Assumes 3 difficulties, easy(0), medium(1), hard(2)
-    spawn_tickets = 5 + difficulty # 6 base enemies per wave, 1 extra for medium, 2 extra for hard
+    spawn_tickets = 6 + difficulty # 6 base enemies per wave, 1 extra for medium, 2 extra for hard
 
     leaderboard_prompt = False
 
