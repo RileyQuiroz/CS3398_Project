@@ -17,7 +17,6 @@ class Enemy(pygame.sprite.Sprite):
         self.image = pygame.Surface((self.size, self.size)) 
         self.image.fill(self.color)  
         self.rect = self.image.get_rect(center=(self.pos_x, self.pos_y))
-        
             
     def decrease_health(self, damage = 1):
         self.health -= damage

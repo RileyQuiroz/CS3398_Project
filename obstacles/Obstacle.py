@@ -1,5 +1,6 @@
 import math
 import pygame
+from tools.sounds import Sounds
 
 # The Obstacle class represents an in-game object that can
 # impede the player in some way
@@ -48,13 +49,15 @@ class Obstacle:
         player.x += knockback[0] * x_dir
         player.y += knockback[1] * y_dir
 
+        Sounds.player_hurt.play()
+
     def move(self, dt):
         # In-game obstacles do not move by default
         pass
 
     def draw(self, surface):
-        # surface.blit(self.sprite, self.position)
-        pygame.draw.rect(surface, self.color, self.rect)
+        surface.blit(self.sprite, self.position)
+        # pygame.draw.rect(surface, self.color, self.rect)
 
     def update(self, player, dt):
         self.rect.x = self.position[0]

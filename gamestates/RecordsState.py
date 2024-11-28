@@ -49,6 +49,8 @@ class RecordsState(GameState):
                     game.change_state('main_menu')
 
     def draw(self, game):
+        game.screen.blit(game.background, (0, 0))
+
         # Display a simple "Records" title and "Back" option
         game.draw_text('Records', game.MAIN_FONT, Colors.WHITE, game.WIDTH // 2, game.HEIGHT // 2 - 250)
 
