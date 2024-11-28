@@ -12,9 +12,10 @@ from tools.end_screen import EndScreen
 from tools.win_lose_system import WinLoseSystem
 from characters.player_char import CharacterPawn
 from characters.enemies.enemy_spawn_and_despawn import spawnEnemy, despawnEnemy, startRetreat, destroyEnemy
-from tools.collision_hanlder import check_projectile_enemy_collisions, check_player_projectile_collisions
-from tools.Star_and_planet_bg_logic import Background
+from tools.collision_hanlder import check_projectile_enemy_collisions, check_player_projectile_collisions, check_player_consumable_collisions
+from tools.Star_and_planet_bg_logic import Background, EvilBackground
 from tools.bonus_objectives import BonusObjective, NoDamageObjective, AccuracyObjective, UnderTimeObjective, KillStreakObjective, BonusObjectiveDisplay
+from tools.colors import Colors
 
 from characters.player_char import Consumable
 from obstacles import *
@@ -56,10 +57,10 @@ class Game:
 
         # Initialize score system
         self.score_system = Score()
-        self.score_display = ScoreDisplay(self.screen)
+        self.score_display = ScoreDisplay(self.screen, font_size=36, color=Colors.NEON_CYAN, position=(50, 50))
 
         # Initialize win-lose system
-        self.win_lose_system = WinLoseSystem(self.score_system)
+        self.win_lose_system = WinLoseSystem(self.score_system, player=None)
 
         # Initialize groups
         self.proj_group = pygame.sprite.Group()
@@ -88,8 +89,15 @@ class Game:
         #for obj in self.current_objectives:
         #    print(f"- {obj.description}")
             #IMPORTANT: TEMP VARIABLEs FOR SAVE SYSTEM, USE/MODIFY FOR WHATEVER YOU NEED
+
+        self.hits_detected = 0
+        self.level_cooldown = 5 # Cooldown until level can be progressed, to let levelspawner have time to spawn enemies for current level
+
+        self.objective_display = BonusObjectiveDisplay(self.current_objectives, self.SMALLER_FONT, self.screen)
+
         self.current_level = 0
         self.lvlThreeSwitch = 0
+        self.spawn_tickets = 0
         self.difficulty = 0
 
         # Initialize game states
@@ -148,6 +156,7 @@ class Game:
             UnderTimeObjective(),
             AccuracyObjective(),
         ]
+
         return random.sample(objectives_pool, 2)
 
 
@@ -163,6 +172,7 @@ class Game:
         self.set_obstacles() # Temporary
         self.player.x = self.WIDTH // 2
         self.player.y = self.HEIGHT - 100
+        self.hits_detected = 0
 
         #super weapon sounds (start and stop reset)
         if hasattr(self.player, "beam_audio_playing") and self.player.beam_audio_playing:

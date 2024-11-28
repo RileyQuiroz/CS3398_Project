@@ -77,9 +77,9 @@ class CharacterPawn:
         self.charge_start_time = 0
         self.charge_duration = 2000  # 2 seconds to charge (adjust as needed)
         self.laser_charge_sound = pygame.mixer.Sound("assets/sound_efx/charge_up_shot.mp3")
-        self.laser_charge_sound.set_volume(0.3)
+        self.laser_charge_sound.set_volume(0.2)
         self.laser_beam_sound = pygame.mixer.Sound("assets/sound_efx/beam_firing_loop.mp3")
-        self.laser_beam_sound.set_volume(0.3)
+        self.laser_beam_sound.set_volume(0.2)
         self.beam_audio_playing = False  # Ensure this attribute is initialized
         # Load the player image
         self.image = pygame.image.load("assets/ships/ship_4.png").convert_alpha()
@@ -213,7 +213,7 @@ class CharacterPawn:
 
                 # Play the weapon-specific sound
                 shoot_audio = pygame.mixer.Sound(detail["sound"])
-                shoot_audio.set_volume(0.2)
+                shoot_audio.set_volume(0.1)
                 shoot_audio.play()
 
 
