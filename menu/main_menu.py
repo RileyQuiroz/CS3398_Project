@@ -330,7 +330,7 @@ def reset_game_state(player, score_system, timer, win_lose_system, proj_group, e
     print("[DEBUG] Game state reset. Beam and sounds stopped.")
 
 def boss_transition_scene(screen, old_background, new_background):
-    fade_speed = 5  # Adjust to control fade speed
+    fade_speed = 1  # Adjust to control fade speed
     font = pygame.font.Font("assets/fonts/Future Edge.ttf", 48)
 
     # Fade out the old background
@@ -542,6 +542,15 @@ def game_loop(difficulty_option):
 
             # Create the new background for the boss level
             boss_background = EvilBackground(screen)
+
+            # we stop the bg music
+            pygame.mixer.music.stop()
+
+            ##load up the boss music
+            pygame.mixer.music.load("assets/sound_efx/boss_music.mp3")
+            pygame.mixer.music.set_volume(0.4)
+            pygame.mixer.music.play(-1) #this lets it loop
+                              
 
             # Perform the transition from the old background to the new boss background
             boss_transition_scene(screen, background, boss_background)
