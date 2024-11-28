@@ -27,6 +27,7 @@ class WinLoseSystem:
             for obj in current_objectives:
                 if obj.check_completion(self.player, self, elapsed_time):
                     print(f"Objective '{obj.description}' passed!")
+                    self.score_system.score += 300
                 else:
                     print(f"Objective '{obj.description}' failed.")
 
@@ -59,11 +60,12 @@ class WinLoseSystem:
             text_rect = text.get_rect(center=(400, 300))  # Adjust for screen size
 
             # Semi-transparent background
-            overlay = pygame.Surface((800, 600))  # Adjust for your screen size
-            overlay.set_alpha(128)
-            overlay.fill((0, 0, 0))
-            screen.blit(overlay, (0, 0))
-            screen.blit(text, text_rect)
+            if self.current_level != 2:
+                overlay = pygame.Surface((800, 600))  # Adjust for your screen size
+                overlay.set_alpha(128)
+                overlay.fill((0, 0, 0))
+                screen.blit(overlay, (0, 0))
+                screen.blit(text, text_rect)
 
     # --- Win and Lose Conditions ---
     def check_win_condition(self, elapsed_time, current_objectives,wave_done):
