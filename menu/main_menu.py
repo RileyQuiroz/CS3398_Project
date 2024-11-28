@@ -294,6 +294,64 @@ def display_defeat_message(screen, font):
     obstacle_group = set_obstacles()
     pygame.display.flip()  # Update the display
 
+def enter_initials(screen, font, position, score):
+    """Display an input prompt on the game screen to collect player initials."""
+    initials = ""
+    clock = pygame.time.Clock()
+    running = True
+
+    prompt_font = pygame.font.Font("assets/fonts/Future Edge.ttf", 24)
+    initials_font = pygame.font.Font("assets/fonts/Future Edge.ttf", 74)
+
+    while running:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RETURN:  # Press Enter to confirm
+                    if len(initials) > 0:
+                        running = False
+                elif event.key == pygame.K_BACKSPACE:  # Delete last character
+                    initials = initials[:-1]
+                elif len(initials) < 2 and event.unicode.isalpha():  # Limit to 2 letters
+                    initials += event.unicode.upper()
+
+        # Clear the screen and display the prompt
+        screen.fill((0, 0, 0))  # Black background
+        prompt_text = f"New High Score! Enter Initials (Score: {score})"
+        render_text(screen, prompt_font, prompt_text, NEON_PURPLE, (100, 200))  # Prompt
+        render_text(screen, initials_font, initials, NEON_CYAN, (300, 300))  # Current initials
+        pygame.display.flip()
+        clock.tick(30)
+
+    return initials  # Return the entered initials
+
+def render_text(screen, font, text, color, pos):
+    """Render text to the screen."""
+    text_surface = font.render(text, True, color)
+    screen.blit(text_surface, pos)
+
+def is_high_score(current_score, leaderboard):
+    return any(current_score > entry[1] for entry in leaderboard)
+
+def update_leaderboard(current_score, leaderboard):
+    # Check if the score qualifies as a high score
+    if not is_high_score(current_score, leaderboard):
+        return leaderboard
+
+    # Prompt for initials
+    initials = input("New High Score! Enter your initials (2 characters): ").upper()[:2]
+
+    # Add the new entry and sort the leaderboard
+    leaderboard.append([initials, current_score])
+    leaderboard = sorted(leaderboard, key=lambda x: x[1], reverse=True)[:4]  # Keep top 4
+
+    # Save updated leaderboard
+    #save_leaderboard(leaderboard)
+    return leaderboard
+
+
 def assign_bonus_objectives():
     """
     Randomly select two bonus objectives from the pool.
@@ -407,6 +465,8 @@ def game_loop(difficulty_option):
     
     max_enemies = 3 + difficulty # Assumes 3 difficulties, easy(0), medium(1), hard(2)
     spawn_tickets = 6 + difficulty # 6 base enemies per wave, 1 extra for medium, 2 extra for hard
+
+    leaderboard_prompt = False
 
     ##CONSUMABLE CREATION
     consumables_group = pygame.sprite.Group()
@@ -639,6 +699,21 @@ def game_loop(difficulty_option):
                 end_screen_display = True
                 while end_screen_display:
                     end_screen.display(current_game_state)
+                    
+                    if leaderboard_prompt == False:
+                        #leaderboard.compare_score(win_lose_system.score_system.score)
+                        #leaderboard.save()
+
+                        position = leaderboard.compare_score(win_lose_system.score_system.score)
+                        if position is not None:
+                            initials = enter_initials(screen, font, position, win_lose_system.score_system.score)
+                            leaderboard.update_list(position, initials,win_lose_system.score_system.score)
+                            leaderboard.save()
+                        
+                        print("Updated Leaderboard:")
+                        for entry in leaderboard.high_scores:
+                            print(f"{entry[0]}: {entry[1]}")
+                        leaderboard_prompt = True
                     for event in pygame.event.get():
                         if event.type == pygame.QUIT:
                             pygame.quit()
@@ -663,6 +738,8 @@ def game_loop(difficulty_option):
                 end_screen_display = True
                 while end_screen_display:
                     end_screen.display(current_game_state)
+                    ## PUT LEADERBOARD CHECK SCORE HERE!! TODO: !! FIXME!!! !!!!!!!!!!
+                    #leaderboard = update_leaderboard(player_score, leaderboard)
                     for event in pygame.event.get():
                         if event.type == pygame.QUIT:
                             pygame.quit()
@@ -686,8 +763,8 @@ def game_loop(difficulty_option):
         keys = pygame.key.get_pressed()
         if player.player_weapon == "auto_turret" and keys[pygame.K_SPACE]:
          player.shoot(timer.stopped)
-        print("current game state: ", current_game_state)
-        print("spawn tickets: ", spawn_tickets)
+        #print("current game state: ", current_game_state)
+        #print("spawn tickets: ", spawn_tickets)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
