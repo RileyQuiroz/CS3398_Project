@@ -158,7 +158,6 @@ class Game:
 
         return random.sample(objectives_pool, 2)
 
-
     def enter_initials(self, font, position, score):
         """Display an input prompt on the game screen to collect player initials."""
         initials = ""
