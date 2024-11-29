@@ -77,8 +77,8 @@ class PlayState(GameState):
 
             self.max_enemies = 3 + game.difficulty
             self.spawn_tickets = 6 + game.difficulty
-            self.level_progressed = False
 
+            self.level_progressed = False
             self.boss_spawned = False
             self.boss_defeated_time = 0
 
