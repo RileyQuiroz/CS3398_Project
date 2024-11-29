@@ -201,6 +201,8 @@ class Game:
         self.timer.reset()
         self.player.heal(100)
         self.player.is_alive = True
+        self.player.player_weapon = "default"
+        self.player.shield = 0
         self.win_lose_system.reset()
         self.proj_group.empty()
         self.enemy_group.empty()  # Clear all enemies
@@ -220,7 +222,6 @@ class Game:
         self.player.is_charging = False
 
         print("[DEBUG] Game state reset. Beam and sounds stopped.")
-
 
     # Update the current game state
     def update(self):

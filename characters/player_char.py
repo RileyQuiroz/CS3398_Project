@@ -251,10 +251,6 @@ class CharacterPawn:
             print("[DEBUG] Drawing beam.")
 
 
-
-
-
-
     def deactivate_super_weapon(self):
         self.is_using_sw = False
         if hasattr(self, "beam_coords"):
