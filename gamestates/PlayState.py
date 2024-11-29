@@ -41,13 +41,16 @@ class PlayState(GameState):
         self.running = True
         self.black_bg = (0, 0, 0)
 
-        self.last_spawn = 0
-        self.last_spawn_wave = 0
-
         self.ticks = pygame.time.get_ticks()
         self.ticks_last_frame = 0.0
         self.delta_time = 0.0
-        
+ 
+        self.spawn_tickets = 0
+        self.last_spawn = 0
+        self.last_spawn_wave = 0
+        self.shots_fired = 0
+        self.hits_detected = 0
+       
         ##CONSUMABLE CREATION
         self.consumables_group = pygame.sprite.Group()
         self.consumable_spawn_timer = 0
@@ -58,13 +61,22 @@ class PlayState(GameState):
         self.boss_spawned = False
         self.boss_defeated_time = 0
 
+        self.leaderboard_prompt = False
+
         #consumables_group.add(Consumable(200,100, "repair_kit"))
         #consumables_group.add(Consumable(120,120, "shield_pack"))
 
     def enter(self, game):
         if game.previous_state != 'pause':
             game.reset()
-            spawnEnemy(game.enemy_group, game.timer.elapsed_time, 2) # Spawned in for testing
+            self.hit_detected = False
+            self.hits_detected = 0
+            self.shots_fired = 0
+            self.last_spawn = 0
+            self.last_spawn_wave = 0
+            self.max_enemies = 3 + game.difficulty
+            self.spawn_tickets = 6 + game.difficulty
+            # spawnEnemy(game.enemy_group, game.timer.elapsed_time, 2) # Spawned in for testing
 
         # Play in-game background music
         pygame.mixer.music.load("assets/sound_efx/game_bg_music.mp3")  # Replace with your in-game music file
@@ -127,7 +139,7 @@ class PlayState(GameState):
 
         #print("hit detected: ", hit_detected)
         if hit_detected:
-            game.hits_detected += 1 
+            self.hits_detected += 1 
 
         check_projectile_enemy_collisions(game.proj_group, game.enemy_group)
         check_player_projectile_collisions(game.player, game.enemy_projectiles, 10, game.timer.elapsed_time)
@@ -152,7 +164,7 @@ class PlayState(GameState):
             game.current_level,
             game.lvlThreeSwitch,
             game.difficulty,
-            game.spawn_tickets
+            self.spawn_tickets
         )
 
         if (game.win_lose_system.current_level == 3) and self.boss_spawned == False:
@@ -174,7 +186,7 @@ class PlayState(GameState):
             startRetreat(enemy, self.to_despawn) # Enemy B retreat call
             # enemy.change_color() # Change color if hurt
             enemy.update(game.timer.stopped, game.timer.elapsed_time)
-            enemy.fire_shot(game.enemy_projectiles, paused=game.timer.stopped, curr=game.timer.elapsed_time, empty1=game.player.x, empty2=game.player.y)
+            enemy.fire_shot(game.enemy_projectiles, game.timer.stopped, game.timer.elapsed_time, game.player.x, game.player.y)
             check_player_enemy_physical_collision(game.player, enemy, game.timer.elapsed_time)
 
             if not enemy.living:
@@ -185,27 +197,23 @@ class PlayState(GameState):
 
                 game.score_system.increase(10)
         
-        if (game.win_lose_system.current_level == 3):
-            for enemy in game.enemy_group:
-                enemy.boss_ui(game.screen)
-
         # Check if a wave of enemies has finished
         wave_done = False
 
-        if len(game.enemy_group) == 0 and game.win_lose_system.current_level not in game.win_lose_system.level_processed and game.timer.elapsed_time >= 5 and game.spawn_tickets <= 0:
+        if len(game.enemy_group) == 0 and game.win_lose_system.current_level not in game.win_lose_system.level_processed and game.timer.elapsed_time >= 5 and self.spawn_tickets <= 0:
             if game.timer.elapsed_time - game.win_lose_system.level_start_time >= game.level_cooldown:
                 if game.win_lose_system.current_level != 3:
                     game.win_lose_system.update(game.timer.elapsed_time, game.current_objectives, wave_done=True)
                     wave_done = False
-                    game.spawn_tickets = 6 + game.difficulty
+                    self.spawn_tickets = 6 + game.difficulty
                     if game.win_lose_system.current_level == 3:
-                        game.spawn_tickets = 0
+                        self.spawn_tickets = 0
                     #if win_lose_system.current_level == 2:
                     #    level_cooldown = 10
                 elif game.win_lose_system.current_level == 3:
                     game.win_lose_system.update(game.timer.elapsed_time, game.current_objectives, wave_done=True)
                     self.boss_defeated_time = time.time()
-                    game.self.spawn_tickets = 0
+                    self.spawn_tickets = 0
                     wave_done = False
         else:
             game.win_lose_system.update(game.timer.elapsed_time, game.current_objectives, wave_done=False)
@@ -264,9 +272,9 @@ class PlayState(GameState):
         # Handle beam damage
         if game.player.is_using_sw:
             check_beam_enemy_collisions(game.player, game.enemy_group, damage=8)
-
+        
         # For accuracy bonus objective
-        shots_fired = 0
+        #self.shots_fired = 0
 
         # Handle events
         for event in pygame.event.get():
@@ -310,6 +318,7 @@ class PlayState(GameState):
                     #game.timer.toggle()
                 elif event.key == pygame.K_SPACE:
                     game.player.shoot(game.timer.stopped)
+                    self.shots_fired += 1
                 elif event.key == pygame.K_s:
                     message, start_time = user_save_and_load.saveHandling(game.score_system.get_score(), game.player, game.win_lose_system.current_level, game.difficulty)
                     self.save_text_show = True
@@ -320,14 +329,18 @@ class PlayState(GameState):
                     self.last_spawn_wave = 0
                     self.save_text_show = True
 
-        if self.save_text_show:
-            current_time = pygame.time.get_ticks()
-            if current_time - self.start_time < 1500:
-                game.draw_text(self.message, game.SMALLER_FONT, Colors.WHITE, game.WIDTH // 2, game.HEIGHT // 2 + 250)
-            else:
-                self.save_text_show = False
-
         despawnEnemy(self.to_despawn)
+
+        # Check if there were any collisions and record shots
+        for _ in range(self.shots_fired):  # Loop through the number of shots fired
+            if self.hits_detected >= 0:  # If there have been any successful hits
+                game.win_lose_system.record_shot(hit=True)
+                self.hits_detected -= 1  # Decrement hits to keep track
+                #print(" MAIN LOOP SHOT DETECTED AS TRUE: Hits Left = ", hits_detected)
+            else:  # If no hits were detected
+                game.win_lose_system.record_shot(hit=False)
+                #print(" MAIN LOOP SHOT DETECTED AS FALSE: Hits Left = ", hits_detected)
+
         game.clock.tick(game.FPS)
     
     def draw(self, game):
@@ -346,7 +359,11 @@ class PlayState(GameState):
             )
 
             pygame.draw.rect(game.screen, (100, 255, 100), enemy_health_bar)
-       
+
+        if (game.win_lose_system.current_level == 3):
+            for enemy in game.enemy_group:
+                enemy.boss_ui(game.screen)
+
         for obstacle in game.obstacle_group:
             obstacle.draw(game.screen)
      
@@ -362,10 +379,17 @@ class PlayState(GameState):
             else:
                 self.dest_enemies.remove(dest_enemy)
 
+        if self.save_text_show:
+            current_time = pygame.time.get_ticks()
+            if current_time - self.start_time < 1500:
+                game.draw_text(self.message, game.SMALLER_FONT, Colors.WHITE, game.WIDTH // 2, game.HEIGHT // 2 + 250)
+            else:
+                self.save_text_show = False
+
+        game.win_lose_system.render_overlay(game.screen)
         game.objective_display.draw()
         game.draw_text(f"{game.timer.elapsed_time:.2f}", game.SMALL_FONT, Colors.NEON_CYAN, 100, 100)
         game.score_display.display_score(game.score_system.get_score())
-        game.win_lose_system.render_overlay(game.screen)
 
     def leave(self, game):
         pygame.mixer.music.stop()

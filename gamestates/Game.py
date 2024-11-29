@@ -78,6 +78,7 @@ class Game:
         )
 
         self.win_lose_system.player = self.player
+        self.win_lose_system.current_level = 0
 
         # Assign and initialize objectives
         self.current_objectives = self.assign_bonus_objectives()
@@ -90,14 +91,12 @@ class Game:
         #    print(f"- {obj.description}")
             #IMPORTANT: TEMP VARIABLEs FOR SAVE SYSTEM, USE/MODIFY FOR WHATEVER YOU NEED
 
-        self.hits_detected = 0
         self.level_cooldown = 5 # Cooldown until level can be progressed, to let levelspawner have time to spawn enemies for current level
 
         self.objective_display = BonusObjectiveDisplay(self.current_objectives, self.SMALLER_FONT, self.screen)
 
         self.current_level = 0
         self.lvlThreeSwitch = 0
-        self.spawn_tickets = 0
         self.difficulty = 0
 
         # Initialize game states
@@ -160,6 +159,44 @@ class Game:
         return random.sample(objectives_pool, 2)
 
 
+    def enter_initials(self, font, position, score):
+        """Display an input prompt on the game screen to collect player initials."""
+        initials = ""
+        clock = pygame.time.Clock()
+        running = True
+
+        prompt_font = pygame.font.Font("assets/fonts/Future Edge.ttf", 24)
+        initials_font = pygame.font.Font("assets/fonts/Future Edge.ttf", 74)
+
+        while running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    exit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RETURN:  # Press Enter to confirm
+                        if len(initials) > 0:
+                            running = False
+                    elif event.key == pygame.K_BACKSPACE:  # Delete last character
+                        initials = initials[:-1]
+                    elif len(initials) < 2 and event.unicode.isalpha():  # Limit to 2 letters
+                        initials += event.unicode.upper()
+
+            # Clear the screen and display the prompt
+            self.screen.fill((0, 0, 0))  # Black background
+            prompt_text = f"New High Score! Enter Initials (Score: {score})"
+            self.render_text(prompt_font, prompt_text, Colors.NEON_PURPLE, (100, 200))  # Prompt
+            self.render_text(initials_font, initials, Colors.NEON_CYAN, (300, 300))  # Current initials
+            pygame.display.flip()
+            clock.tick(30)
+
+        return initials  # Return the entered initials
+
+    def render_text(self, font, text, color, pos):
+        """Render text to the screen."""
+        text_surface = font.render(text, True, color)
+        self.screen.blit(text_surface, pos)
+
     def reset(self):
         self.score_system.reset()
         self.timer.reset()
@@ -172,7 +209,8 @@ class Game:
         self.set_obstacles() # Temporary
         self.player.x = self.WIDTH // 2
         self.player.y = self.HEIGHT - 100
-        self.hits_detected = 0
+        self.current_level = 0
+        self.lvlThreeSwitch = 0
 
         #super weapon sounds (start and stop reset)
         if hasattr(self.player, "beam_audio_playing") and self.player.beam_audio_playing:
