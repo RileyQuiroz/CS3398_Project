@@ -61,15 +61,12 @@ class PlayState(GameState):
         self.boss_spawned = False
         self.boss_defeated_time = 0
 
-        self.leaderboard_prompt = False
-
         #consumables_group.add(Consumable(200,100, "repair_kit"))
         #consumables_group.add(Consumable(120,120, "shield_pack"))
 
     def enter(self, game):
         if game.previous_state != 'pause':
             game.reset()
-
             self.background = Background(game.screen)
 
             self.hit_detected = False

@@ -13,7 +13,7 @@ class WinState(GameState):
         
         self.end_screen = EndScreen(game.screen, game.player)
 
-    def update(self, game):
+    def enter(self, game):
         position = game.leaderboard.compare_score(game.win_lose_system.score_system.score)
 
         if position is not None:
@@ -25,7 +25,8 @@ class WinState(GameState):
             print("Updated Leaderboard:")
             for entry in game.leaderboard.high_scores:
                 print(f"{entry[0]}: {entry[1]}")
-
+            
+    def update(self, game):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
