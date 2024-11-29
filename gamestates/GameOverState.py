@@ -24,11 +24,9 @@ class GameOverState(GameState):
                     selected_option = self.end_screen.check_option_click(pos)
                     if selected_option == "Restart":
                         end_screen_display = False
-                        game.reset()
                         game.change_state('play')
                     elif selected_option == "Main Menu":
                         end_screen_display = False
-                        game.reset()
                         game.change_state('main_menu')
                     elif selected_option == "Quit":
                         pygame.quit()

@@ -69,14 +69,26 @@ class PlayState(GameState):
     def enter(self, game):
         if game.previous_state != 'pause':
             game.reset()
+
+            self.background = Background(game.screen)
+
             self.hit_detected = False
             self.hits_detected = 0
             self.shots_fired = 0
             self.last_spawn = 0
             self.last_spawn_wave = 0
+
             self.max_enemies = 3 + game.difficulty
             self.spawn_tickets = 6 + game.difficulty
-            # spawnEnemy(game.enemy_group, game.timer.elapsed_time, 2) # Spawned in for testing
+            self.level_progressed = False
+
+            self.boss_spawned = False
+            self.boss_defeated_time = 0
+
+            self.consumables_group.empty()
+            self.consumable_spawn_timer = 0
+
+            self.running = True
 
         # Play in-game background music
         pygame.mixer.music.load("assets/sound_efx/game_bg_music.mp3")  # Replace with your in-game music file
@@ -396,10 +408,7 @@ class PlayState(GameState):
         game.timer.stop()
 
         if game.current_state != 'pause':
-            game.timer.reset()
-            game.proj_group.empty()
-            game.enemy_group.empty()
-            game.enemy_projectiles.empty()
+            game.reset()
             game.set_obstacles()
             self.consumables_group.empty()
             self.consumable_spawn_timer = 0
