@@ -97,7 +97,7 @@ class Game:
 
         self.current_level = 0
         self.lvlThreeSwitch = 0
-        self.difficulty = 1 # Game set to normal difficulty by default
+        self.difficulty = 1     # Game set to normal difficulty by default
 
         # Initialize game states
         self.states = {
