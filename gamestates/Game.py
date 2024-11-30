@@ -12,9 +12,10 @@ from tools.end_screen import EndScreen
 from tools.win_lose_system import WinLoseSystem
 from characters.player_char import CharacterPawn
 from characters.enemies.enemy_spawn_and_despawn import spawnEnemy, despawnEnemy, startRetreat, destroyEnemy
-from tools.collision_hanlder import check_projectile_enemy_collisions, check_player_projectile_collisions
-from tools.Star_and_planet_bg_logic import Background
+from tools.collision_hanlder import check_projectile_enemy_collisions, check_player_projectile_collisions, check_player_consumable_collisions
+from tools.Star_and_planet_bg_logic import Background, EvilBackground
 from tools.bonus_objectives import BonusObjective, NoDamageObjective, AccuracyObjective, UnderTimeObjective, KillStreakObjective, BonusObjectiveDisplay
+from tools.colors import Colors
 
 from characters.player_char import Consumable
 from obstacles import *
@@ -56,10 +57,10 @@ class Game:
 
         # Initialize score system
         self.score_system = Score()
-        self.score_display = ScoreDisplay(self.screen)
+        self.score_display = ScoreDisplay(self.screen, font_size=36, color=Colors.NEON_CYAN, position=(50, 50))
 
         # Initialize win-lose system
-        self.win_lose_system = WinLoseSystem(self.score_system)
+        self.win_lose_system = WinLoseSystem(self.score_system, player=None)
 
         # Initialize groups
         self.proj_group = pygame.sprite.Group()
@@ -77,6 +78,7 @@ class Game:
         )
 
         self.win_lose_system.player = self.player
+        self.win_lose_system.current_level = 0
 
         # Assign and initialize objectives
         self.current_objectives = self.assign_bonus_objectives()
@@ -88,9 +90,14 @@ class Game:
         #for obj in self.current_objectives:
         #    print(f"- {obj.description}")
             #IMPORTANT: TEMP VARIABLEs FOR SAVE SYSTEM, USE/MODIFY FOR WHATEVER YOU NEED
+
+        self.level_cooldown = 5 # Cooldown until level can be progressed, to let levelspawner have time to spawn enemies for current level
+
+        self.objective_display = BonusObjectiveDisplay(self.current_objectives, self.SMALLER_FONT, self.screen)
+
         self.current_level = 0
         self.lvlThreeSwitch = 0
-        self.difficulty = 0
+        self.difficulty = 1     # Game set to normal difficulty by default
 
         # Initialize game states
         self.states = {
@@ -148,14 +155,54 @@ class Game:
             UnderTimeObjective(),
             AccuracyObjective(),
         ]
+
         return random.sample(objectives_pool, 2)
 
+    def enter_initials(self, font, position, score):
+        """Display an input prompt on the game screen to collect player initials."""
+        initials = ""
+        clock = pygame.time.Clock()
+        running = True
+
+        prompt_font = pygame.font.Font("assets/fonts/Future Edge.ttf", 24)
+        initials_font = pygame.font.Font("assets/fonts/Future Edge.ttf", 74)
+
+        while running:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    exit()
+                if event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_RETURN:  # Press Enter to confirm
+                        if len(initials) > 0:
+                            running = False
+                    elif event.key == pygame.K_BACKSPACE:  # Delete last character
+                        initials = initials[:-1]
+                    elif len(initials) < 2 and event.unicode.isalpha():  # Limit to 2 letters
+                        initials += event.unicode.upper()
+
+            # Clear the screen and display the prompt
+            self.screen.fill((0, 0, 0))  # Black background
+            prompt_text = f"New High Score! Enter Initials (Score: {score})"
+            self.render_text(prompt_font, prompt_text, Colors.NEON_PURPLE, (100, 200))  # Prompt
+            self.render_text(initials_font, initials, Colors.NEON_CYAN, (300, 300))  # Current initials
+            pygame.display.flip()
+            clock.tick(30)
+
+        return initials  # Return the entered initials
+
+    def render_text(self, font, text, color, pos):
+        """Render text to the screen."""
+        text_surface = font.render(text, True, color)
+        self.screen.blit(text_surface, pos)
 
     def reset(self):
         self.score_system.reset()
         self.timer.reset()
         self.player.heal(100)
         self.player.is_alive = True
+        self.player.player_weapon = "default"
+        self.player.shield = 0
         self.win_lose_system.reset()
         self.proj_group.empty()
         self.enemy_group.empty()  # Clear all enemies
@@ -163,6 +210,8 @@ class Game:
         self.set_obstacles() # Temporary
         self.player.x = self.WIDTH // 2
         self.player.y = self.HEIGHT - 100
+        self.current_level = 0
+        self.lvlThreeSwitch = 0
 
         #super weapon sounds (start and stop reset)
         if hasattr(self.player, "beam_audio_playing") and self.player.beam_audio_playing:
@@ -173,7 +222,6 @@ class Game:
         self.player.is_charging = False
 
         print("[DEBUG] Game state reset. Beam and sounds stopped.")
-
 
     # Update the current game state
     def update(self):

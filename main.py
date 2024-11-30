@@ -12,7 +12,7 @@ def run_game():
 
 # Call the main menu function
 if __name__ == "__main__":
-    main_menu()
-    #run_game()
+    # main_menu()
+    run_game()
 
 ##comments

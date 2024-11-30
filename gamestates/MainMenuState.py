@@ -64,13 +64,11 @@ class MainMenuState(GameState):
             if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
-
-            if event.type == pygame.MOUSEBUTTONDOWN:
+            elif event.type == pygame.MOUSEBUTTONDOWN:
                 # Check which option is clicked and switch to the respective menu
                 if self.start_game_rect.collidepoint(event.pos):
                     print("Start Game clicked!")
                     game.timer.reset()  # Reset timer when starting a new game
-                    #game.timer.start()  # Start the timer
                     game.change_state('play')
                 elif self.records_rect.collidepoint(event.pos):
                     game.change_state('records') # Switch to Records menu

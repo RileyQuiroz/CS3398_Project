@@ -1,5 +1,6 @@
 import pygame
 from obstacles.Obstacle import Obstacle
+from tools.sounds import Sounds
 
 # The Destructible class represents an Obstacle that
 # can be destroyed by the player
@@ -25,6 +26,7 @@ class Destructible(Obstacle):
         if self.health <= 0:
             self.destroyed = True
             self.score_system.increase_flat(20)
+            Sounds.ship_destroyed.play()
 
     def update(self, player, dt):
         if not self.destroyed:

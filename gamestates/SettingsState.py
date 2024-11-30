@@ -10,20 +10,20 @@ class SettingsState(GameState):
 
         self.hovered = {
             'easy': False,
-            'medium': False,
+            'normal': False,
             'hard': False,
             'back': False
         }
 
         self.rect_colors = {
             'easy': Colors.WHITE,
-            'medium': Colors.WHITE,
+            'normal': Colors.WHITE,
             'hard': Colors.WHITE,
             'back': Colors.WHITE
         }
 
         self.easy_rect = game.draw_text_left_aligned('Easy', game.SMALLER_FONT, self.rect_colors['easy'], 300, game.HEIGHT // 2 - 50)
-        self.medium_rect = game.draw_text_left_aligned('Medium', game.SMALLER_FONT, self.rect_colors['medium'], 450, game.HEIGHT // 2 - 50)
+        self.medium_rect = game.draw_text_left_aligned('Normal', game.SMALLER_FONT, self.rect_colors['normal'], 450, game.HEIGHT // 2 - 50)
         self.hard_rect = game.draw_text_left_aligned('Hard', game.SMALLER_FONT, self.rect_colors['hard'], 650, game.HEIGHT // 2 - 50)
         self.back_rect = game.draw_text('Back', game.MAIN_FONT, self.rect_colors['back'], game.WIDTH // 2, game.HEIGHT // 2 + 250)
         self.difficulty_label = 'Easy'
@@ -47,11 +47,11 @@ class SettingsState(GameState):
             self.hovered['easy'] = False
 
         if self.medium_rect.collidepoint(mouse_pos):
-            if not self.hovered['medium']:
+            if not self.hovered['normal']:
                 Sounds.hover.play()
-                self.hovered['medium'] = True
+                self.hovered['normal'] = True
         else:
-            self.hovered['medium'] = False
+            self.hovered['normal'] = False
 
         if self.hard_rect.collidepoint(mouse_pos):
             if not self.hovered['hard']:
@@ -72,9 +72,9 @@ class SettingsState(GameState):
                     game.difficulty = 0
                     self.difficulty_label = 'Easy'
                     self.change_message_display_time = 5000
-                elif self.hovered['medium']:
+                elif self.hovered['normal']:
                     game.difficulty = 1
-                    self.difficulty_label = 'Medium'
+                    self.difficulty_label = 'Normal'
                     self.change_message_display_time = 5000
                 elif self.hovered['hard']:
                     game.difficulty = 2
@@ -94,7 +94,7 @@ class SettingsState(GameState):
 
         # Display the game difficulty options
         self.easy_rect = game.draw_text_left_aligned('Easy', game.SMALLER_FONT, self.rect_colors['easy'], 300, game.HEIGHT // 2 - 50)
-        self.medium_rect = game.draw_text_left_aligned('Medium', game.SMALLER_FONT, self.rect_colors['medium'], 450, game.HEIGHT // 2 - 50)
+        self.medium_rect = game.draw_text_left_aligned('Normal', game.SMALLER_FONT, self.rect_colors['normal'], 450, game.HEIGHT // 2 - 50)
         self.hard_rect = game.draw_text_left_aligned('Hard', game.SMALLER_FONT, self.rect_colors['hard'], 650, game.HEIGHT // 2 - 50)
 
         # Display the back button
