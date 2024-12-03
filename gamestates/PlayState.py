@@ -37,14 +37,11 @@ class PlayState(GameState):
 
         self.save_text_show = False
         self.message = ""
-        self.start_time = 0
         self.running = True
         self.black_bg = (0, 0, 0)
 
-        self.ticks = pygame.time.get_ticks()
-        self.ticks_last_frame = 0.0
-        self.delta_time = 0.0
- 
+        self.start_time = 0.0
+
         self.spawn_tickets = 0
         self.last_spawn = 0
         self.last_spawn_wave = 0
@@ -67,32 +64,18 @@ class PlayState(GameState):
     def enter(self, game):
         if game.previous_state != 'pause':
             game.reset()
-            self.background = Background(game.screen)
-
-            self.hit_detected = False
-            self.hits_detected = 0
-            self.shots_fired = 0
-            self.last_spawn = 0
-            self.last_spawn_wave = 0
+            self.__init__(game)
 
             self.max_enemies = 3 + game.difficulty
             self.spawn_tickets = 6 + game.difficulty
-
-            self.level_progressed = False
-            self.boss_spawned = False
-            self.boss_defeated_time = 0
-
-            self.consumables_group.empty()
-            self.consumable_spawn_timer = 0
-
-            self.running = True
 
         # Play in-game background music
         pygame.mixer.music.load("assets/sound_efx/game_bg_music.mp3")  # Replace with your in-game music file
         pygame.mixer.music.set_volume(0.2)  # Adjust volume as needed
         pygame.mixer.music.play(-1)  # Play the music indefinitely (-1 for looping)
-        
+
         game.timer.start()
+        self.running = True
 
     def boss_transition_scene(self, game, old_background, new_background):
         fade_speed = 5  # Adjust to control fade speed
@@ -128,16 +111,12 @@ class PlayState(GameState):
         self.background.update(game.timer)
 
         if self.running:
-            self.ticks = pygame.time.get_ticks()
-            self.delta_time = (self.ticks - self.ticks_last_frame) / 1000.0
-            self.ticks_last_frame = self.ticks
+           game.timer.update(game.delta_time)
 
-        game.timer.update(self.delta_time)
-
-        if not game.timer.stopped and self.ticks - self.consumable_spawn_timer > self.consumable_spawn_rate:
+        if not game.timer.stopped and game.ticks - self.consumable_spawn_timer > self.consumable_spawn_rate:
             if len(self.consumables_group) < self.max_consumables:
                 spawn_consumable(self.consumables_group, game.WIDTH, game.HEIGHT)
-                self.consumable_spawn_timer = self.ticks
+                self.consumable_spawn_timer = game.ticks
 
         hit_detected = False
 
@@ -160,7 +139,7 @@ class PlayState(GameState):
         game.player.handle_input(game.timer.stopped)
 
         for obstacle in game.obstacle_group:
-            obstacle.update(game.player, self.delta_time)
+            obstacle.update(game.player, game.delta_time)
             
         # Enemy Spawning
         self.last_spawn, self.last_spawn_wave, self.lvlThreeSwitch, self.spawn_tickets = levelSpawner(
@@ -318,25 +297,21 @@ class PlayState(GameState):
                             print(f"Weapon switched to: {game.player.player_weapon}")
                             break
                 if event.key == pygame.K_ESCAPE:
-                    self.running = False
                     game.change_state('pause')
-                    # game.timer.stop()
                 elif event.key == pygame.K_p:
-                    self.running = False
                     game.change_state('pause')
-                    #game.timer.toggle()
                 elif event.key == pygame.K_SPACE:
                     game.player.shoot(game.timer.stopped)
                     self.shots_fired += 1
-                elif event.key == pygame.K_s:
-                    message, start_time = user_save_and_load.saveHandling(game.score_system.get_score(), game.player, game.win_lose_system.current_level, game.difficulty)
-                    self.save_text_show = True
-                elif event.key == pygame.K_l:
-                    game.reset()
-                    self.message, self.start_time, game.player.health, game.score_system.score, game.player.player_weapon, game.current_level, game.difficulty, game.player.shield, game.player.player_model, game.timer.elapsed_time = user_save_and_load.loadHandling(game.score_system.get_score(), game.timer.elapsed_time, game.player, game.current_level, game.difficulty)
-                    self.last_spawn = 0
-                    self.last_spawn_wave = 0
-                    self.save_text_show = True
+                # elif event.key == pygame.K_s:
+                #     message, start_time = user_save_and_load.saveHandling(game.score_system.get_score(), game.player, game.win_lose_system.current_level, game.difficulty)
+                #     self.save_text_show = True
+                # elif event.key == pygame.K_l:
+                #     game.reset()
+                #     self.message, self.start_time, game.player.health, game.score_system.score, game.player.player_weapon, game.current_level, game.difficulty, game.player.shield, game.player.player_model, game.timer.elapsed_time = user_save_and_load.loadHandling(game.score_system.get_score(), game.timer.elapsed_time, game.player, game.current_level, game.difficulty)
+                #     self.last_spawn = 0
+                #     self.last_spawn_wave = 0
+                #     self.save_text_show = True
 
         despawnEnemy(self.to_despawn)
 
@@ -402,7 +377,8 @@ class PlayState(GameState):
 
     def leave(self, game):
         pygame.mixer.music.stop()
-        game.timer.stop()
+        #game.timer.stop()
+        self.running = False
 
         if game.current_state != 'pause':
             game.reset()

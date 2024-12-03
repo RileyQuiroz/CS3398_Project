@@ -3,6 +3,7 @@
 class Timer:
     def __init__(self):
         self.elapsed_time = 0.0
+        self.last_game_end_time = 0.0
         self.stopped = True
 
     def start(self):
@@ -23,4 +24,4 @@ class Timer:
 
     def update(self, delta_time):
         if not self.stopped:
-            self.elapsed_time = self.elapsed_time + delta_time
+            self.elapsed_time += delta_time

@@ -53,7 +53,11 @@ class Game:
         # Initialize in-game clock and timer
         self.clock = pygame.time.Clock()
         self.timer = Timer()
-        #timer.start()
+        
+        # Initialize ticks and delta time.
+        self.ticks = pygame.time.get_ticks()
+        self.ticks_last_frame = 0.0
+        self.delta_time = 0.0
 
         # Initialize score system
         self.score_system = Score()
@@ -146,6 +150,16 @@ class Game:
             Friend((100, 200), 5, self.score_system, 2.5, "assets/objects/friendly_obstacle.png")
         ]
 
+        for obstacle in self.obstacle_group:
+            x_pos = random.uniform(50, self.WIDTH - 50)
+            y_pos = random.uniform(50, self.HEIGHT - 50)
+            obstacle.position = (x_pos, y_pos)
+
+            # Rotator and ZigZag obstacles require a central point
+            # to pivot around
+            if hasattr(obstacle, 'center'):
+                obstacle.center = obstacle.position
+
     def assign_bonus_objectives(self):
         """
         Randomly select two bonus objectives from the pool.
@@ -212,6 +226,13 @@ class Game:
         self.player.y = self.HEIGHT - 100
         self.current_level = 0
         self.lvlThreeSwitch = 0
+        self.clock = pygame.time.Clock()
+
+        self.current_objectives = self.assign_bonus_objectives()
+        for obj in self.current_objectives:
+            obj.initialize(self.player, self.win_lose_system) # FIXME: current_level being passed isn't right or works
+
+        self.objective_display = BonusObjectiveDisplay(self.current_objectives, self.SMALLER_FONT, self.screen)
 
         #super weapon sounds (start and stop reset)
         if hasattr(self.player, "beam_audio_playing") and self.player.beam_audio_playing:
@@ -225,6 +246,10 @@ class Game:
 
     # Update the current game state
     def update(self):
+        self.ticks = pygame.time.get_ticks()
+        self.delta_time = (self.ticks - self.ticks_last_frame) / 1000
+        self.ticks_last_frame = self.ticks
+
         self.states[self.current_state].update(self)
 
     # Draw the current game state to the screen

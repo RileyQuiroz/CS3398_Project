@@ -68,7 +68,6 @@ class MainMenuState(GameState):
                 # Check which option is clicked and switch to the respective menu
                 if self.start_game_rect.collidepoint(event.pos):
                     print("Start Game clicked!")
-                    game.timer.reset()  # Reset timer when starting a new game
                     game.change_state('play')
                 elif self.records_rect.collidepoint(event.pos):
                     game.change_state('records') # Switch to Records menu
@@ -77,11 +76,6 @@ class MainMenuState(GameState):
                 elif self.quit_rect.collidepoint(event.pos):
                     pygame.quit()
                     sys.exit()
-
-                #elif current_menu in ['records', 'settings']:
-                    # Handle "Back" button in Records or Settings
-                #    if self.back_rect.collidepoint(event.pos):
-                #        game.change_state('main_menu') # Switch back to Main menu
 
         # Check if mouse is hovering over the options and set color accordingly
         self.start_color = Colors.NEON_PURPLE if self.hovered['start_game'] else Colors.WHITE
