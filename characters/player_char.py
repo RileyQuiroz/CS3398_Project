@@ -59,6 +59,11 @@ class CharacterPawn:
         self.got_hit = False
         self.shield = 0
 
+        ## ADDING WEAPON TIMERS
+        self.weapon_timer = 0
+        self.weapon_duration = 8000
+        self.default_weapon = "default"
+
         #LOAD PLAYER IMAGE
         self.image = pygame.image.load("assets/ships/ship_4.png")
         self.image = pygame.transform.scale(self.image, (50, 50))
@@ -88,9 +93,14 @@ class CharacterPawn:
         # Update collision rect to align with the image
         self.rect = self.image.get_rect(topleft=(self.x, self.y))
 
-
-
-
+    def update_weapon_timer(self):
+        if self.player_weapon != self.default_weapon and hasattr(self, "weapon_timer"):
+            current_time = pygame.time.get_ticks()
+            print(f"[DEBUG] Current time: {current_time}, Weapon timer: {self.weapon_timer}, Duration: {self.weapon_duration}")
+            if current_time - self.weapon_timer > self.weapon_duration:
+                print("[DEBUG] Weapon timer expired. Reverting to default weapon.")
+                self.player_weapon = self.default_weapon
+                del self.weapon_timer
 
     # Weapon system
     def swap_weapon(self):
@@ -294,6 +304,7 @@ class CharacterPawn:
         if self.is_alive:
             self.health = min(100, self.health + amount)
     
+    
     def consume(self, consumable):
         if self.player_weapon == "super_weapon":
             self.is_using_sw = False
@@ -303,11 +314,12 @@ class CharacterPawn:
                 self.beam_audio_playing = False
             self.laser_charge_sound.stop()
 
-
         if consumable == "super_weapon":
             self.player_weapon = "super_weapon"
             self.is_using_sw = False  # Ensure the super weapon is not firing initially
             self.is_charging = False  # Reset charging state
+            self.weapon_timer = pygame.time.get_ticks()  # Start the weapon timer
+            self.weapon_duration = 10000  # Duration in milliseconds (10 seconds)
             super_weapon_pickup_audio = pygame.mixer.Sound("assets/sound_efx/sw_pickup_audio.mp3")
             super_weapon_pickup_audio.play()
             print("SUPER WEAPON PICKED UP")
@@ -332,9 +344,12 @@ class CharacterPawn:
                 print("Shields are at full capacity!")
         elif consumable in CONSUMABLE_DATA:
             self.player_weapon = consumable
+            self.weapon_timer = pygame.time.get_ticks()  # Start the weapon timer
+            self.weapon_duration = 10000  # Duration in milliseconds (10 seconds)
             print(f"Picked up {consumable}!")
             weapon_pick_up_audio = pygame.mixer.Sound("assets/sound_efx/weapon_pickup_sound.mp3")
             weapon_pick_up_audio.play()
+
 
 class Consumable(pygame.sprite.Sprite):
     def __init__(self, x, y, consumable_type):
@@ -353,11 +368,18 @@ class Consumable(pygame.sprite.Sprite):
     def draw(self, screen):
         screen.blit(self.image, self.rect.topleft)
 
-def spawn_consumable(consumables_group, screen_width, screen_height):
-    consumable_type = random.choice(list(CONSUMABLE_DATA.keys()))
+def spawn_consumable(consumables_group, screen_width, screen_height, is_boss_fight=False):
+    # Filter consumables based on whether it's a boss fight
+    if is_boss_fight:
+        consumable_type = "super_weapon"  # Force spawn the super weapon
+    else:
+        available_types = [k for k in CONSUMABLE_DATA.keys() if k != "super_weapon"]
+        consumable_type = random.choice(available_types)
+
     x = random.randint(0, screen_width - 35)
     y = random.randint(0, screen_height - 35)
     consumable = Consumable(x, y, consumable_type)
     consumables_group.add(consumable)
-     
-    
+
+
+

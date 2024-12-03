@@ -501,7 +501,7 @@ def game_loop(difficulty_option):
         keys = pygame.key.get_pressed()
         hit_detected =False
         hits_detected = 0
-
+        player.update_weapon_timer()
         if player.player_weapon == "super_weapon":
             if keys[pygame.K_SPACE]:  # Start charging if space is pressed
                 if not player.is_using_sw and not player.is_charging:
@@ -557,7 +557,7 @@ def game_loop(difficulty_option):
         max_consumables = 10
         if not timer.stopped and ticks - consumable_spawn_timer > consumable_spawn_rate:
             if len(consumables_group) < max_consumables:
-                spawn_consumable(consumables_group, WIDTH, HEIGHT)
+                spawn_consumable(consumables_group, WIDTH, HEIGHT, is_boss_fight=True)
                 consumable_spawn_timer = ticks
 
         if(win_lose_system.current_level == 3):

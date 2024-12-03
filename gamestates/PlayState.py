@@ -113,10 +113,14 @@ class PlayState(GameState):
         if self.running:
            game.timer.update(game.delta_time)
 
+        #player weapon timer
+        game.player.update_weapon_timer()
+
         if not game.timer.stopped and game.ticks - self.consumable_spawn_timer > self.consumable_spawn_rate:
             if len(self.consumables_group) < self.max_consumables:
-                spawn_consumable(self.consumables_group, game.WIDTH, game.HEIGHT)
+                spawn_consumable(self.consumables_group, game.WIDTH, game.HEIGHT, is_boss_fight=(game.win_lose_system.current_level == 3))
                 self.consumable_spawn_timer = game.ticks
+
 
         hit_detected = False
 
