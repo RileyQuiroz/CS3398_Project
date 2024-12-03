@@ -149,7 +149,7 @@ class PlayState(GameState):
             self.max_enemies,
             self.last_spawn,
             self.last_spawn_wave,
-            game.current_level,
+            game.win_lose_system.current_level,
             game.lvlThreeSwitch,
             game.difficulty,
             self.spawn_tickets

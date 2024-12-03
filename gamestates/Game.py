@@ -82,6 +82,7 @@ class Game:
         )
 
         self.win_lose_system.player = self.player
+        self.win_lose_system.player_tracker.player = self.player
         self.win_lose_system.current_level = 0
 
         # Assign and initialize objectives
@@ -102,6 +103,9 @@ class Game:
         self.current_level = 0
         self.lvlThreeSwitch = 0
         self.difficulty = 1     # Game set to normal difficulty by default
+
+        self.win_lose_system.player = self.player
+        self.win_lose_system.current_level = self.difficulty
 
         # Initialize game states
         self.states = {
