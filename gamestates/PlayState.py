@@ -381,7 +381,7 @@ class PlayState(GameState):
         self.running = False
 
         if game.current_state != 'pause':
-            game.reset()
+            #game.reset()
             game.set_obstacles()
             self.consumables_group.empty()
             self.consumable_spawn_timer = 0
