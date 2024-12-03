@@ -51,8 +51,8 @@ class PlayState(GameState):
         ##CONSUMABLE CREATION
         self.consumables_group = pygame.sprite.Group()
         self.consumable_spawn_timer = 0
-        self.consumable_spawn_rate = 5000 # seconds between spawns CHANGE IF NEEDED
-        self.max_consumables = 10
+        self.consumable_spawn_rate = 10000 # seconds between spawns CHANGE IF NEEDED
+        self.max_consumables = 5
 
         self.level_progressed = False
         self.boss_spawned = False
