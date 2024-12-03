@@ -369,6 +369,8 @@ class CharacterPawn:
             weapon_pick_up_audio.play()
 
 
+import time  # To track time
+
 class Consumable(pygame.sprite.Sprite):
     def __init__(self, x, y, consumable_type):
         super().__init__()
@@ -382,9 +384,14 @@ class Consumable(pygame.sprite.Sprite):
             raise ValueError(f"Unknown consumable type: {consumable_type}")
 
         self.rect = self.image.get_rect(topleft=(x, y))
+        self.spawn_time = time.time()  # Record the time when the consumable is created
 
     def draw(self, screen):
         screen.blit(self.image, self.rect.topleft)
+
+    def has_expired(self, lifespan):
+        """Check if the consumable has expired based on its lifespan."""
+        return time.time() - self.spawn_time > lifespan
 
 def spawn_consumable(consumables_group, screen_width, screen_height, is_boss_fight=False):
     # Define exclusion zones based on health and shield bar positions

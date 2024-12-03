@@ -231,6 +231,14 @@ class PlayState(GameState):
 
             next_state = 'win' if current_game_state == WinLoseState.WIN else 'game_over'
             game.change_state(next_state)
+        
+
+        # Despawn consumables after their lifespan
+        CONSUMABLE_DESPAWN_TIME = 5 #seconds till despawn
+        for consumable in self.consumables_group.copy():  # Iterate over a copy to avoid modifying during iteration
+            if consumable.has_expired(CONSUMABLE_DESPAWN_TIME):
+                print(f"[DEBUG] Consumable {consumable} expired. Removing...")
+                self.consumables_group.remove(consumable)
 
         # AUTO TURRET STUFF
         keys = pygame.key.get_pressed()
