@@ -99,8 +99,15 @@ class CharacterPawn:
             print(f"[DEBUG] Current time: {current_time}, Weapon timer: {self.weapon_timer}, Duration: {self.weapon_duration}")
             if current_time - self.weapon_timer > self.weapon_duration:
                 print("[DEBUG] Weapon timer expired. Reverting to default weapon.")
+
+                # Stop super weapon effects
+                if self.player_weapon == "super_weapon":
+                    self.deactivate_super_weapon()
+
+                # Revert to default weapon
                 self.player_weapon = self.default_weapon
-                del self.weapon_timer
+                del self.weapon_timer  # Remove the timer
+
 
     # Weapon system
     def swap_weapon(self):
@@ -263,8 +270,19 @@ class CharacterPawn:
 
     def deactivate_super_weapon(self):
         self.is_using_sw = False
-        if hasattr(self, "beam_coords"):
-            del self.beam_coords
+        self.is_charging = False
+
+        # Stop the sound if it's playing
+        if hasattr(self, "beam_audio_playing") and self.beam_audio_playing:
+            print("[DEBUG] Stopping super weapon sound.")
+            self.laser_beam_sound.stop()
+            self.beam_audio_playing = False
+
+        # Stop charging sound if still playing
+        self.laser_charge_sound.stop()
+
+        print("[DEBUG] Super weapon deactivated.")
+
 
 
 
