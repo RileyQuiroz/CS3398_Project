@@ -387,6 +387,13 @@ class Consumable(pygame.sprite.Sprite):
         screen.blit(self.image, self.rect.topleft)
 
 def spawn_consumable(consumables_group, screen_width, screen_height, is_boss_fight=False):
+    # Define exclusion zones based on health and shield bar positions
+    health_bar_zone = pygame.Rect(10, screen_height - 30, 200, 20)  # Health bar position and size
+    shield_bar_zone = pygame.Rect(10, screen_height - 60, 200, 20)  # Shield bar position and size
+
+    # Combine both zones into a single exclusion area
+    exclusion_zones = [health_bar_zone, shield_bar_zone]
+
     # Filter consumables based on whether it's a boss fight
     if is_boss_fight:
         consumable_type = "super_weapon"  # Force spawn the super weapon
@@ -394,10 +401,20 @@ def spawn_consumable(consumables_group, screen_width, screen_height, is_boss_fig
         available_types = [k for k in CONSUMABLE_DATA.keys() if k != "super_weapon"]
         consumable_type = random.choice(available_types)
 
-    x = random.randint(0, screen_width - 35)
-    y = random.randint(0, screen_height - 35)
+    # Keep trying until we find a valid spawn location outside the exclusion zones
+    while True:
+        x = random.randint(0, screen_width - 35)
+        y = random.randint(0, screen_height - 35)
+        consumable_rect = pygame.Rect(x, y, 35, 35)  # Assume 35x35 is the consumable size
+
+        # Check if the consumable rectangle collides with any exclusion zones
+        if not any(zone.colliderect(consumable_rect) for zone in exclusion_zones):
+            break  # Valid location found
+
+    # Create and add the consumable
     consumable = Consumable(x, y, consumable_type)
     consumables_group.add(consumable)
+
 
 
 
