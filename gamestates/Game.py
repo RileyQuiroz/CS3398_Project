@@ -230,6 +230,7 @@ class Game:
         self.player.y = self.HEIGHT - 100
         self.current_level = 0
         self.lvlThreeSwitch = 0
+        #self.spawn_tickets = 6
         self.clock = pygame.time.Clock()
 
         self.current_objectives = self.assign_bonus_objectives()

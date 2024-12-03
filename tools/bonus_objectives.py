@@ -41,14 +41,14 @@ class NoDamageObjective(BonusObjective):
 
 class UnderTimeObjective(BonusObjective):
     def __init__(self):
-        super().__init__("Complete in under 45 seconds")
+        super().__init__("Complete in under 90 seconds")
 
     def initialize(self, player, level):
         pass
 
     def check_completion(self, player, level, elapsed_time):
         #elapsed_time = level.elapsed_time - level.start_time ## FIXME!!
-        self.completed = elapsed_time - level.level_start_time <= 45
+        self.completed = elapsed_time <= 90
         return self.completed
 
 # TODO: Player does NOT have shots_fired and shots_hit variable, will have to figure out a way to do this later
