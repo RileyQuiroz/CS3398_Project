@@ -61,7 +61,7 @@ class CharacterPawn:
 
         ## ADDING WEAPON TIMERS
         self.weapon_timer = 0
-        self.weapon_duration = 8000
+        self.weapon_duration= 100
         self.default_weapon = "default"
 
         #LOAD PLAYER IMAGE
@@ -363,7 +363,7 @@ class CharacterPawn:
         elif consumable in CONSUMABLE_DATA:
             self.player_weapon = consumable
             self.weapon_timer = pygame.time.get_ticks()  # Start the weapon timer
-            self.weapon_duration = 10000  # Duration in milliseconds (10 seconds)
+            self.weapon_duration = 5000  # Duration in milliseconds (10 seconds) ##THIS ONE ACTUALLY WORKS FOR DURRATION
             print(f"Picked up {consumable}!")
             weapon_pick_up_audio = pygame.mixer.Sound("assets/sound_efx/weapon_pickup_sound.mp3")
             weapon_pick_up_audio.play()
