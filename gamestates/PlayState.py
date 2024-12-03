@@ -51,8 +51,8 @@ class PlayState(GameState):
         ##CONSUMABLE CREATION
         self.consumables_group = pygame.sprite.Group()
         self.consumable_spawn_timer = 0
-        self.consumable_spawn_rate = 10000 # seconds between spawns CHANGE IF NEEDED
-        self.max_consumables = 5
+        self.consumable_spawn_rate = 4000 # seconds between spawns CHANGE IF NEEDED
+        self.max_consumables = 8
 
         self.level_progressed = False
         self.boss_spawned = False
@@ -80,6 +80,9 @@ class PlayState(GameState):
     def boss_transition_scene(self, game, old_background, new_background):
         fade_speed = 5  # Adjust to control fade speed
         font = pygame.font.Font("assets/fonts/Future Edge.ttf", 48)
+        pygame.mixer.music.stop()
+        pygame.mixer.music.load("assets/sound_efx/boss_music.mp3")
+        pygame.mixer.music.play(-1)
 
         # Fade out the old background
         for alpha in range(0, 255, fade_speed):
