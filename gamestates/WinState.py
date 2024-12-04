@@ -15,7 +15,6 @@ class WinState(GameState):
 
     def enter(self, game):
         position = game.leaderboard.compare_score(game.win_lose_system.score_system.score)
-
         if position is not None:
             initials = game.enter_initials(game.MAIN_FONT, position, game.win_lose_system.score_system.score)
 
@@ -37,6 +36,7 @@ class WinState(GameState):
                     selected_option = self.end_screen.check_option_click(pos)
                     if selected_option == "Restart":
                         end_screen_display = False
+                        game.reset()
                         game.change_state('play')
                     elif selected_option == "Main Menu":
                         end_screen_display = False

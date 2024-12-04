@@ -51,8 +51,8 @@ class PlayState(GameState):
         ##CONSUMABLE CREATION
         self.consumables_group = pygame.sprite.Group()
         self.consumable_spawn_timer = 0
-        self.consumable_spawn_rate = 5000 # seconds between spawns CHANGE IF NEEDED
-        self.max_consumables = 10
+        self.consumable_spawn_rate = 4000 # seconds between spawns CHANGE IF NEEDED
+        self.max_consumables = 8
 
         self.level_progressed = False
         self.boss_spawned = False
@@ -80,6 +80,9 @@ class PlayState(GameState):
     def boss_transition_scene(self, game, old_background, new_background):
         fade_speed = 5  # Adjust to control fade speed
         font = pygame.font.Font("assets/fonts/Future Edge.ttf", 48)
+        pygame.mixer.music.stop()
+        pygame.mixer.music.load("assets/sound_efx/boss_music.mp3")
+        pygame.mixer.music.play(-1)
 
         # Fade out the old background
         for alpha in range(0, 255, fade_speed):
@@ -113,10 +116,14 @@ class PlayState(GameState):
         if self.running:
            game.timer.update(game.delta_time)
 
+        #player weapon timer
+        game.player.update_weapon_timer()
+
         if not game.timer.stopped and game.ticks - self.consumable_spawn_timer > self.consumable_spawn_rate:
             if len(self.consumables_group) < self.max_consumables:
-                spawn_consumable(self.consumables_group, game.WIDTH, game.HEIGHT)
+                spawn_consumable(self.consumables_group, game.WIDTH, game.HEIGHT, is_boss_fight=(game.win_lose_system.current_level == 3))
                 self.consumable_spawn_timer = game.ticks
+
 
         hit_detected = False
 
@@ -224,6 +231,14 @@ class PlayState(GameState):
 
             next_state = 'win' if current_game_state == WinLoseState.WIN else 'game_over'
             game.change_state(next_state)
+        
+
+        # Despawn consumables after their lifespan
+        CONSUMABLE_DESPAWN_TIME = 5 #seconds till despawn
+        for consumable in self.consumables_group.copy():  # Iterate over a copy to avoid modifying during iteration
+            if consumable.has_expired(CONSUMABLE_DESPAWN_TIME):
+                print(f"[DEBUG] Consumable {consumable} expired. Removing...")
+                self.consumables_group.remove(consumable)
 
         # AUTO TURRET STUFF
         keys = pygame.key.get_pressed()
@@ -381,7 +396,7 @@ class PlayState(GameState):
         self.running = False
 
         if game.current_state != 'pause':
-            game.reset()
+            #game.reset()
             game.set_obstacles()
             self.consumables_group.empty()
             self.consumable_spawn_timer = 0

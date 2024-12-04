@@ -59,6 +59,11 @@ class CharacterPawn:
         self.got_hit = False
         self.shield = 0
 
+        ## ADDING WEAPON TIMERS
+        self.weapon_timer = 0
+        self.weapon_duration= 100
+        self.default_weapon = "default"
+
         #LOAD PLAYER IMAGE
         self.image = pygame.image.load("assets/ships/ship_4.png")
         self.image = pygame.transform.scale(self.image, (50, 50))
@@ -88,8 +93,20 @@ class CharacterPawn:
         # Update collision rect to align with the image
         self.rect = self.image.get_rect(topleft=(self.x, self.y))
 
+    def update_weapon_timer(self):
+        if self.player_weapon != self.default_weapon and hasattr(self, "weapon_timer"):
+            current_time = pygame.time.get_ticks()
+            print(f"[DEBUG] Current time: {current_time}, Weapon timer: {self.weapon_timer}, Duration: {self.weapon_duration}")
+            if current_time - self.weapon_timer > self.weapon_duration:
+                print("[DEBUG] Weapon timer expired. Reverting to default weapon.")
 
+                # Stop super weapon effects
+                if self.player_weapon == "super_weapon":
+                    self.deactivate_super_weapon()
 
+                # Revert to default weapon
+                self.player_weapon = self.default_weapon
+                del self.weapon_timer  # Remove the timer
 
 
     # Weapon system
@@ -253,8 +270,19 @@ class CharacterPawn:
 
     def deactivate_super_weapon(self):
         self.is_using_sw = False
-        if hasattr(self, "beam_coords"):
-            del self.beam_coords
+        self.is_charging = False
+
+        # Stop the sound if it's playing
+        if hasattr(self, "beam_audio_playing") and self.beam_audio_playing:
+            print("[DEBUG] Stopping super weapon sound.")
+            self.laser_beam_sound.stop()
+            self.beam_audio_playing = False
+
+        # Stop charging sound if still playing
+        self.laser_charge_sound.stop()
+
+        print("[DEBUG] Super weapon deactivated.")
+
 
 
 
@@ -294,6 +322,7 @@ class CharacterPawn:
         if self.is_alive:
             self.health = min(100, self.health + amount)
     
+    
     def consume(self, consumable):
         if self.player_weapon == "super_weapon":
             self.is_using_sw = False
@@ -303,11 +332,12 @@ class CharacterPawn:
                 self.beam_audio_playing = False
             self.laser_charge_sound.stop()
 
-
         if consumable == "super_weapon":
             self.player_weapon = "super_weapon"
             self.is_using_sw = False  # Ensure the super weapon is not firing initially
             self.is_charging = False  # Reset charging state
+            self.weapon_timer = pygame.time.get_ticks()  # Start the weapon timer
+            self.weapon_duration = 10000  # Duration in milliseconds (10 seconds)
             super_weapon_pickup_audio = pygame.mixer.Sound("assets/sound_efx/sw_pickup_audio.mp3")
             super_weapon_pickup_audio.play()
             print("SUPER WEAPON PICKED UP")
@@ -332,9 +362,14 @@ class CharacterPawn:
                 print("Shields are at full capacity!")
         elif consumable in CONSUMABLE_DATA:
             self.player_weapon = consumable
+            self.weapon_timer = pygame.time.get_ticks()  # Start the weapon timer
+            self.weapon_duration = 5000  # Duration in milliseconds (10 seconds) ##THIS ONE ACTUALLY WORKS FOR DURRATION
             print(f"Picked up {consumable}!")
             weapon_pick_up_audio = pygame.mixer.Sound("assets/sound_efx/weapon_pickup_sound.mp3")
             weapon_pick_up_audio.play()
+
+
+import time  # To track time
 
 class Consumable(pygame.sprite.Sprite):
     def __init__(self, x, y, consumable_type):
@@ -349,15 +384,44 @@ class Consumable(pygame.sprite.Sprite):
             raise ValueError(f"Unknown consumable type: {consumable_type}")
 
         self.rect = self.image.get_rect(topleft=(x, y))
+        self.spawn_time = time.time()  # Record the time when the consumable is created
 
     def draw(self, screen):
         screen.blit(self.image, self.rect.topleft)
 
-def spawn_consumable(consumables_group, screen_width, screen_height):
-    consumable_type = random.choice(list(CONSUMABLE_DATA.keys()))
-    x = random.randint(0, screen_width - 35)
-    y = random.randint(0, screen_height - 35)
+    def has_expired(self, lifespan):
+        """Check if the consumable has expired based on its lifespan."""
+        return time.time() - self.spawn_time > lifespan
+
+def spawn_consumable(consumables_group, screen_width, screen_height, is_boss_fight=False):
+    # Define exclusion zones based on health and shield bar positions
+    health_bar_zone = pygame.Rect(10, screen_height - 30, 200, 20)  # Health bar position and size
+    shield_bar_zone = pygame.Rect(10, screen_height - 60, 200, 20)  # Shield bar position and size
+
+    # Combine both zones into a single exclusion area
+    exclusion_zones = [health_bar_zone, shield_bar_zone]
+
+    # Filter consumables based on whether it's a boss fight
+    if is_boss_fight:
+        consumable_type = "super_weapon"  # Force spawn the super weapon
+    else:
+        available_types = [k for k in CONSUMABLE_DATA.keys() if k != "super_weapon"]
+        consumable_type = random.choice(available_types)
+
+    # Keep trying until we find a valid spawn location outside the exclusion zones
+    while True:
+        x = random.randint(0, screen_width - 35)
+        y = random.randint(0, screen_height - 35)
+        consumable_rect = pygame.Rect(x, y, 35, 35)  # Assume 35x35 is the consumable size
+
+        # Check if the consumable rectangle collides with any exclusion zones
+        if not any(zone.colliderect(consumable_rect) for zone in exclusion_zones):
+            break  # Valid location found
+
+    # Create and add the consumable
     consumable = Consumable(x, y, consumable_type)
     consumables_group.add(consumable)
-     
-    
+
+
+
+
