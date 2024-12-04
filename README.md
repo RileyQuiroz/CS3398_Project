@@ -145,6 +145,7 @@ Riley: Updated save system, made a new enemy type and new spawn system, as well 
 
 ## Burnup Report
 
+![image](/images/sprint-3-burnup-report.png)
 
 ## Next steps:
 
