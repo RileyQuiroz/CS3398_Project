@@ -109,6 +109,47 @@ Project is: IN PROGRESS
 
 <!-- You don't have to include all sections - just the one's relevant to your project -->
 
+# Sprint 3
+
+## Contributions
+
+Riley: Updated save system, made a new enemy type and new spawn system, as well as a Boss enemy
+
+* SCRUM-94 Update save/load for current variables
+ - Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-94
+ - BitBucket: https://bitbucket.org/cs3398-edosians-f24/edosians_/commits/branch/feature%2FSCRUM-94-update-save-load-for-current-va
+ 
+* SCRUM-87 Create enemy type C
+ - Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-87
+ - BitBucket: https://bitbucket.org/cs3398-edosians-f24/edosians_/commits/branch/feature%2FSCRUM-87-create-enemy-type-c
+ 
+* SCRUM-95 Update enemy spawn
+ - Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-95
+ - BitBucket: https://bitbucket.org/cs3398-edosians-f24/edosians_/commits/branch/feature%2FSCRUM-95-update-enemy-spawn
+ 
+* SCRUM-88 Add in boss skeleton
+ - Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-88
+ - BitBucket: https://bitbucket.org/cs3398-edosians-f24/edosians_/commits/branch/feature%2FSCRUM-88-add-in-boss-skeleton
+ 
+* SCRUM-89 Create boss attacks
+ - Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-89
+ - BitBucket: https://bitbucket.org/cs3398-edosians-f24/edosians_/commits/branch/feature%2FSCRUM-89-create-boss-attacks
+ 
+* SCRUM-92 Implement boss spawn and destruction
+ - Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-92
+ - BitBucket: https://bitbucket.org/cs3398-edosians-f24/edosians_/commits/branch/feature%2FSCRUM-92-implement-boss-spawn-and-destru
+
+* SCRUM-93 Implement Boss hud elements
+ - Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-93
+ - BitBucket: https://bitbucket.org/cs3398-edosians-f24/edosians_/commits/branch/feature%2FSCRUM-93-implement-boss-hud-elements
+
+## Burnup Report
+
+
+## Next steps:
+
+Riley: If given more time to work on this project, I would implement more enemy types and bosses for more levels.
+
 # Sprint 2
 
 ## Contributions
