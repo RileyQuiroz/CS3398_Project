@@ -24,81 +24,97 @@
 - [Python](https://www.python.org/): The programming language we are using to develop the game.
 
 ## Features
-These features are in progress
+These features are completed
 
-Save System
+### Save System
+- **Description:** Allows players to save their progress during gameplay and load it later.
+- **Who uses it:** Players who wish to save and resume their game.
+- **User Story:** "As a player, I want to be able to save my progress so that I can continue where I left off."
 
-    Feature Name: Save System
-    Description: Allows players to save their progress during gameplay and load it later.
-    Who uses it: Players who wish to save and resume their game.
-    User Story: "As a player, I want to be able to save my progress so that I can continue where I left off."
+### Win/Lose Conditions
+- **Description:** Defines clear conditions for players to either win or lose the game.
+- **Who uses it:** Players seeking to understand the objectives and outcomes of the game.
+- **User Story:** "As a player, I want clear win and lose conditions to know my goals in the game."
 
-Load Game Functionality
+### Obstacle Types
+- **Description:** Introduces various types of obstacles to challenge the player.
+- **Who uses it:** Players looking for diverse gameplay challenges.
+- **User Story:** "As a player, I want different obstacle types to make the game more engaging."
 
-    Feature Name: Load Game Functionality
-    Description: Enables players to load previously saved game states.
-    Who uses it: Players who have saved their game and want to resume.
-    User Story: "As a player, I want to load my saved progress to continue the game from where I stopped."
+### Timer
+- **Description:** Tracks the duration of gameplay, providing feedback to the player.
+- **Who uses it:** Players interested in their playtime.
+- **User Story:** "As a player, I want to track my playtime to manage my gaming sessions."
 
-UI for Save/Load System
+### User Interface
+- **Description:** A graphical interface to enhance player interaction and accessibility.
+- **Who uses it:** Players needing an intuitive way to navigate the game.
+- **User Story:** "As a player, I want a user-friendly interface for easy navigation and interaction."
 
-    Feature Name: Save/Load System UI
-    Description: A graphical interface that allows players to interact with the save and load system.
-    Who uses it: Players who need a visual interface to save/load their game.
-    User Story: "As a player, I want an intuitive UI to save and load my game progress easily."
+### Power-Up System
+- **Description:** Allows players to use power-ups to gain temporary advantages.
+- **Who uses it:** Players seeking to enhance their gameplay experience.
+- **User Story:** "As a player, I want to use power-ups to overcome challenging obstacles."
 
-In-Game Timer
+### Saving Progress
+- **Description:** Enables players to save their game progress to continue later.
+- **Who uses it:** Players who wish to resume their progress in future sessions.
+- **User Story:** "As a player, I want to save my progress so I can pick up where I left off."
 
-    Feature Name: In-Game Timer
-    Description: Tracks the amount of time the player has spent in the game, and can be paused/resumed.
-    Who uses it: Players tracking their session times.
-    User Story: "As a player, I want a timer so I can track how long I’ve been playing."
+### Boss Battle
+- **Description:** Includes a challenging boss fight with unique mechanics.
+- **Who uses it:** Players seeking to test their skills in a climactic game moment.
+- **User Story:** "As a player, I want a thrilling boss battle to end the level on an exciting note."
 
-Pause and Resume Timer
+### Enemy Functionality
+- **Description:** Provides diverse behaviors for enemies to enhance gameplay.
+- **Who uses it:** Players facing challenges from enemy interactions.
+- **User Story:** "As a player, I want enemies with different behaviors to make gameplay unpredictable."
 
-    Feature Name: Pause/Resume Timer
-    Description: Allows players to pause the in-game timer and resume it.
-    Who uses it: Players who wish to take breaks without losing track of their playtime.
-    User Story: "As a player, I want to pause the in-game timer when I pause the game, so the tracking remains accurate."
+### Scoreboard
+- **Description:** Displays player scores to encourage competition and track progress.
+- **Who uses it:** Players who want to see their performance rankings.
+- **User Story:** "As a player, I want a scoreboard to compare my score with others."
 
-Score Counter System
+### Game Assets
+- **Description:** Includes visuals, audio, and other assets to enhance immersion.
+- **Who uses it:** Players enjoying the game’s aesthetic and immersive experience.
+- **User Story:** "As a player, I want high-quality assets to make the game visually and aurally engaging."
 
-    Feature Name: Score Counter System
-    Description: Tracks and displays the player’s score in real-time.
-    Who uses it: Players looking to track their performance throughout the game.
-    User Story: "As a player, I want to see my score increase in real-time as I play."
+### Basic Player Mobility and Actions
+- **Description:** Provides fundamental movement and interaction mechanics for the player.
+- **Who uses it:** Players controlling the character.
+- **User Story:** "As a player, I want smooth controls to navigate the game effectively."
 
-Performance History Screen
+### Player Updates
+- **Description:** Enhances player abilities, interactions, or visuals during gameplay.
+- **Who uses it:** Players experiencing improved mechanics or new features.
+- **User Story:** "As a player, I want updates to my character for a dynamic experience."
 
-    Feature Name: Performance History Screen
-    Description: Displays the player's past game performance, including previous scores and times.
-    Who uses it: Players who want to review their progress and performance history.
-    User Story: "As a player, I want to view my performance history to compare my progress over time."
+### New Weapons
+- **Description:** Introduces additional weapons to diversify combat strategies.
+- **Who uses it:** Players seeking variety in their combat approach.
+- **User Story:** "As a player, I want new weapons to add depth and strategy to the gameplay."
 
-Unit Testing for Save/Load System
+### Consumables
+- **Description:** Provides items that players can use for temporary benefits.
+- **Who uses it:** Players looking to gain advantages during gameplay.
+- **User Story:** "As a player, I want consumables to help me survive or overcome challenges."
 
-    Feature Name: Unit Testing for Save/Load System
-    Description: Unit tests to ensure that the save/load system functions correctly.
-    Who uses it: Developers who need to validate the save/load functionality.
-    User Story: "As a developer, I want automated tests to verify that the save/load system works as expected."
+### Boss Background
+- **Description:** Adds a unique and thematic background to boss battles.
+- **Who uses it:** Players immersed in the atmosphere of the game.
+- **User Story:** "As a player, I want a unique background for boss fights to heighten the experience."
 
-Unit Testing for Timer Functionality
+### Level System
+- **Description:** Tracks and increases player levels based on progress and achievements.
+- **Who uses it:** Players motivated by progression and rewards.
+- **User Story:** "As a player, I want a level system to track my progress and feel rewarded."
 
-    Feature Name: Unit Testing for Timer
-    Description: Unit tests to verify the functionality of the in-game timer.
-    Who uses it: Developers ensuring the timer's accuracy.
-    User Story: "As a developer, I want to ensure the timer works properly through automated tests."
-
-Unit Testing and Bug Fixes for Score Counter
-
-    Feature Name: Unit Testing and Bug Fixes for Score Counter
-    Description: Tests and fixes related to the score counter to ensure real-time updates work correctly.
-    Who uses it: Developers ensuring the scoring system works as intended.
-    User Story: "As a developer, I want to ensure the score counter works correctly and updates in real-time."
 
 
 ## Project Status
-Project is: IN PROGRESS 
+Project is: COMPLETED
 
 
 
