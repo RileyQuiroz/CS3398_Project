@@ -239,7 +239,27 @@ Emilio: Enhanced gameplay with new weapons, consumables, and boss battle feature
   - Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-111
   - Bitbucket: https://bitbucket.org/cs3398-edosians-f24/%7B8f57bb94-4a5c-4e61-84ee-0f7ddb6c2c7a%7D/commits/8cd3c63a5cf53a206ae49ef7364f5b4fffc786b9
 
+Oscar: Created level system (with wave-based progression) to handle game flow and overall game structure, as well as bonus objectives that are randomly assigned and can increase score along with prompting the user when they get a high score and saving their score and initials inside of the records screen.
 
+* **SCRUM-112 Add levels functionality and system**
+- Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-112
+- Bitbucket: https://bitbucket.org/cs3398-edosians-f24/edosians_/commits/branch/feature%2FSCRUM-112-add-levels-functionality-and-system
+
+* **SCRUM-113 Records high score + saving**
+- Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-113
+- Bitbucket: https://bitbucket.org/cs3398-edosians-f24/edosians_/commits/branch/feature%2FSCRUM-113-records-high-score-saving
+
+* **SCRUM-117 Bonus objectives for scoring**
+- Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-117
+- Bitbucket: https://bitbucket.org/cs3398-edosians-f24/edosians_/commits/branch/feature%2FSCRUM-117-bonus-objectives-for-scoring
+
+* **SCRUM-115 Wave-based progression for levels**
+- Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-115
+- Bitbucket: https://bitbucket.org/cs3398-edosians-f24/edosians_/commits/branch/feature%2FSCRUM-115-wave-based-progression-for-levels
+
+* **SCRUM-116 Difficulty Setting**
+- Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-116
+- Bitbucket: https://bitbucket.org/cs3398-edosians-f24/edosians_/commits/branch/feature%2FSCRUM-116-difficulty-setting
 
 ## Burnup Report
 
@@ -252,6 +272,8 @@ Riley: If given more time to work on this project, I would implement more enemy 
 Joseph: If I had more time to work on this project, I think it would be interesting to implement a greater variety of enemies, obstacles, and consumables.
 
 Emilio: WIth more time I would like to see the game have various maps, more complex weapons, dodge mechanic, and maybe more animations. It would be cool to add a small story 
+
+Oscar: In the future, I would like randomization with all systems such as enemies, weapons, obstacles, etc to encourage replayability and make a more addicitive and engaging gameplay loop.
 
 # Sprint 2
 
