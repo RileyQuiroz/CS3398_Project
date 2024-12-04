@@ -143,6 +143,40 @@ Riley: Updated save system, made a new enemy type and new spawn system, as well 
  - Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-93
  - BitBucket: https://bitbucket.org/cs3398-edosians-f24/edosians_/commits/branch/feature%2FSCRUM-93-implement-boss-hud-elements
 
+Joseph: Designed and implemented the states for the various game modes and found sprites and sound effects for the enemies, obstacles, and boss.
+
+* SCRUM-53 Design and implement game state class.
+  - Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-53
+  - Bitbucket: https://bitbucket.org/cs3398-edosians-f24/%7B8f57bb94-4a5c-4e61-84ee-0f7ddb6c2c7a%7D/branch/SCRUM-53-design-and-implement-game-state-class
+
+* SCRUM-54 Implement Main Menu state.
+  - Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-54
+  - Bitbucket: https://bitbucket.org/cs3398-edosians-f24/%7B8f57bb94-4a5c-4e61-84ee-0f7ddb6c2c7a%7D/branch/SCRUM-54-implement-main-menu-state
+
+* SCRUM-55 Implement Pause Menu state.
+  - Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-55
+  - Bitbucket: https://bitbucket.org/cs3398-edosians-f24/%7B8f57bb94-4a5c-4e61-84ee-0f7ddb6c2c7a%7D/branch/SCRUM-55-implement-pause-menu-state
+
+* SCRUM-56 Implement Gameplay state.
+  - Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-56
+  - Bitbucket: https://bitbucket.org/cs3398-edosians-f24/%7B8f57bb94-4a5c-4e61-84ee-0f7ddb6c2c7a%7D/branch/SCRUM-56-implement-gameplay-state
+
+* SCRUM-57 Implement Records/Leaderboard state.
+  - Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-57
+  - Bitbucket: https://bitbucket.org/cs3398-edosians-f24/%7B8f57bb94-4a5c-4e61-84ee-0f7ddb6c2c7a%7D/branch/SCRUM-57-implement-records-leaderboard-state
+
+* SCRUM-58 Implement Game Settings state.
+  - Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-58
+  - Bitbucket: https://bitbucket.org/cs3398-edosians-f24/%7B8f57bb94-4a5c-4e61-84ee-0f7ddb6c2c7a%7D/branch/SCRUM-58-implement-game-settings-state
+
+* SCRUM-90 Find sprites for enemy ships, obstacles, and boss.
+  - Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-90
+  - Bitbucket: https://bitbucket.org/cs3398-edosians-f24/%7B8f57bb94-4a5c-4e61-84ee-0f7ddb6c2c7a%7D/branch/SCRUM-90-find-sprites-for-enemy-ships-obstacles-and-boss
+
+* SCRUM-91 Find sound effects for enemy ships, obstacles, and boss.
+  - Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-91
+  - Bitbucket: https://bitbucket.org/cs3398-edosians-f24/%7B8f57bb94-4a5c-4e61-84ee-0f7ddb6c2c7a%7D/branch/SCRUM-91-find-sound-effects-for-enemies-obstacles-and-boss
+
 ## Burnup Report
 
 ![image](/images/sprint-3-burnup-report.png)
@@ -150,6 +184,8 @@ Riley: Updated save system, made a new enemy type and new spawn system, as well 
 ## Next steps:
 
 Riley: If given more time to work on this project, I would implement more enemy types and bosses for more levels.
+
+Joseph: If I had more time to work on this project, I think it would be interesting to implement a greater variety of enemies, obstacles, and consumables.
 
 # Sprint 2
 
