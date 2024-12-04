@@ -176,6 +176,54 @@ Joseph: Designed and implemented the states for the various game modes and found
 * SCRUM-91 Find sound effects for enemy ships, obstacles, and boss.
   - Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-91
   - Bitbucket: https://bitbucket.org/cs3398-edosians-f24/%7B8f57bb94-4a5c-4e61-84ee-0f7ddb6c2c7a%7D/branch/SCRUM-91-find-sound-effects-for-enemies-obstacles-and-boss
+  
+Emilio: Enhanced gameplay with new weapons, consumables, and boss battle features including updated background, transitions and music.
+
+* **SCRUM-97 Create logic for consumables**
+  - Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-97
+  - Bitbucket: https://bitbucket.org/cs3398-edosians-f24/%7B8f57bb94-4a5c-4e61-84ee-0f7ddb6c2c7a%7D/commits/66002416d2bf2c264873372f37fa668c7447828a
+
+* **SCRUM-98 Develop shield**
+  - Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-98
+  - Bitbucket: https://bitbucket.org/cs3398-edosians-f24/%7B8f57bb94-4a5c-4e61-84ee-0f7ddb6c2c7a%7D/commits/25138c7c963185ad6b23d965e19879039283a981
+
+* **SCRUM-99 Develop Health pack**
+  - Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-99
+  - Bitbucket: https://bitbucket.org/cs3398-edosians-f24/%7B8f57bb94-4a5c-4e61-84ee-0f7ddb6c2c7a%7D/commits/78062938dfabef4641a5cf06e33eef0064e57187
+
+* **SCRUM-101 Spawn logic for consumables**
+  - Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-101
+  - Bitbucket: https://bitbucket.org/cs3398-edosians-f24/%7B8f57bb94-4a5c-4e61-84ee-0f7ddb6c2c7a%7D/commits/0ff3ccfc7655c233bd165601a1471c3ac9e198d9
+
+* **SCRUM-102 Alternate weapon type 1**
+  - Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-102
+  - Bitbucket: https://bitbucket.org/cs3398-edosians-f24/%7B8f57bb94-4a5c-4e61-84ee-0f7ddb6c2c7a%7D/commits/d9bca395e924037d63f4405d0b578bae33c333b6
+
+* **SCRUM-103 Alternate weapon type 2**
+  - Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-103
+  - Bitbucket: https://bitbucket.org/cs3398-edosians-f24/%7B8f57bb94-4a5c-4e61-84ee-0f7ddb6c2c7a%7D/commits/71e3427c55f6a0dee2b65fe7be1714ccb25e2e9d
+
+* **SCRUM-104 Super weapon**
+  - Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-104
+  - Bitbucket: https://bitbucket.org/cs3398-edosians-f24/%7B8f57bb94-4a5c-4e61-84ee-0f7ddb6c2c7a%7D/commits/055676ced8a455249a8d54a0901a7310ea9733df
+
+* **SCRUM-105 Develop background for boss battle**
+  - Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-105
+  - Bitbucket: https://bitbucket.org/cs3398-edosians-f24/%7B8f57bb94-4a5c-4e61-84ee-0f7ddb6c2c7a%7D/commits/8cf3c53e71de8f88627b3a025547495b020369f2
+
+* **SCRUM-106 Create a transition for boss battle**
+  - Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-106
+  - Note: This task is tagged as "solved_with_scrum_105."
+
+* **SCRUM-107 Assets and effects for each new weapon**
+  - Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-107
+  - Bitbucket: https://bitbucket.org/cs3398-edosians-f24/%7B8f57bb94-4a5c-4e61-84ee-0f7ddb6c2c7a%7D/commits/6c6f6bdd21ac0e2eba456f3cf54408b78cc1469b
+
+* **SCRUM-111 Update player to interact with new weapons and consumables**
+  - Jira: https://cs3398-edosians-fall24.atlassian.net/browse/SCRUM-111
+  - Bitbucket: https://bitbucket.org/cs3398-edosians-f24/%7B8f57bb94-4a5c-4e61-84ee-0f7ddb6c2c7a%7D/commits/8cd3c63a5cf53a206ae49ef7364f5b4fffc786b9
+
+
 
 ## Burnup Report
 
