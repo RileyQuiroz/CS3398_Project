@@ -235,6 +235,8 @@ Riley: If given more time to work on this project, I would implement more enemy 
 
 Joseph: If I had more time to work on this project, I think it would be interesting to implement a greater variety of enemies, obstacles, and consumables.
 
+Emilio: WIth more time I would like to see the game have various maps, more complex weapons, dodge mechanic, and maybe more animations. It would be cool to add a small story 
+
 # Sprint 2
 
 ## Contributions
